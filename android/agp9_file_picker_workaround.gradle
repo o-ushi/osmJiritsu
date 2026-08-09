@@ -1,0 +1,14 @@
+// See the comment in android/build.gradle.kts for why this exists. Applied
+// via `afterEvaluate` from the root script, so file_picker's own
+// build.gradle (which creates the `android {}` extension this configures)
+// has already run by the time this does.
+//
+// A plain Groovy script (not Kotlin DSL), so `kotlinOptions {}` resolves
+// dynamically against whichever Kotlin Gradle Plugin version was applied
+// to this project, with no static Kotlin Gradle Plugin dependency needed
+// in the root script.
+android {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}

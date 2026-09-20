@@ -18,14 +18,76 @@ class StartScreenAlwaysShowNotifier extends Notifier<bool> {
   @override
   bool build() => ref.watch(startScreenSettingsRepositoryProvider).load();
 
+  /// 不変条件: `usageScreenAlwaysShow == true` は `startScreenAlwaysShow ==
+  /// true` のときだけ許す。設定 UI からだけでなく「はじめる」の
+  /// 「次回から表示しない」からもここを通るので、連動をこの setter に置く
+  /// ことで両方の経路が同じ不変条件を守る。
   void set(bool value) {
     state = value;
     ref.read(startScreenSettingsRepositoryProvider).save(value);
+    if (!value) {
+      ref.read(usageScreenAlwaysShowProvider.notifier).set(false);
+    }
   }
 
   /// After a factory reset: in-memory flag matches the cleared store
   /// (default `true`) without writing the key back.
   void applyDefault() => state = true;
+}
+
+/// The persisted「はじめるの後に使い方画面を表示」toggle (Settings screen).
+///
+/// See [StartScreenAlwaysShowNotifier.set] for the invariant that keeps
+/// this `false` whenever `startScreenAlwaysShowProvider` is `false`.
+final usageScreenAlwaysShowProvider =
+    NotifierProvider<UsageScreenAlwaysShowNotifier, bool>(
+      UsageScreenAlwaysShowNotifier.new,
+    );
+
+class UsageScreenAlwaysShowNotifier extends Notifier<bool> {
+  @override
+  bool build() =>
+      ref.watch(startScreenSettingsRepositoryProvider).loadUsageAlwaysShow();
+
+  /// Turning this ON while スタート is OFF would violate the invariant
+  /// above with no setter left to fix it (unlike the other direction,
+  /// which `StartScreenAlwaysShowNotifier.set` handles) — so it's rejected
+  /// here directly. The 設定画面 also disables this switch in that case;
+  /// this guard is the second line of defense (e.g. against a stray tap
+  /// racing a settings change).
+  void set(bool value) {
+    if (value && !ref.read(startScreenAlwaysShowProvider)) return;
+    state = value;
+    ref.read(startScreenSettingsRepositoryProvider).saveUsageAlwaysShow(value);
+  }
+
+  /// After a factory reset: in-memory flag matches the cleared store
+  /// (default `true`) without writing the key back.
+  void applyDefault() => state = true;
+}
+
+/// Whether `HistoryListScreen` should currently show the 使い方画面 —
+/// in-memory only, and deliberately *not* re-derived from
+/// [usageScreenAlwaysShowProvider] on every read.
+///
+/// This has to be a plain session flag, not `alwaysShowUsage && !dismissed`:
+/// スタートの「次回から表示しない」can flip `usageScreenAlwaysShow` to
+/// `false` (the invariant in [StartScreenAlwaysShowNotifier.set]) in the
+/// very same tap that should still land on 使い方 *this* session — so the
+/// decision has to be captured from the flag's value before that save, not
+/// recomputed from the now-mutated flag. Each `HistoryListScreen`
+/// transition (スタートの「はじめる」/ 使い方の「ホーム画面へ」/ 一覧の
+/// スワイプ) sets this directly.
+final usageScreenSessionShowProvider =
+    NotifierProvider<UsageScreenSessionShowNotifier, bool>(
+      UsageScreenSessionShowNotifier.new,
+    );
+
+class UsageScreenSessionShowNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void set(bool value) => state = value;
 }
 
 /// Whether the user has already tapped「はじめる」past the forced スタート

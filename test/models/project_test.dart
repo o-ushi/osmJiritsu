@@ -205,7 +205,7 @@ void main() {
       expect(summary, contains('  （なし）'));
       expect(summary, contains('方策: 強みを活かして転職エージェントに登録する'));
       expect(summary, contains('最初の一歩: 転職エージェントに登録する'));
-      expect(summary, contains('自律度チェック: 2 / 3'));
+      expect(summary, contains('内発度チェック: 2 / 3'));
       expect(summary, contains('期限: 2026/02/01'));
       expect(summary, contains('備考: メモの内容'));
       expect(summary, contains('【振り返り履歴】'));

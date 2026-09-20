@@ -35,6 +35,8 @@ class AppReset {
     _ref.read(appLanguageProvider.notifier).applyDefault();
     _ref.read(startScreenAlwaysShowProvider.notifier).applyDefault();
     _ref.read(startScreenDismissedProvider.notifier).show();
+    _ref.read(usageScreenAlwaysShowProvider.notifier).applyDefault();
+    _ref.read(usageScreenSessionShowProvider.notifier).set(false);
     _ref.invalidate(icloudSyncProvider);
   }
 }

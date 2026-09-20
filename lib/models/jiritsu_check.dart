@@ -1,7 +1,9 @@
 import 'jiritsu.dart';
 
-/// A yes/no evaluation of the [JiritsuElement] "自律の3要素" for one 案件
-/// (project) at a point in time.
+/// A yes/no evaluation of the [JiritsuElement] 内発的動機づけの3要素 for
+/// one 案件 (project) at a point in time — the domain model behind
+/// 内発度チェック (formerly「自律度チェック」; see
+/// docs/prompts/04-intrinsic-check.md).
 ///
 /// Kept as three plain booleans (mirrors the yes/no phrasing of each
 /// [JiritsuElement.question]) rather than a `Map<JiritsuElement, bool>` so
@@ -11,10 +13,12 @@ class JiritsuCheck {
   /// 自分で決められるか？
   final bool selfDetermined;
 
-  /// 結果が分かりやすいか？
+  /// 成果が分かりやすいか？ — JSON field name (`clearOutcome`) kept stable
+  /// for compatibility; only the user-facing question text changed.
   final bool clearOutcome;
 
-  /// ゴールを共有できているか？
+  /// 周りと繋がっているか？ — JSON field name (`sharedGoal`) kept stable
+  /// for compatibility; only the user-facing question text changed.
   final bool sharedGoal;
 
   const JiritsuCheck({

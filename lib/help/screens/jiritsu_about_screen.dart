@@ -25,10 +25,9 @@ Widget _sectionDivider() => Padding(
 );
 
 /// Dedicated「自律とは」screen, linked from [HelpScreen]'s lead card.
-/// Covers the full picture in one place: the definition, 自律の3要素, a
-/// 動機づけマトリクス (3要素 × 内発的/外発的動機づけ) for turning them
-/// into concrete strategies, and an explanation of each onboarding
-/// キーワード.
+/// Covers the full picture in one place: the definition, then 動機づけ
+/// (外発的/内発的) with 自律の3要素 recast as 内発的動機づけ's own three
+/// components, and an explanation of each onboarding キーワード.
 class JiritsuAboutScreen extends ConsumerWidget {
   const JiritsuAboutScreen({super.key});
 
@@ -37,7 +36,7 @@ class JiritsuAboutScreen extends ConsumerWidget {
   /// Behaviors typical of someone who isn't 自律的 — rendered as a plain
   /// bullet list right below the reference note on 自立, so the screen
   /// moves from "what 自律/自立 mean" straight into "what it looks like
-  /// when they're missing" before getting to the actionable 3要素 below.
+  /// when they're missing" before getting to 動機づけ below.
   static const _nonJiritsuBehaviors = [
     '言われたことだけやる',
     '不平、不満ばっかり',
@@ -45,12 +44,34 @@ class JiritsuAboutScreen extends ConsumerWidget {
     'できない理由だけで、どうすればできるか？がない',
   ];
 
-  /// Concrete tips for putting each of [JiritsuElement] into practice —
-  /// indexed the same as `JiritsuElement.values`/[_numerals]/[_accentFor].
+  /// The three questions used to evaluate 内発的動機づけ — now the same
+  /// wording as [JiritsuElement.question] (04-intrinsic-check.md renamed
+  /// it to match), kept as this screen's own display-only copy rather
+  /// than switched back over to it.
+  static const _elementQuestions = [
+    '自分で決められるか？',
+    '成果が分かりやすいか？',
+    '周りと繋がっているか？',
+  ];
+
+  /// Concrete sub-questions for each of [_elementQuestions] — indexed the
+  /// same as `JiritsuElement.values`/[_numerals]/[_accentFor].
   static const _elementTips = [
-    ['他人から言われる前に動く', '主導権は自分にあるのだと意識すること'],
-    ['方策の粒度を細かくすること', '結果を見える化して視覚的に成果を実感すること'],
-    ['周囲からサポートを得る', '言語化することで思いが現実性を持つ'],
+    [
+      'やり方を自分で決めている感覚があるか？',
+      '主導権は自分にあるのだと意識できているか？',
+      '他人から言われる前に動いているか？',
+    ],
+    [
+      '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？',
+      '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？',
+    ],
+    [
+      'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？',
+      '周囲からサポートが得られるようになっているか？',
+      '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？',
+      '言語化されることで思いが現実性をもつ',
+    ],
   ];
 
   /// Cross-references from a 3要素 card down to its matching キーワード
@@ -63,6 +84,57 @@ class JiritsuAboutScreen extends ConsumerWidget {
     '小さなくるくる',
     '唱って躍れる',
   ];
+
+  /// 内発的動機づけ's ＜特徴＞ callout, right below its 3 要素 cards.
+  static const _intrinsicProsCons = [
+    '⭕️ モチベーションが長持ちする',
+    '❌ 本人の興味に依存するため即効性がない',
+    '❌ 誰にでも同じように適用することは困難',
+  ];
+
+  /// 内発的動機づけ's ＜具体例＞ bullet list.
+  static const _intrinsicExamples = [
+    '興味のある分野について自主的に深く調べる。',
+    '純粋に人を喜ばせたくて仕事に取り組む。',
+  ];
+
+  /// Small caps-style label above a section — same style used throughout
+  /// this screen for「（参考）自立とは」「自律できていない人にありがちな
+  /// 行動」etc.
+  static Widget _sectionLabel(String text) => Text(
+    text,
+    style: TextStyle(
+      fontSize: 13,
+      fontWeight: FontWeight.bold,
+      letterSpacing: 0.6,
+      color: AppPalette.subpageTextMuted,
+    ),
+  );
+
+  /// One ⭕️/❌ line of [_intrinsicProsCons] — the leading mark sits in its
+  /// own fixed-width column so a wrapped second line indents under the
+  /// sentence instead of restarting flush-left under the mark itself
+  /// (same hanging-indent shape as [HelpBulletList]'s dot).
+  static Widget _prosConsLine(String translated) {
+    final spaceIndex = translated.indexOf(' ');
+    final mark = spaceIndex == -1 ? translated : translated.substring(0, spaceIndex);
+    final rest = spaceIndex == -1 ? '' : translated.substring(spaceIndex + 1);
+    final style = TextStyle(
+      fontSize: 14,
+      height: 1.5,
+      color: AppPalette.subpageTextMuted,
+    );
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(width: 22, child: Text(mark, style: style)),
+          Expanded(child: Text(rest, style: style)),
+        ],
+      ),
+    );
+  }
 
   static const List<({String title, Color accentColor, _KeywordBody body})>
   _keywords = [
@@ -289,20 +361,55 @@ class JiritsuAboutScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Text(
-              '自律の3要素'.tr(lang),
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.6,
-                color: AppPalette.subpageTextMuted,
+            _sectionLabel('動機づけ'.tr(lang)),
+            const SizedBox(height: 10),
+            HelpSectionCardShell(
+              accentColor: AppPalette.mintDark,
+              child: Text(
+                '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。'
+                    .tr(lang),
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: AppPalette.subpageText,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            _sectionLabel('外発的動機づけ'.tr(lang)),
+            const SizedBox(height: 10),
+            HelpSectionCardShell(
+              accentColor: AppPalette.softBlueDark,
+              child: Text(
+                '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。'
+                    .tr(lang),
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: AppPalette.subpageTextMuted,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            _sectionLabel('内発的動機づけ'.tr(lang)),
+            const SizedBox(height: 10),
+            HelpSectionCardShell(
+              accentColor: AppPalette.strength,
+              child: Text(
+                '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。'
+                    .tr(lang),
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.5,
+                  color: AppPalette.subpageTextMuted,
+                ),
               ),
             ),
             const SizedBox(height: 10),
-            for (final (index, element) in JiritsuElement.values.indexed)
+            for (final index in [0, 1, 2])
               HelpSectionCard(
                 badgeLabel: _numerals[index],
-                title: element.question.tr(lang),
+                title: _elementQuestions[index].tr(lang),
                 tips: [for (final tip in _elementTips[index]) tip.tr(lang)],
                 // Only the first line of the keyword's translation — some
                 // (like 唱って躍れる) are two lines (Japanese term, then a
@@ -316,34 +423,50 @@ class JiritsuAboutScreen extends ConsumerWidget {
                 },
                 accentColor: _accentFor(index),
               ),
-            const SizedBox(height: 20),
-            Text(
-              '動機づけマトリクス'.tr(lang),
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.6,
-                color: AppPalette.subpageTextMuted,
-              ),
-            ),
-            const SizedBox(height: 10),
             HelpSectionCardShell(
-              accentColor: AppPalette.softBlueDark,
+              accentColor: AppPalette.strength,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '方策を考える際、動機づけマトリクスを意識すると良い。'.tr(lang),
+                    '＜特徴＞'.tr(lang),
                     style: TextStyle(
-                      fontSize: 14,
-                      height: 1.45,
-                      color: AppPalette.subpageText,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.4,
+                      color: AppPalette.subpageTextMuted,
                     ),
                   ),
-                  const SizedBox(height: 14),
-                  _MotivationMatrix(lang: lang),
-                  const SizedBox(height: 18),
-                  _MotivationExplanation(lang: lang),
+                  const SizedBox(height: 4),
+                  Text(
+                    '行動すること自体が目的となるため、高い集中力が発揮され、質が高く、自発的な行動を長く続けやすい。'
+                        .tr(lang),
+                    style: TextStyle(
+                      fontSize: 14,
+                      height: 1.5,
+                      color: AppPalette.subpageTextMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  for (final line in _intrinsicProsCons)
+                    _prosConsLine(line.tr(lang)),
+                  const SizedBox(height: 8),
+                  Text(
+                    '＜具体例＞'.tr(lang),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.4,
+                      color: AppPalette.subpageTextMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  HelpBulletList(
+                    tips: [
+                      for (final example in _intrinsicExamples)
+                        example.tr(lang),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -428,202 +551,5 @@ class JiritsuAboutScreen extends ConsumerWidget {
       default:
         return AppPalette.strength;
     }
-  }
-}
-
-/// 横に自律の3要素、縦に内発的／外発的動機づけを並べた空欄マトリクス —
-/// ユーザー自身が埋めるための思考ツールなので、セルの中身は空のまま描く。
-/// Column headers are the same Ⅰ/Ⅱ/Ⅲ badges (and colors, via
-/// [JiritsuAboutScreen._accentFor]) as the 3要素 cards above, rather than
-/// repeating their long labels — keeps every column narrow enough that no
-/// cell needs to wrap across several lines.
-class _MotivationMatrix extends StatelessWidget {
-  const _MotivationMatrix({required this.lang});
-
-  final AppLanguage lang;
-
-  static const _rowLabels = ['内発的動機づけ', '外発的動機づけ'];
-
-  @override
-  Widget build(BuildContext context) {
-    // Every cell in a row shares the same `minHeight` below and holds only
-    // a small badge or a short 1-2 word label, so plain top alignment
-    // already paints each cell's background flush to the row's actual
-    // height with no gap — `TableCellVerticalAlignment.fill` was tried
-    // here for the same effect, but it collapses this Table to nothing
-    // when laid out inside the card shell's `IntrinsicHeight`, so it's
-    // deliberately not used.
-    Widget cell(
-      Widget child, {
-      Color? background,
-      double minHeight = 56,
-    }) => Container(
-      color: background ?? Colors.white,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-      constraints: BoxConstraints(minHeight: minHeight),
-      child: child,
-    );
-
-    Widget numberBadge(int index) => Container(
-      width: 30,
-      height: 30,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: JiritsuAboutScreen._accentFor(index),
-        shape: BoxShape.circle,
-      ),
-      child: Text(
-        JiritsuAboutScreen._numerals[index],
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w800,
-          fontSize: 14,
-        ),
-      ),
-    );
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(14),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFE1F0EA)),
-        ),
-        child: Table(
-          border: TableBorder.symmetric(
-            inside: const BorderSide(color: Color(0xFFE1F0EA)),
-          ),
-          columnWidths: const {0: FractionColumnWidth(0.34)},
-          children: [
-            TableRow(
-              children: [
-                cell(const SizedBox.shrink()),
-                for (final index in [0, 1, 2])
-                  cell(
-                    numberBadge(index),
-                    background: JiritsuAboutScreen._accentFor(
-                      index,
-                    ).withValues(alpha: 0.10),
-                  ),
-              ],
-            ),
-            for (final rowLabel in _rowLabels)
-              TableRow(
-                children: [
-                  cell(
-                    Text(
-                      // JP: break right before 動機づけ so this narrow
-                      // column always gets a clean 2-line "内発的\n動機づけ"
-                      // rather than an arbitrary mid-word wrap — only
-                      // affects this cell's own rendering, not the shared
-                      // translation key used elsewhere (キーワード
-                      // cross-reference, `_MotivationExplanation`
-                      // headings, ...).
-                      lang == AppLanguage.japanese
-                          ? rowLabel.tr(lang).replaceFirst('動機づけ', '\n動機づけ')
-                          : rowLabel.tr(lang),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        // EN: "Intrinsic/Extrinsic motivation" wraps
-                        // "motivation" onto its own line at fontSize 12 in
-                        // this narrow column — a smaller size keeps each
-                        // label on one line instead.
-                        fontSize: lang == AppLanguage.english ? 10.5 : 12,
-                        fontWeight: FontWeight.bold,
-                        color: AppPalette.subpageText,
-                      ),
-                    ),
-                    background: AppPalette.subpageBackground,
-                  ),
-                  for (final _ in [0, 1, 2]) cell(const SizedBox.shrink()),
-                ],
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Prose that follows [_MotivationMatrix] inside the same card: what
-/// 内発的/外発的動機づけ each mean, then how they relate to each other.
-class _MotivationExplanation extends StatelessWidget {
-  const _MotivationExplanation({required this.lang});
-
-  final AppLanguage lang;
-
-  static const _intrinsicExamples = [
-    '興味のある分野について自主的に深く調べる。',
-    '純粋に人を喜ばせたくて仕事に取り組む。',
-  ];
-
-  static const _intrinsicProsCons = [
-    '⭕️ モチベーションが長持ちする',
-    '❌ 本人の興味に依存するため即効性がない',
-    '❌ 誰にでも同じように適用することは困難',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    // Headings carry the weight/size, body text stays muted — the
-    // dark/bold-vs-light/regular contrast is what creates the skimmable
-    // rhythm here, not extra colors.
-    final headingStyle = TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-      color: AppPalette.subpageText,
-    );
-    final subheadingStyle = TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.bold,
-      letterSpacing: 0.4,
-      color: AppPalette.subpageTextMuted,
-    );
-    final paragraphStyle = TextStyle(
-      fontSize: 14,
-      height: 1.5,
-      color: AppPalette.subpageTextMuted,
-    );
-
-    Widget heading(String text) => Text(text.tr(lang), style: headingStyle);
-    Widget subheading(String text) =>
-        Text(text.tr(lang), style: subheadingStyle);
-    Widget paragraph(String text) =>
-        Text(text.tr(lang), style: paragraphStyle);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        heading('内発的動機づけ'),
-        const SizedBox(height: 6),
-        paragraph('自分の内面的な興味・関心、探究心、楽しさなどが原動力となる状態。'),
-        const SizedBox(height: 12),
-        subheading('＜特徴＞'),
-        const SizedBox(height: 4),
-        paragraph('行動すること自体が目的となるため、高い集中力が発揮され、質が高く、自発的な行動を長く続けやすい。'),
-        const SizedBox(height: 12),
-        subheading('＜具体例＞'),
-        const SizedBox(height: 6),
-        HelpBulletList(tips: [for (final e in _intrinsicExamples) e.tr(lang)]),
-        const SizedBox(height: 12),
-        subheading('＜メリット・デメリット＞'),
-        const SizedBox(height: 6),
-        for (final line in _intrinsicProsCons)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4),
-            child: paragraph(line),
-          ),
-        _sectionDivider(),
-        heading('外発的動機づけ'),
-        const SizedBox(height: 6),
-        paragraph('報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」をきっかけとして行動を促すこと。'),
-        _sectionDivider(),
-        heading('内発か？外発か？'),
-        const SizedBox(height: 6),
-        paragraph(
-          '内発と外発は対立するものではなく組み合わせもの。外発をきっかけに始めて、その内、それ自体が楽しくなる...（エンハンシング効果）。',
-        ),
-      ],
-    );
   }
 }

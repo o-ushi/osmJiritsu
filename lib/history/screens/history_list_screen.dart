@@ -21,6 +21,7 @@ import '../state/analysis_history_notifier.dart';
 import '../state/start_screen_settings_notifier.dart';
 import '../widgets/history_bottom_toolbar.dart';
 import '../widgets/history_session_card.dart';
+import 'usage_screen.dart';
 
 /// osmJiritsu's home screen: 登録案件リスト — every saved 案件 (project),
 /// in the user's own manually-reordered order, plus a fixed bottom toolbar
@@ -35,13 +36,19 @@ class HistoryListScreen extends ConsumerWidget {
     final lang = ref.watch(appLanguageProvider);
     final actions = HistoryToolbarActions(ref, lang);
     final alwaysShowStartScreen = ref.watch(startScreenAlwaysShowProvider);
+    final alwaysShowUsageScreen = ref.watch(usageScreenAlwaysShowProvider);
     final startScreenDismissed = ref.watch(startScreenDismissedProvider);
+    final showingUsageScreen = ref.watch(usageScreenSessionShowProvider);
 
     // Same gate as osmGradus: the start screen is driven only by the
     // persisted「起動時にスタート画面を表示」flag (default on), not by an
     // empty project list — so「次回から表示しない」actually sticks.
+    // 使い方 never shows on top of a still-showing スタート — see
+    // `usageScreenSessionShowProvider`'s doc for why 使い方 is its own
+    // session flag rather than derived from the persisted setting here.
     final showingStartScreen =
         alwaysShowStartScreen && !startScreenDismissed;
+    final showingUsage = !showingStartScreen && showingUsageScreen;
 
     return Scaffold(
       body: SafeArea(
@@ -63,40 +70,90 @@ class HistoryListScreen extends ConsumerWidget {
             ),
           ),
           data: (projects) {
+            /// Landing on ホーム (list) with no projects yet goes straight
+            /// into the new-project wizard instead of a blank list —
+            /// shared by every path that can land on home (Step B's
+            /// 「はじめる」when 使い方 is skipped, and 使い方's
+            /// 「ホーム画面へ」below).
+            void landOnHome() {
+              if (projects.isEmpty) actions.startNew(context);
+            }
+
             if (showingStartScreen) {
               // Layout/UX ported from osmGradus's StartupScreen: icon,
               // title, copy, 「次回から表示しない」, and「はじめる」.
               return _StartScreen(
                 lang: lang,
                 onContinue: (dontShowAgain) {
+                  // 仕様 B: 保存の前に読む — `dontShowAgain` を確定して
+                  // スタートを false にする setter は使い方も一緒に false
+                  // へ揃える（不変条件）ので、この一手の行き先は保存前の
+                  // 値で決める。
+                  final showUsageNow = ref.read(
+                    usageScreenAlwaysShowProvider,
+                  );
                   if (dontShowAgain) {
                     ref
                         .read(startScreenAlwaysShowProvider.notifier)
                         .set(false);
                   }
                   ref.read(startScreenDismissedProvider.notifier).dismiss();
-                  // With no projects yet, dismissing would just reveal a
-                  // blank list — surprising for a first-time user. Send
-                  // them straight into creating their first project instead.
-                  if (projects.isEmpty) {
-                    actions.startNew(context);
+                  ref
+                      .read(usageScreenSessionShowProvider.notifier)
+                      .set(showUsageNow);
+                  if (!showUsageNow) landOnHome();
+                },
+              );
+            }
+            if (showingUsage) {
+              return GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onHorizontalDragEnd: (details) {
+                  if ((details.primaryVelocity ?? 0) > 200) {
+                    // 使い方画面からの戻り: スタートへ。チェックの有無に
+                    // 関わらずフラグは保存しない（「ホーム画面へ」を押して
+                    // いないので dontShowAgain は確定しない）。
+                    ref
+                        .read(usageScreenSessionShowProvider.notifier)
+                        .set(false);
+                    ref.read(startScreenDismissedProvider.notifier).show();
                   }
                 },
+                child: UsageScreen(
+                  lang: lang,
+                  onContinue: (dontShowAgain) {
+                    if (dontShowAgain) {
+                      ref
+                          .read(usageScreenAlwaysShowProvider.notifier)
+                          .set(false);
+                    }
+                    ref
+                        .read(usageScreenSessionShowProvider.notifier)
+                        .set(false);
+                    landOnHome();
+                  },
+                ),
               );
             }
             final list = _ProjectList(projects: projects, lang: lang);
             if (!alwaysShowStartScreen) return list;
-            // 設定ON: 右スワイプでスタート画面に戻れるようにする。各行は
-            // 削除用に endToStart (左) の Dismissible なので、行の外
-            // （左右の余白・並べ替え矢印の列など）から始まるスワイプで
-            // 主に反応する — Dismissible が同じ横方向ジェスチャーを行内で
-            // 先取りするのは織り込み済みで、行の外からのエッジスワイプが
-            // 効けば十分という判断。
+            // 設定ON: 右スワイプでスタート画面（使い方もONなら使い方）に
+            // 戻れるようにする。各行は削除用に endToStart (左) の
+            // Dismissible なので、行の外（左右の余白・並べ替え矢印の列など）
+            // から始まるスワイプで主に反応する — Dismissible が同じ横方向
+            // ジェスチャーを行内で先取りするのは織り込み済みで、行の外
+            // からのエッジスワイプが効けば十分という判断。
             return GestureDetector(
               behavior: HitTestBehavior.translucent,
               onHorizontalDragEnd: (details) {
                 if ((details.primaryVelocity ?? 0) > 200) {
-                  ref.read(startScreenDismissedProvider.notifier).show();
+                  if (alwaysShowUsageScreen) {
+                    ref
+                        .read(usageScreenSessionShowProvider.notifier)
+                        .set(true);
+                  } else {
+                    ref.read(startScreenDismissedProvider.notifier).show();
+                  }
                 }
               },
               child: list,
@@ -104,9 +161,10 @@ class HistoryListScreen extends ConsumerWidget {
           },
         ),
       ),
-      // osmGradus's StartupScreen is chrome-free; hide the history toolbar
-      // while that screen is up so「はじめる」owns the bottom of the layout.
-      bottomNavigationBar: showingStartScreen
+      // osmGradus's StartupScreen/UsageScreen are chrome-free; hide the
+      // history toolbar while either is up so their own CTA owns the
+      // bottom of the layout.
+      bottomNavigationBar: (showingStartScreen || showingUsage)
           ? null
           : HistoryBottomToolbar(
               lang: lang,
@@ -482,8 +540,6 @@ class _StartScreenState extends State<_StartScreen> {
                             color: AppPalette.sceneTextMuted,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        _StartScreenHint(lang: lang),
                         const SizedBox(height: 36),
                         InkWell(
                           onTap: () => setState(
@@ -575,43 +631,6 @@ class _StartScreenState extends State<_StartScreen> {
           ),
         ],
       ),
-    );
-  }
-}
-
-/// 「各画面の[•••]ボタン長押しで…」— the ••• is [Icons.more_horiz_rounded],
-/// matching the toolbar's more menu icon (not a text glyph).
-class _StartScreenHint extends StatelessWidget {
-  final AppLanguage lang;
-  const _StartScreenHint({required this.lang});
-
-  @override
-  Widget build(BuildContext context) {
-    final style = TextStyle(
-      fontSize: 12,
-      height: 1.4,
-      color: AppPalette.sceneTextMuted,
-    );
-    return Text.rich(
-      TextSpan(
-        style: style,
-        children: [
-          TextSpan(text: '各画面の'.tr(lang)),
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Icon(
-                Icons.more_horiz_rounded,
-                size: 16,
-                color: AppPalette.sceneTextMuted,
-              ),
-            ),
-          ),
-          TextSpan(text: 'ボタン長押しで\n操作方法を確認できます'.tr(lang)),
-        ],
-      ),
-      textAlign: TextAlign.center,
     );
   }
 }

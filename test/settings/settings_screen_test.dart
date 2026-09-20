@@ -30,11 +30,21 @@ Future<
     })> pumpScreen(
   WidgetTester tester, {
   bool alwaysShowStartScreen = false,
+  bool alwaysShowUsageScreen = true,
   AppLanguage language = AppLanguage.japanese,
   List<Project> seed = const [],
 }) async {
+  // Tall enough that every row (including 使い方画面's switch) renders
+  // without scrolling — the default test surface would otherwise leave
+  // rows below it unbuilt and unfindable.
+  tester.view.physicalSize = const Size(1080, 2400);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+
   final startScreenSettingsRepository = InMemoryStartScreenSettingsRepository(
     alwaysShowStartScreen,
+    alwaysShowUsageScreen,
   );
   final historyRepository = InMemoryAnalysisHistoryRepository();
   for (final project in seed) {
@@ -112,7 +122,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(SettingsScreen), findsOneWidget);
-      expect(find.text('Privacy & Data'), findsWidgets);
       expect(
         tester
             .widget<ListTile>(
@@ -124,6 +133,7 @@ void main() {
             .selected,
         isTrue,
       );
+      expect(find.text('Privacy & Data'), findsWidgets);
     },
   );
 
@@ -155,6 +165,49 @@ void main() {
 
     final toggle = find.widgetWithText(SwitchListTile, '起動時にスタート画面を表示');
     expect(tester.widget<SwitchListTile>(toggle).value, isTrue);
+  });
+
+  testWidgets(
+    '使い方画面 toggles and persists when スタート is on, and is disabled when it is off',
+    (tester) async {
+      final repos = await pumpScreen(tester, alwaysShowStartScreen: true);
+
+      final usageToggle = find.widgetWithText(SwitchListTile, '使い方画面');
+      expect(tester.widget<SwitchListTile>(usageToggle).value, isTrue);
+      expect(repos.startScreen.loadUsageAlwaysShow(), isTrue);
+
+      await tester.tap(usageToggle);
+      await tester.pumpAndSettle();
+
+      expect(tester.widget<SwitchListTile>(usageToggle).value, isFalse);
+      expect(repos.startScreen.loadUsageAlwaysShow(), isFalse);
+      // スタートは触っていない — 使い方だけを OFF にできる。
+      expect(repos.startScreen.load(), isTrue);
+    },
+  );
+
+  testWidgets('使い方画面 is disabled (and off) once スタート is off', (tester) async {
+    final repos = await pumpScreen(tester, alwaysShowUsageScreen: false);
+
+    final startToggle = find.widgetWithText(
+      SwitchListTile,
+      '起動時にスタート画面を表示',
+    );
+    final usageToggle = find.widgetWithText(SwitchListTile, '使い方画面');
+    expect(tester.widget<SwitchListTile>(usageToggle).onChanged, isNull);
+    expect(tester.widget<SwitchListTile>(usageToggle).value, isFalse);
+
+    // Turning スタート on re-enables it, still following its persisted value.
+    await tester.tap(startToggle);
+    await tester.pumpAndSettle();
+    expect(tester.widget<SwitchListTile>(usageToggle).onChanged, isNotNull);
+
+    await tester.tap(startToggle);
+    await tester.pumpAndSettle();
+
+    expect(tester.widget<SwitchListTile>(usageToggle).onChanged, isNull);
+    expect(tester.widget<SwitchListTile>(usageToggle).value, isFalse);
+    expect(repos.startScreen.loadUsageAlwaysShow(), isFalse);
   });
 
   testWidgets(

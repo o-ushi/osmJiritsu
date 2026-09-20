@@ -65,7 +65,20 @@ Future<InMemoryAnalysisHistoryRepository> pumpScreen(
   required FakeAnalysisFileIO fileIO,
   List<Project> seed = const [],
   bool alwaysShowStartScreen = false,
+  // Defaults `false` (unlike the real Hive default of `true`) so existing
+  // callers that only care about スタート keep landing straight on the
+  // list after「はじめる」— tests that exercise 使い方 pass this explicitly.
+  bool alwaysShowUsageScreen = false,
+  InMemoryStartScreenSettingsRepository? startScreenSettingsRepository,
 }) async {
+  // Tall enough that 使い方画面's CTA (and the settings screen it can
+  // navigate to) render without scrolling — the default test surface would
+  // otherwise leave them unbuilt and unfindable.
+  tester.view.physicalSize = const Size(1080, 2400);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+
   final repository = InMemoryAnalysisHistoryRepository();
   for (final project in seed) {
     await repository.save(project);
@@ -82,7 +95,11 @@ Future<InMemoryAnalysisHistoryRepository> pumpScreen(
           InMemoryProjectOrderRepository(),
         ),
         startScreenSettingsRepositoryProvider.overrideWithValue(
-          InMemoryStartScreenSettingsRepository(alwaysShowStartScreen),
+          startScreenSettingsRepository ??
+              InMemoryStartScreenSettingsRepository(
+                alwaysShowStartScreen,
+                alwaysShowUsageScreen,
+              ),
         ),
         icloudSyncSettingsRepositoryProvider.overrideWithValue(
           InMemoryIcloudSyncSettingsRepository(),
@@ -97,6 +114,11 @@ Future<InMemoryAnalysisHistoryRepository> pumpScreen(
 
 Future<void> _tapStart(WidgetTester tester) async {
   await tester.tap(find.text('はじめる'));
+  await tester.pumpAndSettle();
+}
+
+Future<void> _tapGoHome(WidgetTester tester) async {
+  await tester.tap(find.text('ホーム画面へ'));
   await tester.pumpAndSettle();
 }
 
@@ -118,7 +140,8 @@ void main() {
     );
     expect(find.text('次回から表示しない'), findsOneWidget);
     expect(find.text('はじめる'), findsOneWidget);
-    expect(find.byIcon(Icons.more_horiz_rounded), findsWidgets);
+    // 「•••」長押しヒントは使い方画面へ移した — スタート画面には残らない。
+    expect(find.byIcon(Icons.more_horiz_rounded), findsNothing);
   });
 
   testWidgets(
@@ -184,7 +207,7 @@ void main() {
   testWidgets(
     '「次回から表示しない」にチェックして「はじめる」と設定がオフになる',
     (tester) async {
-      final settings = InMemoryStartScreenSettingsRepository(true);
+      final settings = InMemoryStartScreenSettingsRepository(true, false);
       final repository = InMemoryAnalysisHistoryRepository();
       await repository.save(_project('既存の案件'));
       await tester.pumpWidget(
@@ -244,6 +267,189 @@ void main() {
       expect(find.text('既存の案件'), findsNothing);
     },
   );
+
+  testWidgets(
+    '起動時にスタート画面を表示 が off のとき、一覧を右スワイプしても何も起きない',
+    (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('既存の案件')],
+      );
+
+      await tester.flingFrom(const Offset(8, 8), const Offset(300, 0), 800);
+      await tester.pumpAndSettle();
+
+      expect(find.text('既存の案件'), findsOneWidget);
+    },
+  );
+
+  group('使い方画面', () {
+    testWidgets('コールドスタートでは 使い方 が on でも使い方画面はまだ出ない', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('既存の案件')],
+        alwaysShowStartScreen: true,
+        alwaysShowUsageScreen: true,
+      );
+
+      expect(find.text('osmJiritsu'), findsOneWidget);
+      expect(find.text('使い方'), findsNothing);
+    });
+
+    testWidgets(
+      'はじめる で 使い方 が on のとき使い方画面に移り、osmJiritsu タイトルは消える',
+      (tester) async {
+        await pumpScreen(
+          tester,
+          fileIO: FakeAnalysisFileIO(),
+          seed: [_project('既存の案件')],
+          alwaysShowStartScreen: true,
+          alwaysShowUsageScreen: true,
+        );
+
+        await _tapStart(tester);
+
+        expect(find.text('使い方'), findsOneWidget);
+        expect(find.text('osmJiritsu'), findsNothing);
+        expect(find.text('既存の案件'), findsNothing);
+      },
+    );
+
+    testWidgets('使い方の「ホーム画面へ」で一覧に移る', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('既存の案件')],
+        alwaysShowStartScreen: true,
+        alwaysShowUsageScreen: true,
+      );
+
+      await _tapStart(tester);
+      await _tapGoHome(tester);
+
+      expect(find.text('既存の案件'), findsOneWidget);
+      expect(find.text('使い方'), findsNothing);
+    });
+
+    testWidgets('使い方経由でも案件0件ならホーム着地でウィザードへ', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        alwaysShowStartScreen: true,
+        alwaysShowUsageScreen: true,
+      );
+
+      await _tapStart(tester);
+      expect(find.text('使い方'), findsOneWidget);
+      await _tapGoHome(tester);
+
+      expect(find.text('まずテーマを決めよう'), findsOneWidget);
+    });
+
+    testWidgets(
+      '使い方の「次回から表示しない」で 使い方 が false になり、次回はじめるは一覧に直行する',
+      (tester) async {
+        final settings = InMemoryStartScreenSettingsRepository(true, true);
+        await pumpScreen(
+          tester,
+          fileIO: FakeAnalysisFileIO(),
+          seed: [_project('既存の案件')],
+          startScreenSettingsRepository: settings,
+        );
+
+        await _tapStart(tester);
+        expect(find.text('使い方'), findsOneWidget);
+
+        await tester.tap(find.byType(Checkbox));
+        await tester.pumpAndSettle();
+        await _tapGoHome(tester);
+
+        expect(find.text('既存の案件'), findsOneWidget);
+        expect(settings.loadUsageAlwaysShow(), isFalse);
+        // スタートには触れていない。
+        expect(settings.load(), isTrue);
+
+        // 一覧をスワイプしてスタートへ戻る（使い方は off なのでスタートへ）。
+        await tester.flingFrom(const Offset(8, 8), const Offset(300, 0), 800);
+        await tester.pumpAndSettle();
+        expect(find.text('osmJiritsu'), findsOneWidget);
+
+        // もう一度「はじめる」→ 使い方は出ない、一覧へ直行する。
+        await _tapStart(tester);
+        expect(find.text('既存の案件'), findsOneWidget);
+        expect(find.text('使い方'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'スタートの「次回から表示しない」＋ 使い方が true のとき、今セッションは使い方に着地し、保存値は両方 false になる',
+      (tester) async {
+        final settings = InMemoryStartScreenSettingsRepository(true, true);
+        await pumpScreen(
+          tester,
+          fileIO: FakeAnalysisFileIO(),
+          seed: [_project('既存の案件')],
+          startScreenSettingsRepository: settings,
+        );
+
+        await tester.tap(find.byType(Checkbox));
+        await tester.pumpAndSettle();
+        await _tapStart(tester);
+
+        expect(find.text('使い方'), findsOneWidget);
+        expect(settings.load(), isFalse);
+        expect(settings.loadUsageAlwaysShow(), isFalse);
+      },
+    );
+
+    testWidgets('両方 on のとき、案件一覧を右スワイプすると使い方画面に移る', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('既存の案件')],
+        alwaysShowStartScreen: true,
+        alwaysShowUsageScreen: true,
+      );
+
+      await _tapStart(tester);
+      await _tapGoHome(tester);
+      expect(find.text('既存の案件'), findsOneWidget);
+
+      await tester.flingFrom(const Offset(8, 8), const Offset(300, 0), 800);
+      await tester.pumpAndSettle();
+
+      expect(find.text('使い方'), findsOneWidget);
+      expect(find.text('osmJiritsu'), findsNothing);
+    });
+
+    testWidgets(
+      '使い方を右スワイプでスタートへ戻り、フラグは変えず、はじめるでまた使い方に着地する',
+      (tester) async {
+        final settings = InMemoryStartScreenSettingsRepository(true, true);
+        await pumpScreen(
+          tester,
+          fileIO: FakeAnalysisFileIO(),
+          seed: [_project('既存の案件')],
+          startScreenSettingsRepository: settings,
+        );
+
+        await _tapStart(tester);
+        expect(find.text('使い方'), findsOneWidget);
+
+        await tester.flingFrom(const Offset(8, 8), const Offset(300, 0), 800);
+        await tester.pumpAndSettle();
+
+        expect(find.text('osmJiritsu'), findsOneWidget);
+        expect(settings.load(), isTrue);
+        expect(settings.loadUsageAlwaysShow(), isTrue);
+
+        await _tapStart(tester);
+        expect(find.text('使い方'), findsOneWidget);
+      },
+    );
+  });
 
   testWidgets('"新規追加" in the bottom toolbar also starts the wizard', (
     tester,

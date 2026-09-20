@@ -59,11 +59,10 @@ class PromptLibrary {
 導入文・締め文不要。JSONのみ出力。
 あなたは実行支援コーチです。ユーザーの「テーマ」「在りたい姿」「在りたくない姿」と、SWOT分析（強み・弱み・機会・脅威）の情報をもとに、以下のSWOTからゴール達成のための方策を5個提案してください。
 
-なお方策は
-・自分で決められること
-・結果が見えやすいこと
-・周囲とゴールと進捗を共有できること
-をできるだけ満たしてください。
+なお方策は、内発的動機づけの３要素をできるだけ満たしてください。
+１．自分で決められるか？ — やり方を自分で決め、主導権が自分にあり、言われる前に動ける
+２．成果が分かりやすいか？ — 成長や能力発揮を実感でき、粒度が細かく結果が見える（小さなくるくる）
+３．周りと繋がっているか？ — ビジョン・ゴール・進捗を共有でき、サポートを得られ、役に立ち当てにされる（唱って躍れる）
 
 出力スキーマ（このJSONのみを返す）:
 {
@@ -85,10 +84,10 @@ class PromptLibrary {
 No preamble. Output JSON only.
 You are an execution coach. Using the user's theme, desired outcome, state to avoid, and their SWOT analysis (strengths/weaknesses/opportunities/threats), propose 5 strategies for reaching the goal from the SWOT below.
 
-As much as possible, each strategy should satisfy:
-- it can be decided by the person themselves
-- the outcome is easy to see/judge
-- the goal and progress can be shared with whoever else is involved
+As much as possible, each strategy should satisfy the three elements of intrinsic motivation:
+1. Can you decide it yourself? — you decide how, hold the initiative, and act before being told
+2. Can you see your results clearly? — you feel your growth and ability, with fine-grained, visible progress
+3. Are you connected with others? — you can share your vision/goals/progress, get support, and feel needed
 
 Output schema (return this JSON only):
 {
@@ -111,10 +110,10 @@ Rules:
 Không viết lời mở đầu. Chỉ xuất JSON.
 Bạn là huấn luyện viên hỗ trợ hành động. Dựa trên chủ đề, trạng thái mong muốn, trạng thái muốn tránh, và phân tích SWOT (điểm mạnh/yếu/cơ hội/đe dọa), hãy đề xuất 5 phương sách để đạt mục tiêu.
 
-Mỗi phương sách nên thỏa càng nhiều càng tốt:
-- tự bản thân quyết định được
-- kết quả dễ nhìn thấy/đánh giá
-- có thể chia sẻ mục tiêu và tiến độ với người liên quan
+Mỗi phương sách nên thỏa càng nhiều càng tốt 3 yếu tố của động lực nội tại:
+1. Bạn có thể tự quyết định không? — tự quyết định cách làm, nắm quyền chủ động, hành động trước khi được nhắc
+2. Bạn có thấy rõ thành quả không? — cảm nhận được sự trưởng thành và năng lực, với các bước nhỏ và kết quả rõ ràng
+3. Bạn có kết nối với mọi người không? — chia sẻ được tầm nhìn/mục tiêu/tiến độ, nhận được hỗ trợ, và cảm thấy được cần đến
 
 Schema đầu ra (chỉ trả JSON này):
 {
@@ -243,6 +242,7 @@ Quy tắc:
 - steps は10件
 - 各行動は明日から着手でき、所要時間30分以内で完了できる具体的な粒度にする
 - 方策全体の完了を目指すものではなく、その最初の一歩として意味のある行動にする
+- 各行動は内発的動機づけの３要素「自分で決められるか？」「成果が分かりやすいか？」「周りと繋がっているか？」をできるだけ満たす
 ''';
       case PromptLanguage.english:
         return '''
@@ -260,6 +260,7 @@ Rules:
 - steps must contain exactly 10 items
 - each action must be startable tomorrow and completable within 30 minutes
 - these are meant as a meaningful first step, not an attempt to complete the whole strategy
+- each action should, as much as possible, satisfy the three elements of intrinsic motivation: "Can you decide it yourself?", "Can you see your results clearly?", "Are you connected with others?"
 - Write text in English
 ''';
       case PromptLanguage.vietnamese:
@@ -278,6 +279,7 @@ Quy tắc:
 - steps đúng 10 mục
 - mỗi hành động phải bắt đầu được từ ngày mai và hoàn thành trong 30 phút
 - đây là bước đầu có ý nghĩa, không phải hoàn thành toàn bộ phương sách
+- mỗi hành động nên thỏa càng nhiều càng tốt 3 yếu tố của động lực nội tại: "Bạn có thể tự quyết định không?", "Bạn có thấy rõ thành quả không?", "Bạn có kết nối với mọi người không?"
 - Viết text bằng tiếng Việt
 ''';
     }

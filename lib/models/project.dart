@@ -16,14 +16,14 @@ const _uuid = Uuid();
 /// through to its 振り返り (retrospective) history.
 ///
 /// ## Field-to-要素 mapping (why these fields, not others)
-/// Every field here exists to make one of Step 0's 自律の3要素 concretely
+/// Every field here exists to make one of 内発的動機づけの3要素 concretely
 /// checkable, rather than being free-floating data:
 /// - `decidedStrategy` / `decidedFirstStep` are the user's *own* final
 ///   wording (never the raw AI suggestion) — "自分で決められるか？".
 /// - `status` / `progressRatio` / `reflectionHistory` give a plain,
-///   glanceable read on where things stand — "結果が分かりやすいか？".
+///   glanceable read on where things stand — "成果が分かりやすいか？".
 /// - `declaration` is the one sentence meant to be shared with whoever
-///   else is involved — "ゴールを共有できているか？".
+///   else is involved — "周りと繋がっているか？".
 /// - `jiritsuCheck` is the user's own self-assessment against all three,
 ///   recorded directly (see Stage1 Steps 7-8's redefine loop) rather than
 ///   inferred from the other fields.
@@ -67,8 +67,9 @@ class Project {
   /// once [decidedStrategy] is chosen.
   final List<StrategySuggestion> aiStrategySuggestions;
 
-  /// Stage1 Step 7's self-assessment of [decidedStrategy] against Step 0's
-  /// 自律の3要素 — re-evaluated every time Step 8 redefines the strategy,
+  /// Stage1 Step 7's self-assessment of [decidedStrategy] against
+  /// 内発的動機づけの3要素（内発度チェック） — re-evaluated every time
+  /// Step 8 redefines the strategy,
   /// so this always reflects the *current* [decidedStrategy], not
   /// necessarily the one it was first checked against.
   final JiritsuCheck jiritsuCheck;
@@ -243,7 +244,7 @@ class Project {
     }
     if (decidedStrategy.trim().isNotEmpty) {
       buffer.writeln(
-        '自律度チェック: ${jiritsuCheck.satisfiedCount} / 3',
+        '内発度チェック: ${jiritsuCheck.satisfiedCount} / 3',
       );
     }
 

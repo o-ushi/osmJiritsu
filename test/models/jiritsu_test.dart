@@ -14,6 +14,15 @@ void main() {
     test('fromRawValue returns null for unknown values', () {
       expect(JiritsuElement.fromRawValue('nope'), isNull);
     });
+
+    test('question uses 内発度チェック wording while rawValue stays stable', () {
+      expect(JiritsuElement.selfDetermined.question, '自分で決められるか？');
+      expect(JiritsuElement.selfDetermined.rawValue, 'selfDetermined');
+      expect(JiritsuElement.clearOutcome.question, '成果が分かりやすいか？');
+      expect(JiritsuElement.clearOutcome.rawValue, 'clearOutcome');
+      expect(JiritsuElement.sharedGoal.question, '周りと繋がっているか？');
+      expect(JiritsuElement.sharedGoal.rawValue, 'sharedGoal');
+    });
   });
 
   group('ProjectStatus', () {

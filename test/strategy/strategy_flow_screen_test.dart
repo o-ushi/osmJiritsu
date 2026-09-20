@@ -189,7 +189,10 @@ void main() {
       expect(prompt, contains('自分の強みを活かして納得感のある転職をしたい'));
       expect(prompt, contains('妥協して転職すること'));
       expect(prompt, contains('高い技術力'));
-      expect(prompt, contains('自分で決められること'));
+      // 内発的動機づけの3つの正式な問いがすべてプロンプトに含まれる。
+      expect(prompt, contains('自分で決められるか？'));
+      expect(prompt, contains('成果が分かりやすいか？'));
+      expect(prompt, contains('周りと繋がっているか？'));
 
       final clipboard = await Clipboard.getData(Clipboard.kTextPlain);
       expect(clipboard?.text, prompt);
@@ -231,7 +234,7 @@ void main() {
 
       expect(find.byIcon(Icons.check_rounded), findsNothing);
       // Nothing decided yet, so the CTA isn't tappable.
-      expect(find.text('自律度をチェックする').hitTestable(), findsNothing);
+      expect(find.text('内発度をチェックする').hitTestable(), findsNothing);
 
       await tester.tap(find.text('未採用').first);
       await tester.pumpAndSettle();
@@ -243,7 +246,7 @@ void main() {
       // at a glance, in addition to its background color changing.
       expect(find.byIcon(Icons.check_rounded), findsOneWidget);
       expect(find.text('採用済'), findsOneWidget);
-      expect(find.text('自律度をチェックする').hitTestable(), findsOneWidget);
+      expect(find.text('内発度をチェックする').hitTestable(), findsOneWidget);
 
       // Tapping the same card again turns it back off
       // ("選んでみたもののやっぱりやめた").
@@ -251,7 +254,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byIcon(Icons.check_rounded), findsNothing);
-      expect(find.text('自律度をチェックする').hitTestable(), findsNothing);
+      expect(find.text('内発度をチェックする').hitTestable(), findsNothing);
     },
   );
 
@@ -285,10 +288,10 @@ void main() {
       await tester.enterText(find.byType(TextField), '自分で決めた方策');
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('自律度をチェックする'));
+      await tester.tap(find.text('内発度をチェックする'));
       await tester.pumpAndSettle();
 
-      expect(find.text('自律度チェック'), findsOneWidget);
+      expect(find.text('内発度チェック'), findsOneWidget);
       expect(find.text('自分で決めた方策'), findsOneWidget);
       expect(find.text('0 / 3 満たしている'), findsOneWidget);
 
@@ -302,7 +305,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('あなたの方策'), findsOneWidget);
 
-      await tester.tap(find.text('自律度をチェックする'));
+      await tester.tap(find.text('内発度をチェックする'));
       await tester.pumpAndSettle();
       expect(find.text('1 / 3 満たしている'), findsOneWidget);
 
@@ -346,7 +349,7 @@ void main() {
       await tester.enterText(find.byType(TextField), '独自の方策も追加');
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('自律度をチェックする'));
+      await tester.tap(find.text('内発度をチェックする'));
       await tester.pumpAndSettle();
       await tester.tap(find.text('納得した'));
       await tester.pumpAndSettle();

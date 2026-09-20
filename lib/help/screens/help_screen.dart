@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../l10n/app_language.dart';
 import '../../l10n/app_language_notifier.dart';
 import '../../l10n/app_strings.dart';
 import '../../theme/app_theme.dart';
@@ -16,6 +18,25 @@ import 'jiritsu_about_screen.dart';
 /// there, not duplicated here.
 class HelpScreen extends ConsumerStatefulWidget {
   const HelpScreen({super.key});
+
+  /// Google スライド操作マニュアル（言語別・閲覧用 preview）。
+  /// 共有は「リンクを知っている全員」。編集 URL ではなく preview を開く。
+  /// 英語・ベトナム語は同じファイルを上書き更新する前提（ID は固定）。
+  static const userManualPresentationIdJa =
+      '1C3BGFdWm6UneFcPQC0d7ftQ46n65hsN4uB8KAdXHObU';
+  static const userManualPresentationIdEn =
+      '14pVMbXOI4YSaV-PpC02N1r6IYFNTYUFiqcdiIA5uLos';
+  static const userManualPresentationIdVi =
+      '1ALuMLxX3wRoySWb6mWdY8i59eLeP7gy-O7Ut5q8elFc';
+
+  static String userManualUrlFor(AppLanguage language) {
+    final id = switch (language) {
+      AppLanguage.english => userManualPresentationIdEn,
+      AppLanguage.japanese => userManualPresentationIdJa,
+      AppLanguage.vietnamese => userManualPresentationIdVi,
+    };
+    return 'https://docs.google.com/presentation/d/$id/preview';
+  }
 
   @override
   ConsumerState<HelpScreen> createState() => _HelpScreenState();
@@ -61,6 +82,15 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
             _HelpHero(
               title: 'osmJiritsu'.tr(lang),
               versionLabel: versionLabel,
+            ),
+            const SizedBox(height: 20),
+            _HelpManualLink(
+              lang: lang,
+              accentColor: AppPalette.amber,
+              onTap: () => launchUrl(
+                Uri.parse(HelpScreen.userManualUrlFor(lang)),
+                mode: LaunchMode.externalApplication,
+              ),
             ),
             const SizedBox(height: 20),
             HelpLeadCard(
@@ -109,6 +139,75 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Opens the Google スライド操作マニュアル for the current app language.
+/// Layout ported from osmGradus's `_HelpManualLink` (icon circle + title +
+/// accent-colored summary + external-link chevron), built on the same
+/// [HelpSectionCardShell] the rest of this screen already uses.
+class _HelpManualLink extends StatelessWidget {
+  const _HelpManualLink({
+    required this.lang,
+    required this.accentColor,
+    required this.onTap,
+  });
+
+  final AppLanguage lang;
+  final Color accentColor;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return HelpSectionCardShell(
+      key: const Key('help_user_manual'),
+      accentColor: accentColor,
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
+            child: const Icon(
+              Icons.menu_book_outlined,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '操作マニュアル'.tr(lang),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppPalette.subpageText,
+                  ),
+                ),
+                Text(
+                  '図解で画面ごとの使い方を見る'.tr(lang),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: accentColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            Icons.open_in_new_rounded,
+            size: 18,
+            color: AppPalette.subpageTextMuted,
+          ),
+        ],
       ),
     );
   }

@@ -145,6 +145,10 @@ void main() {
       expect(prompt, contains('新しいキャリアについて'));
       expect(prompt, contains('自分の強みを活かして納得感のある転職をしたい'));
       expect(prompt, contains('強みを活かして転職エージェントに登録する'));
+      // 内発的動機づけの3つの正式な問いがすべてプロンプトに含まれる。
+      expect(prompt, contains('自分で決められるか？'));
+      expect(prompt, contains('成果が分かりやすいか？'));
+      expect(prompt, contains('周りと繋がっているか？'));
     },
   );
 

@@ -61,17 +61,25 @@ void main() {
     container.read(wizardProvider.notifier).setTheme('途中の下書き');
     expect(container.read(wizardProvider).theme, '途中の下書き');
 
+    // 起動時にスタート画面を表示 を false にすると使い方も false に揃う
+    // （不変条件） — リセットが両方 true に戻すことを確かめられるよう、
+    // リセット前はあえて両方 false にしておく。
+    container.read(startScreenAlwaysShowProvider.notifier).set(false);
+    expect(container.read(usageScreenAlwaysShowProvider), isFalse);
+
     await container.read(appResetProvider).resetToFactoryDefaults();
 
     expect(await history.loadAll(), isEmpty);
     expect(order.load(), isNull);
     expect(language.load(), isNull);
     expect(startScreen.load(), isTrue);
+    expect(startScreen.loadUsageAlwaysShow(), isTrue);
     expect(fileIO.temporaryExportsDeleted, isTrue);
 
     expect(container.read(analysisHistoryProvider).value, isEmpty);
     expect(container.read(appLanguageProvider), AppLanguage.vietnamese);
     expect(container.read(startScreenAlwaysShowProvider), isTrue);
+    expect(container.read(usageScreenAlwaysShowProvider), isTrue);
     expect(container.read(wizardProvider).theme, isEmpty);
   });
 }

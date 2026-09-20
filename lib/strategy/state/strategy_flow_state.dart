@@ -40,7 +40,7 @@ class StrategyFlowPasteFailed extends StrategyFlowState {
 
 /// Stage1 Steps 6-8: the user is composing/checking/redefining their
 /// decided 方策 in a loop. [showingCheck] toggles which of the two screens
-/// (方策を決める／自律度チェック) is currently shown; everything else
+/// (方策を決める／内発度チェック) is currently shown; everything else
 /// (`decidedStrategy`, `jiritsuCheck`) persists across that toggle so
 /// looping back and forth never loses anything already entered.
 class StrategyFlowDeciding extends StrategyFlowState {
@@ -86,7 +86,7 @@ class StrategyFlowDeciding extends StrategyFlowState {
     if (ownStrategyText.trim().isNotEmpty) ownStrategyText.trim(),
   ].join('\n');
 
-  /// Whether the Step 6→7 "自律度をチェックする" CTA can be tapped.
+  /// Whether the Step 6→7 "内発度をチェックする" CTA can be tapped.
   bool get canProceedToCheck => decidedStrategy.trim().isNotEmpty;
 
   /// Whether "納得した" (Step 8's explicit confirm) can be tapped —

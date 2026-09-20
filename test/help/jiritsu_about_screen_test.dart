@@ -70,59 +70,100 @@ void main() {
         findsOneWidget,
       );
 
-      expect(find.text('自律の3要素'), findsOneWidget);
-      expect(find.text('自分で決められるか？'), findsOneWidget);
-      // The one-line summary that used to repeat right below the question
-      // ("自分の意思で決められる" etc.) is gone — only the question and the
-      // new concrete tips remain.
-      expect(find.text('自分の意思で決められる'), findsNothing);
-      expect(find.text('結果が見えやすい'), findsNothing);
-      expect(find.text('ゴールを共有できる'), findsNothing);
+      // 「自律の3要素」の見出しと「動機づけマトリクス」は消え、代わりに
+      // 動機づけ→外発的動機づけ→内発的動機づけ（3要素を含む）という
+      // 動機づけの説明の流れになる。
+      expect(find.text('自律の3要素'), findsNothing);
+      expect(find.text('動機づけマトリクス'), findsNothing);
+      expect(find.byType(Table), findsNothing);
+      expect(find.text('内発か？外発か？'), findsNothing);
+      expect(find.text('＜メリット・デメリット＞'), findsNothing);
+      expect(find.text('他人から言われる前に動く'), findsNothing);
+      expect(find.text('ゴールを共有できているか？'), findsNothing);
+      expect(find.text('結果が分かりやすいか？'), findsNothing);
+
+      expect(find.text('動機づけ'), findsOneWidget);
       expect(
-        find.text('誰かの判断を待たず、自分の意思で決められること。'),
-        findsNothing,
+        find.text(
+          '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。',
+        ),
+        findsOneWidget,
       );
-      expect(find.text('他人から言われる前に動く'), findsOneWidget);
-      expect(find.text('主導権は自分にあるのだと意識すること'), findsOneWidget);
-      expect(find.text('方策の粒度を細かくすること'), findsOneWidget);
-      expect(find.text('結果を見える化して視覚的に成果を実感すること'), findsOneWidget);
-      expect(find.text('周囲からサポートを得る'), findsOneWidget);
-      expect(find.text('言語化することで思いが現実性を持つ'), findsOneWidget);
-      // Cross-references from the clearOutcome/sharedGoal 3要素 cards down
-      // to their matching キーワード card further below.
+
+      expect(find.text('外発的動機づけ'), findsOneWidget);
+      expect(
+        find.text('報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。'),
+        findsOneWidget,
+      );
+
+      expect(find.text('内発的動機づけ'), findsOneWidget);
+      expect(
+        find.text('自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。'),
+        findsOneWidget,
+      );
+
+      // 新しい3つの問い（内発的動機づけの構成要素として表示される）。この
+      // 画面はコンテンツが増えたので、Ⅰだけがデフォルトのビューポートに
+      // 収まる — Ⅱ/Ⅲ以降は都度スクロールして確認する。
+      expect(find.text('自分で決められるか？'), findsOneWidget);
+      expect(find.text('Ⅰ'), findsOneWidget);
+      expect(find.text('やり方を自分で決めている感覚があるか？'), findsOneWidget);
+      expect(find.text('主導権は自分にあるのだと意識できているか？'), findsOneWidget);
+      expect(find.text('他人から言われる前に動いているか？'), findsOneWidget);
+
+      await tester.scrollUntilVisible(
+        find.text('成果が分かりやすいか？'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Ⅱ'), findsOneWidget);
+      expect(
+        find.text('自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？'),
+        findsOneWidget,
+      );
       expect(find.text('キーワード：小さなくるくる'), findsOneWidget);
+
+      await tester.scrollUntilVisible(
+        find.text('周りと繋がっているか？'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Ⅲ'), findsOneWidget);
+      expect(find.text('ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？'), findsOneWidget);
+      expect(find.text('周囲からサポートが得られるようになっているか？'), findsOneWidget);
+      expect(
+        find.text('「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？'),
+        findsOneWidget,
+      );
+      expect(find.text('言語化されることで思いが現実性をもつ'), findsOneWidget);
+      // Cross-reference from the 周り 3要素 card down to its matching
+      // キーワード card further below.
       expect(find.text('キーワード：唱って躍れる'), findsOneWidget);
 
-      expect(find.text('動機づけマトリクス'), findsOneWidget);
+      // 特徴・具体例は内発的動機づけに属する（外発カードの下には出ない）。
+      await tester.scrollUntilVisible(
+        find.text('＜特徴＞'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(
-        find.text('方策を考える際、動機づけマトリクスを意識すると良い。'),
+        find.text('行動すること自体が目的となるため、高い集中力が発揮され、質が高く、自発的な行動を長く続けやすい。'),
         findsOneWidget,
       );
-      // '内発的動機づけ'/'外発的動機づけ' appear both as the explanation's
-      // section headings below the matrix (unbroken) and as the matrix's
-      // own row labels — the latter wrap onto their own line right before
-      // 動機づけ so this narrow column never breaks mid-word.
-      expect(find.text('内発的動機づけ'), findsOneWidget);
-      expect(find.text('外発的動機づけ'), findsOneWidget);
-      expect(find.text('内発的\n動機づけ'), findsOneWidget);
-      expect(find.text('外発的\n動機づけ'), findsOneWidget);
-      expect(find.text('内発か？外発か？'), findsOneWidget);
-      expect(
-        find.text('自分の内面的な興味・関心、探究心、楽しさなどが原動力となる状態。'),
-        findsOneWidget,
-      );
+      // Each ⭕️❌ line splits into its own mark + sentence Text so a
+      // wrapped second line indents under the sentence (not the mark).
+      expect(find.text('⭕️'), findsOneWidget);
+      expect(find.text('モチベーションが長持ちする'), findsOneWidget);
+      expect(find.text('❌'), findsNWidgets(2));
+      expect(find.text('本人の興味に依存するため即効性がない'), findsOneWidget);
+      expect(find.text('誰にでも同じように適用することは困難'), findsOneWidget);
+      expect(find.text('＜具体例＞'), findsOneWidget);
       expect(find.text('興味のある分野について自主的に深く調べる。'), findsOneWidget);
-      expect(find.text('⭕️ モチベーションが長持ちする'), findsOneWidget);
-      // Ⅰ/Ⅱ/Ⅲ appear as both the 3要素 cards' badges and the matrix's
-      // column headers, so there are 2 of each.
-      expect(find.text('Ⅰ'), findsNWidgets(2));
-      expect(find.text('Ⅱ'), findsNWidgets(2));
-      expect(find.text('Ⅲ'), findsNWidgets(2));
-      // Regression check for the matrix rendering as a blank area: the
-      // Table must actually take up real vertical space, not collapse to
-      // (near) zero — see the `TableCellVerticalAlignment.fill` +
-      // `IntrinsicHeight` conflict this once broke.
-      expect(tester.getSize(find.byType(Table)).height, greaterThan(100));
+      expect(find.text('純粋に人を喜ばせたくて仕事に取り組む。'), findsOneWidget);
 
       await tester.scrollUntilVisible(
         find.text('キーワード'),

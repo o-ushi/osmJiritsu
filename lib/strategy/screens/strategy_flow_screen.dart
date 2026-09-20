@@ -386,7 +386,7 @@ class _StrategyEditorViewState extends State<_StrategyEditorView> {
           ),
           const SizedBox(height: 24),
           PrimaryCtaButton(
-            label: '自律度をチェックする'.tr(lang),
+            label: '内発度をチェックする'.tr(lang),
             icon: Icons.checklist_rounded,
             visible: state.canProceedToCheck,
             onPressed: notifier.showJiritsuCheck,
@@ -398,7 +398,7 @@ class _StrategyEditorViewState extends State<_StrategyEditorView> {
 }
 
 
-/// Step 7: the 自律度チェック screen for whatever's currently in
+/// Step 7: the 内発度チェック screen for whatever's currently in
 /// `decidedStrategy`. "方策を編集する" loops back to Step 6/8's editor
 /// (see [StrategyFlowNotifier.editStrategy]); "納得した" ends the loop.
 class _JiritsuCheckView extends StatelessWidget {
@@ -420,7 +420,7 @@ class _JiritsuCheckView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '自律度チェック'.tr(lang),
+            '内発度チェック'.tr(lang),
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(color: AppPalette.sceneText),
@@ -557,7 +557,7 @@ class _ConfirmedView extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            '自律度チェック: %lld / 3'.trFmt(lang, [
+            '内発度チェック: %lld / 3'.trFmt(lang, [
               '${state.jiritsuCheck.satisfiedCount}',
             ]),
             style: Theme.of(

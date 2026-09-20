@@ -337,7 +337,7 @@ class DashboardScreen extends ConsumerWidget {
             if (current.decidedStrategy.trim().isNotEmpty) ...[
               const SizedBox(height: 16),
               Text(
-                '自律度チェック: %lld / 3'.trFmt(lang, [
+                '内発度チェック: %lld / 3'.trFmt(lang, [
                   '${current.jiritsuCheck.satisfiedCount}',
                 ]),
                 style: Theme.of(

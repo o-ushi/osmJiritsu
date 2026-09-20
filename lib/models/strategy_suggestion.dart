@@ -4,8 +4,9 @@ const _uuid = Uuid();
 
 /// One AI-proposed 方策 (strategy) from Stage1 Step 5's "Chrome AIモードで
 /// 方策発散" — the model is asked for 5 of these directly from the user's
-/// テーマ/ゴール/SWOT, each meant to satisfy Step 0's 自律の3要素 as much as
-/// possible (自分で決められる/結果が見えやすい/周囲と共有できる).
+/// テーマ/ゴール/SWOT, each meant to satisfy 内発的動機づけの3要素 as much
+/// as possible (自分で決められるか？/成果が分かりやすいか？/周りと繋がって
+/// いるか？).
 ///
 /// Deliberately simpler than the old pre-Stage1 `StrategyProposal` (title +
 /// structured `ActionDetail` breakdown + priority, since removed as dead

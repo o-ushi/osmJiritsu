@@ -7,7 +7,7 @@ import '../../models/jiritsu_check.dart';
 import '../../theme/app_theme.dart';
 
 /// Stage1 Step 7: one yes/no row per [JiritsuElement], backed by a
-/// [JiritsuCheck] — osmJiritsu's core "自律度チェック" UI.
+/// [JiritsuCheck] — osmJiritsu's core "内発度チェック" UI.
 class JiritsuCheckPanel extends StatelessWidget {
   final JiritsuCheck check;
   final AppLanguage lang;

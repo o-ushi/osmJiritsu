@@ -116,12 +116,10 @@ abstract final class AppStrings {
     '方策を編集': '方策を編集',
     'あなたの方策': 'あなたの方策',
     'AIの提案にない、独自の方策があれば書く': 'AIの提案にない、独自の方策があれば書く',
-    '自律度をチェックする': '自律度をチェックする',
-    '自律度チェック': '自律度チェック',
+    '内発度をチェックする': '内発度をチェックする',
+    '内発度チェック': '内発度チェック',
     '決めた方策を、3つの要素から見直してみましょう。': '決めた方策を、3つの要素から見直してみましょう。',
     '自分で決められるか？': '自分で決められるか？',
-    '結果が分かりやすいか？': '結果が分かりやすいか？',
-    'ゴールを共有できているか？': 'ゴールを共有できているか？',
     '%lld / 3 満たしている': '%lld / 3 満たしている',
     '納得した': '納得した',
     '方策を編集する': '方策を編集する',
@@ -139,7 +137,7 @@ abstract final class AppStrings {
     'この振り返りを削除しますか？': 'この振り返りを削除しますか？',
     '宣言文を編集': '宣言文を編集',
     '方策を決めた': '方策を決めた',
-    '自律度チェック: %lld / 3': '自律度チェック: %lld / 3',
+    '内発度チェック: %lld / 3': '内発度チェック: %lld / 3',
 
     // ── Step 9-10: first step + declaration (自律計画作成の完了) ─────────
     '最初の一歩を決める': '最初の一歩を決める',
@@ -193,8 +191,6 @@ abstract final class AppStrings {
     '読み込みに失敗しました: %@': '読み込みに失敗しました: %@',
     '自律とは、ゴールと今の状況の差を無くすために、自分で考えて行動することです。':
         '自律とは、ゴールと今の状況の差を無くすために、自分で考えて行動することです。',
-    '各画面の': '各画面の',
-    'ボタン長押しで\n操作方法を確認できます': 'ボタン長押しで\n操作方法を確認できます',
     '操作方法': '操作方法',
     '案内に従って操作': '案内に従って操作',
     '操作方法_ダッシュボード':
@@ -253,6 +249,14 @@ abstract final class AppStrings {
     'スタートアップ画面': 'スタートアップ画面',
     '起動時にスタート画面を表示': '起動時にスタート画面を表示',
     '案件があっても、起動時はスタート画面から始めます。': '案件があっても、起動時はスタート画面から始めます。',
+    '使い方画面': '使い方画面',
+    '使い方画面_説明': 'Chrome AIのコピー方法と、•••の長押しなどの基本操作を表示します',
+    '使い方_タイトル': '使い方',
+    '使い方_コピー本文':
+        'ChromeのAIモードで答えが出たら、画面の下のほうにあるコピーボタンをタップしてください。下の画像の赤い矢印と TAP! が指している、左端の重なった2つの四角です。\n\nこのボタンを押さずにアプリへ戻ると、貼り付けできません。コピーできたら、osmJiritsuに戻ってください。',
+    '使い方_操作ヒント': '各画面の•••ボタンを長押しすると、その画面の操作方法が表示されます。',
+    '使い方_コピー画像_説明': 'Chrome AIモードのコピーボタン（赤い矢印と TAP!）',
+    'ホーム画面へ': 'ホーム画面へ',
     'すべてのデータを初期化': 'すべてのデータを初期化',
     '本当に初期化しますか？': '本当に初期化しますか？',
     '初期化の説明':
@@ -277,7 +281,7 @@ abstract final class AppStrings {
         'Google検索（AIモード）への送信にはGoogleのポリシーが適用されます。App Store経由の配信・端末バックアップ等にはAppleの規約が適用される場合があります。',
     'プライバシー_端末保存': '端末での保存',
     'プライバシー_保存詳細':
-        'テーマ、ゴール、SWOT分析、方策、最初の一歩、宣言文、振り返り、案件の並び順、表示言語、スタート画面設定は端末内のHiveデータベースに保存します。クラウド同期は行いません。',
+        'テーマ、ゴール、SWOT分析、方策、最初の一歩、宣言文、振り返り、案件の並び順、表示言語、スタート画面設定、使い方画面設定は端末内のHiveデータベースに保存します。クラウド同期は行いません。',
     'プライバシー_保持削除詳細':
         '保存データは、ユーザーが個別に削除するか、「すべてのデータを削除」を行うまで保持します。すでにGoogleへ送信済みのデータの保持・削除はGoogleのポリシーに従い、本アプリから削除できません。JSONバックアップで共有先に保存したコピーも、本アプリからは削除できません。',
     'プライバシー_JSONバックアップ案内':
@@ -291,6 +295,8 @@ abstract final class AppStrings {
     'HELP': 'HELP',
     'osmJiritsu': 'osmJiritsu',
     'バージョン %@ (%@)': 'バージョン %@ (%@)',
+    '操作マニュアル': '操作マニュアル',
+    '図解で画面ごとの使い方を見る': '図解で画面ごとの使い方を見る',
     '自律とは': '自律とは',
     'ゴールと今の状況の差を無くすために、自分で考えて行動すること':
         'ゴールと今の状況の差を無くすために、自分で考えて行動すること',
@@ -298,9 +304,6 @@ abstract final class AppStrings {
         'テーマとゴール（在りたい姿／在りたくない姿）を決める',
     '現状を整理し、SWOTから方策を自分で決める': '現状を整理し、SWOTから方策を自分で決める',
     '最初の一歩を宣言し、振り返りながら進める': '最初の一歩を宣言し、振り返りながら進める',
-    '自律の3要素': '自律の3要素',
-    '方策や行動を決めるとき、この3つを満たしているか振り返ってみましょう。':
-        '方策や行動を決めるとき、この3つを満たしているか振り返ってみましょう。',
     '自律の定義': '自律の定義',
     '（参考）自立とは': '（参考）自立とは',
     '自分以外の何ものにも依存しない状態。': '自分以外の何ものにも依存しない状態。',
@@ -315,33 +318,39 @@ abstract final class AppStrings {
     'できない理由だけで、どうすればできるか？がない': 'できない理由だけで、どうすればできるか？がない',
     '一見クールでカッコよく見えたりする。的を射てるし。周囲を白けさせるパワー大。口癖は「でもさ...」':
         '一見クールでカッコよく見えたりする。的を射てるし。周囲を白けさせるパワー大。口癖は「でもさ...」',
-    '他人から言われる前に動く': '他人から言われる前に動く',
-    '主導権は自分にあるのだと意識すること': '主導権は自分にあるのだと意識すること',
-    '方策の粒度を細かくすること': '方策の粒度を細かくすること',
-    '結果を見える化して視覚的に成果を実感すること': '結果を見える化して視覚的に成果を実感すること',
-    '周囲からサポートを得る': '周囲からサポートを得る',
-    '言語化することで思いが現実性を持つ': '言語化することで思いが現実性を持つ',
-    '動機づけマトリクス': '動機づけマトリクス',
-    '方策を考える際、動機づけマトリクスを意識すると良い。': '方策を考える際、動機づけマトリクスを意識すると良い。',
-    '内発的動機づけ': '内発的動機づけ',
+    '動機づけ': '動機づけ',
+    '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。':
+        '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。',
     '外発的動機づけ': '外発的動機づけ',
-    '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる状態。':
-        '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる状態。',
+    '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。':
+        '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。',
+    '内発的動機づけ': '内発的動機づけ',
+    '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。':
+        '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。',
+    '成果が分かりやすいか？': '成果が分かりやすいか？',
+    '周りと繋がっているか？': '周りと繋がっているか？',
+    'やり方を自分で決めている感覚があるか？': 'やり方を自分で決めている感覚があるか？',
+    '主導権は自分にあるのだと意識できているか？': '主導権は自分にあるのだと意識できているか？',
+    '他人から言われる前に動いているか？': '他人から言われる前に動いているか？',
+    '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？':
+        '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？',
+    '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？':
+        '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？',
+    'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？':
+        'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？',
+    '周囲からサポートが得られるようになっているか？': '周囲からサポートが得られるようになっているか？',
+    '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？':
+        '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？',
+    '言語化されることで思いが現実性をもつ': '言語化されることで思いが現実性をもつ',
     '＜特徴＞': '＜特徴＞',
     '行動すること自体が目的となるため、高い集中力が発揮され、質が高く、自発的な行動を長く続けやすい。':
         '行動すること自体が目的となるため、高い集中力が発揮され、質が高く、自発的な行動を長く続けやすい。',
     '＜具体例＞': '＜具体例＞',
     '興味のある分野について自主的に深く調べる。': '興味のある分野について自主的に深く調べる。',
     '純粋に人を喜ばせたくて仕事に取り組む。': '純粋に人を喜ばせたくて仕事に取り組む。',
-    '＜メリット・デメリット＞': '＜メリット・デメリット＞',
     '⭕️ モチベーションが長持ちする': '⭕️ モチベーションが長持ちする',
     '❌ 本人の興味に依存するため即効性がない': '❌ 本人の興味に依存するため即効性がない',
     '❌ 誰にでも同じように適用することは困難': '❌ 誰にでも同じように適用することは困難',
-    '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」をきっかけとして行動を促すこと。':
-        '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」をきっかけとして行動を促すこと。',
-    '内発か？外発か？': '内発か？外発か？',
-    '内発と外発は対立するものではなく組み合わせもの。外発をきっかけに始めて、その内、それ自体が楽しくなる...（エンハンシング効果）。':
-        '内発と外発は対立するものではなく組み合わせもの。外発をきっかけに始めて、その内、それ自体が楽しくなる...（エンハンシング効果）。',
     '実行のステップを細かくして達成感を感じやすくすること。':
         '実行のステップを細かくして達成感を感じやすくすること。',
     '唱（ショウ）': '唱（ショウ）',
@@ -528,13 +537,11 @@ abstract final class AppStrings {
     'あなたの方策': 'Your strategy',
     'AIの提案にない、独自の方策があれば書く':
         "Write your own strategy here if it's not among the AI's suggestions",
-    '自律度をチェックする': 'Check your Jiritsu',
-    '自律度チェック': 'Jiritsu check',
+    '内発度をチェックする': 'Check intrinsic motivation',
+    '内発度チェック': 'Intrinsic check',
     '決めた方策を、3つの要素から見直してみましょう。':
         "Let's review your decided strategy against the three elements.",
     '自分で決められるか？': 'Can you decide it yourself?',
-    '結果が分かりやすいか？': 'Is the outcome easy to see?',
-    'ゴールを共有できているか？': 'Can the goal be shared?',
     '%lld / 3 満たしている': '%lld / 3 satisfied',
     '納得した': "I'm satisfied",
     '方策を編集する': 'Edit the strategy',
@@ -552,7 +559,7 @@ abstract final class AppStrings {
     'この振り返りを削除しますか？': 'Delete this reflection?',
     '宣言文を編集': 'Edit declaration',
     '方策を決めた': 'Strategy decided',
-    '自律度チェック: %lld / 3': 'Jiritsu check: %lld / 3',
+    '内発度チェック: %lld / 3': 'Intrinsic check: %lld / 3',
 
     '最初の一歩を決める': 'Decide your first step',
     '最初の一歩を決めた': 'First step decided',
@@ -605,9 +612,6 @@ abstract final class AppStrings {
     '読み込みに失敗しました: %@': 'Import failed: %@',
     '自律とは、ゴールと今の状況の差を無くすために、自分で考えて行動することです。':
         'Jiritsu means acting on your own judgment to close the gap between your goal and your current situation.',
-    '各画面の': 'On each screen, long-press the ',
-    'ボタン長押しで\n操作方法を確認できます':
-        ' button to see how to use it',
     '操作方法': 'How to use',
     '案内に従って操作': 'Follow the on-screen guidance',
     '操作方法_ダッシュボード':
@@ -665,6 +669,15 @@ abstract final class AppStrings {
     '起動時にスタート画面を表示': 'Show start screen at launch',
     '案件があっても、起動時はスタート画面から始めます。':
         'Always start from the start screen at launch, even if you have projects.',
+    '使い方画面': 'How-to screen',
+    '使い方画面_説明':
+        'Show how to copy from Chrome AI and long-press ••• for operation hints',
+    '使い方_タイトル': 'How to use',
+    '使い方_コピー本文':
+        'When Chrome’s AI Mode shows an answer, tap the Copy button near the bottom of the screen — the leftmost icon of two overlapping squares, marked TAP! with a red arrow.\n\nIf you skip this and return to the app, you won’t be able to paste. After copying, come back to osmJiritsu.',
+    '使い方_操作ヒント': 'Long-press the ••• button on each screen to see how to use it.',
+    '使い方_コピー画像_説明': 'Copy button in Chrome AI Mode (red arrow and TAP!)',
+    'ホーム画面へ': 'Go to Home',
     'すべてのデータを初期化': 'Reset all data',
     '本当に初期化しますか？': 'Reset everything?',
     '初期化の説明':
@@ -689,7 +702,7 @@ abstract final class AppStrings {
         'Google’s policy applies to submissions to Google Search (AI Mode). Apple’s terms may apply to App Store distribution and device backups.',
     'プライバシー_端末保存': 'Storage on your device',
     'プライバシー_保存詳細':
-        'Theme, goals, SWOT analysis, strategy, first step, declaration, reflections, project order, display language, and start-screen settings are stored in a local Hive database on this device. There is no cloud sync.',
+        'Theme, goals, SWOT analysis, strategy, first step, declaration, reflections, project order, display language, start-screen settings, and how-to-screen settings are stored in a local Hive database on this device. There is no cloud sync.',
     'プライバシー_保持削除詳細':
         'Stored data is retained until you delete an item or choose Delete all data. Data already sent to Google is retained and deleted under Google’s own policy and cannot be deleted from this app. Copies saved via JSON backup to other apps also cannot be deleted by this app.',
     'プライバシー_JSONバックアップ案内':
@@ -702,6 +715,8 @@ abstract final class AppStrings {
     'HELP': 'HELP',
     'osmJiritsu': 'osmJiritsu',
     'バージョン %@ (%@)': 'Version %@ (%@)',
+    '操作マニュアル': 'User manual',
+    '図解で画面ごとの使い方を見る': 'See illustrated steps for each screen',
     '自律とは': 'What is Jiritsu?',
     'ゴールと今の状況の差を無くすために、自分で考えて行動すること':
         'Acting on your own judgment to close the gap between a goal and the current situation',
@@ -711,9 +726,6 @@ abstract final class AppStrings {
         'Organize the present, then decide your own strategy from SWOT',
     '最初の一歩を宣言し、振り返りながら進める':
         'Declare your first step, then keep going with reflection',
-    '自律の3要素': 'The 3 elements of Jiritsu',
-    '方策や行動を決めるとき、この3つを満たしているか振り返ってみましょう。':
-        'When deciding on a strategy or action, check whether it satisfies all three of these.',
     '自律の定義': 'Definition of Jiritsu',
     '（参考）自立とは': '(Reference) What is self-reliance?',
     '自分以外の何ものにも依存しない状態。':
@@ -730,21 +742,33 @@ abstract final class AppStrings {
         'Only reasons why it can\'t be done — never how it could be',
     '一見クールでカッコよく見えたりする。的を射てるし。周囲を白けさせるパワー大。口癖は「でもさ...」':
         'At a glance it can look cool and sharp — the point often lands. But it has a real power to drain the energy out of everyone around. The catchphrase: "Yeah, but..."',
-    '他人から言われる前に動く': 'Act before someone else tells you to',
-    '主導権は自分にあるのだと意識すること': 'Be aware that you hold the initiative',
-    '方策の粒度を細かくすること': 'Break the strategy into smaller steps',
-    '結果を見える化して視覚的に成果を実感すること':
-        'Make the results visible so progress feels real',
-    '周囲からサポートを得る': 'Get support from the people around you',
-    '言語化することで思いが現実性を持つ':
-        'Putting it into words makes it feel real',
-    '動機づけマトリクス': 'Motivation matrix',
-    '方策を考える際、動機づけマトリクスを意識すると良い。':
-        'When thinking through a strategy, it helps to keep the motivation matrix in mind.',
-    '内発的動機づけ': 'Intrinsic motivation',
+    '動機づけ': 'Motivation',
+    '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。':
+        'The spark that makes you think and act on your own is called motivation. There is extrinsic and intrinsic motivation. They are not opposites; they work together. Start with extrinsic motivation, then aim for the enhancing effect — the work itself becoming enjoyable.',
     '外発的動機づけ': 'Extrinsic motivation',
-    '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる状態。':
-        'A state driven by your own inner interest, curiosity, or enjoyment.',
+    '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。':
+        'Motivation from outside stimulation such as rewards, evaluation, promotion, or penalties and scolding.',
+    '内発的動機づけ': 'Intrinsic motivation',
+    '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。':
+        'Motivation driven by inner interest, curiosity, and enjoyment. It is made of the three elements below.',
+    '成果が分かりやすいか？': 'Can you see your results clearly?',
+    '周りと繋がっているか？': 'Are you connected with others?',
+    'やり方を自分で決めている感覚があるか？': 'Do you feel you decide how to do it?',
+    '主導権は自分にあるのだと意識できているか？':
+        'Are you aware that you hold the initiative?',
+    '他人から言われる前に動いているか？': 'Do you act before someone else tells you to?',
+    '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？':
+        'Do you feel competent — using your abilities and seeing your own growth?',
+    '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？':
+        'Are the steps small enough, and results visible enough, that you can feel progress?',
+    'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？':
+        'Are vision, goals, and daily progress shared with the people around you?',
+    '周囲からサポートが得られるようになっているか？':
+        'Can you get support from the people around you?',
+    '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？':
+        'Are needs like "I want to be useful" and "I want to be counted on" being met?',
+    '言語化されることで思いが現実性をもつ':
+        'Putting it into words makes it feel real',
     '＜特徴＞': '<Characteristics>',
     '行動すること自体が目的となるため、高い集中力が発揮され、質が高く、自発的な行動を長く続けやすい。':
         'Because the action itself becomes the goal, it brings high concentration and quality, and self-driven behavior is easy to sustain.',
@@ -753,17 +777,11 @@ abstract final class AppStrings {
         'Digging deep into a field you\'re interested in on your own initiative.',
     '純粋に人を喜ばせたくて仕事に取り組む。':
         'Taking on work purely because you want to make someone happy.',
-    '＜メリット・デメリット＞': '<Pros and cons>',
     '⭕️ モチベーションが長持ちする': '⭕️ Motivation lasts a long time',
     '❌ 本人の興味に依存するため即効性がない':
         '❌ Depends on personal interest, so it has no immediate effect',
     '❌ 誰にでも同じように適用することは困難':
         '❌ Difficult to apply the same way to everyone',
-    '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」をきっかけとして行動を促すこと。':
-        'Prompting action through "external stimuli" such as rewards, evaluation, promotion, or penalties and reprimands.',
-    '内発か？外発か？': 'Intrinsic or extrinsic?',
-    '内発と外発は対立するものではなく組み合わせもの。外発をきっかけに始めて、その内、それ自体が楽しくなる...（エンハンシング効果）。':
-        'Intrinsic and extrinsic motivation aren\'t opposites — they combine. You can start out triggered by something external, and over time the activity itself becomes enjoyable... (the enhancing effect).',
     '実行のステップを細かくして達成感を感じやすくすること。':
         'Breaking execution into small steps so a sense of accomplishment is easy to feel.',
     '唱（ショウ）': 'Shō (唱, "sing / proclaim")',
@@ -953,13 +971,11 @@ abstract final class AppStrings {
     'あなたの方策': 'Phương án của bạn',
     'AIの提案にない、独自の方策があれば書く':
         'Nếu bạn có phương án riêng không nằm trong gợi ý của AI, hãy viết ở đây',
-    '自律度をチェックする': 'Kiểm tra Jiritsu',
-    '自律度チェック': 'Kiểm tra Jiritsu',
+    '内発度をチェックする': 'Kiểm tra động lực nội tại',
+    '内発度チェック': 'Kiểm tra động lực nội tại',
     '決めた方策を、3つの要素から見直してみましょう。':
         'Hãy cùng xem lại phương án đã quyết định theo 3 yếu tố.',
     '自分で決められるか？': 'Bạn có thể tự quyết định không?',
-    '結果が分かりやすいか？': 'Kết quả có dễ nhận biết không?',
-    'ゴールを共有できているか？': 'Bạn có thể chia sẻ mục tiêu không?',
     '%lld / 3 満たしている': 'Đạt %lld / 3',
     '納得した': 'Tôi đã hài lòng',
     '方策を編集する': 'Chỉnh sửa phương án',
@@ -977,7 +993,7 @@ abstract final class AppStrings {
     'この振り返りを削除しますか？': 'Xóa lần nhìn lại này?',
     '宣言文を編集': 'Sửa tuyên bố',
     '方策を決めた': 'Đã quyết định phương án',
-    '自律度チェック: %lld / 3': 'Kiểm tra Jiritsu: %lld / 3',
+    '内発度チェック: %lld / 3': 'Kiểm tra động lực nội tại: %lld / 3',
 
     '最初の一歩を決める': 'Quyết định bước đầu tiên',
     '最初の一歩を決めた': 'Đã quyết định bước đầu tiên',
@@ -1030,9 +1046,6 @@ abstract final class AppStrings {
     '読み込みに失敗しました: %@': 'Nhập thất bại: %@',
     '自律とは、ゴールと今の状況の差を無くすために、自分で考えて行動することです。':
         'Jiritsu là tự suy nghĩ và hành động để thu hẹp khoảng cách giữa mục tiêu và tình trạng hiện tại.',
-    '各画面の': 'Trên mỗi màn hình, nhấn giữ nút ',
-    'ボタン長押しで\n操作方法を確認できます':
-        ' để xem cách sử dụng',
     '操作方法': 'Cách sử dụng',
     '案内に従って操作': 'Làm theo hướng dẫn trên màn hình',
     '操作方法_ダッシュボード':
@@ -1090,6 +1103,15 @@ abstract final class AppStrings {
     '起動時にスタート画面を表示': 'Hiện màn hình bắt đầu khi khởi động',
     '案件があっても、起動時はスタート画面から始めます。':
         'Luôn bắt đầu từ màn hình bắt đầu khi khởi động, kể cả khi đã có dự án.',
+    '使い方画面': 'Màn hình hướng dẫn',
+    '使い方画面_説明':
+        'Hiện cách sao chép từ Chrome AI và nhấn giữ ••• để xem cách thao tác',
+    '使い方_タイトル': 'Cách dùng',
+    '使い方_コピー本文':
+        'Khi AI Mode của Chrome hiện câu trả lời, hãy chạm nút Sao chép ở phía dưới màn hình — biểu tượng ngoài cùng bên trái gồm hai hình vuông chồng lên nhau, có mũi tên đỏ và chữ TAP!.\n\nNếu quay lại ứng dụng mà chưa chạm nút này, bạn sẽ không dán được. Sau khi sao chép, hãy quay lại osmJiritsu.',
+    '使い方_操作ヒント': 'Nhấn giữ nút ••• trên mỗi màn hình để xem cách sử dụng.',
+    '使い方_コピー画像_説明': 'Nút sao chép trong Chrome AI Mode (mũi tên đỏ và TAP!)',
+    'ホーム画面へ': 'Về màn hình chính',
     'すべてのデータを初期化': 'Đặt lại toàn bộ dữ liệu',
     '本当に初期化しますか？': 'Đặt lại toàn bộ?',
     '初期化の説明':
@@ -1114,7 +1136,7 @@ abstract final class AppStrings {
         'Chính sách của Google áp dụng cho nội dung gửi đến Google Search (chế độ AI). Điều khoản của Apple có thể áp dụng cho phân phối App Store và sao lưu thiết bị.',
     'プライバシー_端末保存': 'Lưu trữ trên thiết bị',
     'プライバシー_保存詳細':
-        'Chủ đề, mục tiêu, phân tích SWOT, phương án, bước đầu tiên, tuyên bố, nhìn lại, thứ tự dự án, ngôn ngữ hiển thị và cài đặt màn hình bắt đầu được lưu trong cơ sở dữ liệu Hive cục bộ trên thiết bị. Không đồng bộ đám mây.',
+        'Chủ đề, mục tiêu, phân tích SWOT, phương án, bước đầu tiên, tuyên bố, nhìn lại, thứ tự dự án, ngôn ngữ hiển thị, cài đặt màn hình bắt đầu và cài đặt màn hình hướng dẫn được lưu trong cơ sở dữ liệu Hive cục bộ trên thiết bị. Không đồng bộ đám mây.',
     'プライバシー_保持削除詳細':
         'Dữ liệu đã lưu được giữ đến khi bạn xóa từng mục hoặc chọn Xóa toàn bộ dữ liệu. Dữ liệu đã gửi đến Google được lưu giữ và xóa theo chính sách của Google, và không thể xóa từ ứng dụng này. Bản sao lưu JSON đã lưu ở ứng dụng khác cũng không thể xóa bởi ứng dụng này.',
     'プライバシー_JSONバックアップ案内':
@@ -1127,6 +1149,8 @@ abstract final class AppStrings {
     'HELP': 'HELP',
     'osmJiritsu': 'osmJiritsu',
     'バージョン %@ (%@)': 'Phiên bản %@ (%@)',
+    '操作マニュアル': 'Hướng dẫn sử dụng',
+    '図解で画面ごとの使い方を見る': 'Xem cách dùng từng màn hình bằng hình',
     '自律とは': 'Jiritsu là gì?',
     'ゴールと今の状況の差を無くすために、自分で考えて行動すること':
         'Tự suy nghĩ và hành động để thu hẹp khoảng cách giữa mục tiêu và tình trạng hiện tại',
@@ -1136,9 +1160,6 @@ abstract final class AppStrings {
         'Sắp xếp hiện trạng, rồi tự quyết định phương án từ SWOT',
     '最初の一歩を宣言し、振り返りながら進める':
         'Tuyên bố bước đầu tiên, rồi tiến lên kèm nhìn lại',
-    '自律の3要素': '3 yếu tố của Jiritsu',
-    '方策や行動を決めるとき、この3つを満たしているか振り返ってみましょう。':
-        'Khi quyết định phương án hoặc hành động, hãy kiểm tra xem đã đáp ứng cả 3 điều này chưa.',
     '自律の定義': 'Định nghĩa của Jiritsu',
     '（参考）自立とは': '(Tham khảo) Tự lập là gì?',
     '自分以外の何ものにも依存しない状態。':
@@ -1155,21 +1176,33 @@ abstract final class AppStrings {
         'Chỉ nêu lý do không làm được, không nghĩ cách để làm được',
     '一見クールでカッコよく見えたりする。的を射てるし。周囲を白けさせるパワー大。口癖は「でもさ...」':
         'Thoạt nhìn có vẻ ngầu và có lý. Nhưng lại rất dễ làm nguội lạnh không khí xung quanh. Câu cửa miệng là "nhưng mà..."',
-    '他人から言われる前に動く': 'Hành động trước khi người khác nhắc bạn',
-    '主導権は自分にあるのだと意識すること': 'Ý thức rằng quyền chủ động nằm ở bạn',
-    '方策の粒度を細かくすること': 'Chia nhỏ phương án thành các bước',
-    '結果を見える化して視覚的に成果を実感すること':
-        'Trực quan hóa kết quả để cảm nhận rõ thành quả',
-    '周囲からサポートを得る': 'Nhận được sự hỗ trợ từ xung quanh',
-    '言語化することで思いが現実性を持つ':
-        'Diễn đạt thành lời giúp suy nghĩ trở nên hiện thực hơn',
-    '動機づけマトリクス': 'Ma trận động lực',
-    '方策を考える際、動機づけマトリクスを意識すると良い。':
-        'Khi suy nghĩ về phương án, hãy để ý đến ma trận động lực.',
-    '内発的動機づけ': 'Động lực nội tại',
+    '動機づけ': 'Động lực',
+    '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。':
+        'Động lực là điều thôi thúc bạn tự suy nghĩ và hành động. Có động lực bên ngoài và động lực nội tại. Hai loại này không đối lập mà kết hợp với nhau. Nên bắt đầu từ động lực bên ngoài, rồi hướng tới hiệu ứng khuếch đại — khi chính công việc trở nên thú vị.',
     '外発的動機づけ': 'Động lực bên ngoài',
-    '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる状態。':
-        'Trạng thái được thúc đẩy bởi sự quan tâm, tò mò, hay niềm vui nội tại của chính bản thân.',
+    '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。':
+        'Động lực đến từ các kích thích bên ngoài như phần thưởng, đánh giá, thăng chức, hoặc hình phạt và khiển trách.',
+    '内発的動機づけ': 'Động lực nội tại',
+    '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。':
+        'Động lực được thúc đẩy bởi sự quan tâm, tò mò và niềm vui nội tại của bản thân. Được tạo thành từ 3 yếu tố dưới đây.',
+    '成果が分かりやすいか？': 'Bạn có thấy rõ thành quả không?',
+    '周りと繋がっているか？': 'Bạn có kết nối với mọi người không?',
+    'やり方を自分で決めている感覚があるか？': 'Bạn có cảm giác tự mình quyết định cách làm không?',
+    '主導権は自分にあるのだと意識できているか？':
+        'Bạn có ý thức được rằng quyền chủ động nằm ở mình không?',
+    '他人から言われる前に動いているか？': 'Bạn có hành động trước khi người khác nhắc không?',
+    '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？':
+        'Bạn có cảm giác về năng lực — phát huy khả năng và cảm nhận được sự trưởng thành của mình không?',
+    '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？':
+        'Các bước có đủ nhỏ, kết quả có được trực quan hóa để bạn cảm nhận được tiến triển không?',
+    'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？':
+        'Bạn có chia sẻ được tầm nhìn, mục tiêu và tiến độ hằng ngày với mọi người xung quanh không?',
+    '周囲からサポートが得られるようになっているか？':
+        'Bạn có nhận được sự hỗ trợ từ những người xung quanh không?',
+    '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？':
+        'Những nhu cầu như "muốn giúp ích" hay "muốn được tin cậy" có được đáp ứng không?',
+    '言語化されることで思いが現実性をもつ':
+        'Diễn đạt thành lời giúp suy nghĩ trở nên hiện thực hơn',
     '＜特徴＞': '<Đặc điểm>',
     '行動すること自体が目的となるため、高い集中力が発揮され、質が高く、自発的な行動を長く続けやすい。':
         'Vì bản thân hành động đã là mục đích, nên dễ đạt được sự tập trung cao, chất lượng tốt, và hành động tự phát có thể duy trì lâu dài.',
@@ -1178,17 +1211,11 @@ abstract final class AppStrings {
         'Tự mình tìm hiểu sâu về một lĩnh vực mà bạn quan tâm.',
     '純粋に人を喜ばせたくて仕事に取り組む。':
         'Bắt tay vào công việc chỉ vì muốn làm người khác vui.',
-    '＜メリット・デメリット＞': '<Ưu và nhược điểm>',
     '⭕️ モチベーションが長持ちする': '⭕️ Động lực kéo dài lâu',
     '❌ 本人の興味に依存するため即効性がない':
         '❌ Phụ thuộc vào sở thích cá nhân nên không có hiệu quả tức thì',
     '❌ 誰にでも同じように適用することは困難':
         '❌ Khó áp dụng giống nhau cho mọi người',
-    '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」をきっかけとして行動を促すこと。':
-        'Thúc đẩy hành động thông qua các "kích thích từ bên ngoài" như phần thưởng, đánh giá, thăng chức, hoặc hình phạt và khiển trách.',
-    '内発か？外発か？': 'Nội tại hay bên ngoài?',
-    '内発と外発は対立するものではなく組み合わせもの。外発をきっかけに始めて、その内、それ自体が楽しくなる...（エンハンシング効果）。':
-        'Động lực nội tại và bên ngoài không đối lập mà có thể kết hợp với nhau. Có thể bắt đầu nhờ một tác nhân bên ngoài, rồi dần dần chính hoạt động đó trở nên thú vị... (hiệu ứng khuếch đại).',
     '実行のステップを細かくして達成感を感じやすくすること。':
         'Chia nhỏ các bước thực hiện để dễ cảm nhận thành tựu.',
     '唱（ショウ）': 'Xướng (唱)',

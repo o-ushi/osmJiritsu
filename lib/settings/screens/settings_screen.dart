@@ -25,6 +25,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final lang = ref.watch(appLanguageProvider);
     final alwaysShowStartScreen = ref.watch(startScreenAlwaysShowProvider);
+    final alwaysShowUsageScreen = ref.watch(usageScreenAlwaysShowProvider);
 
     return SubpageScaffold(
       appBar: OsmAppBar(title: Text('設定'.tr(lang))),
@@ -72,6 +73,20 @@ class SettingsScreen extends ConsumerWidget {
             value: alwaysShowStartScreen,
             onChanged: (value) =>
                 ref.read(startScreenAlwaysShowProvider.notifier).set(value),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.menu_book_outlined),
+            title: Text('使い方画面'.tr(lang)),
+            subtitle: Text('使い方画面_説明'.tr(lang)),
+            activeThumbColor: AppPalette.mintDark,
+            // スタートが OFF のときは使い方だけ ON にできない（不変条件）ので
+            // 操作自体を無効にする — `usageScreenAlwaysShowProvider.notifier.set`
+            // 側のガードは、それでも来た経路への保険。
+            value: alwaysShowUsageScreen,
+            onChanged: alwaysShowStartScreen
+                ? (value) =>
+                      ref.read(usageScreenAlwaysShowProvider.notifier).set(value)
+                : null,
           ),
 
           _SectionHeader(label: 'データ'.tr(lang), icon: Icons.storage_outlined),

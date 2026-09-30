@@ -14,9 +14,11 @@ import 'package:osm_jiritsu/l10n/app_language.dart';
 import 'package:osm_jiritsu/l10n/app_language_repository.dart';
 import 'package:osm_jiritsu/models/project.dart';
 import 'package:osm_jiritsu/models/project_status.dart';
+import 'package:osm_jiritsu/models/simple_line.dart';
 import 'package:osm_jiritsu/models/swot_category.dart';
 import 'package:osm_jiritsu/models/swot_item.dart';
 import 'package:osm_jiritsu/models/swot_matrix.dart';
+import 'package:osm_jiritsu/simple/screens/simple_mode_screen.dart';
 import 'package:osm_jiritsu/theme/app_theme.dart';
 
 import '../support/fake_analysis_file_io.dart';
@@ -122,6 +124,32 @@ Future<void> _tapGoHome(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> _tapAddNew(WidgetTester tester) async {
+  await tester.tap(find.byTooltip('新規追加'));
+  await tester.pumpAndSettle();
+}
+
+/// Both mode cards say exactly what they are, so the sheet's own copy is
+/// what identifies it — and「簡易モード」also names the screen that card
+/// leads to, which is what makes [_expectModeSheet]'s「フルモード」check the
+/// reliable half.
+void _expectModeSheet(WidgetTester tester) {
+  expect(find.text('モードを選ぶ'), findsOneWidget);
+  expect(find.text('簡易モード'), findsOneWidget);
+  expect(find.text('フルモード'), findsOneWidget);
+}
+
+Future<void> _tapMode(WidgetTester tester, String mode) async {
+  await tester.tap(find.text(mode));
+  await tester.pumpAndSettle();
+}
+
+/// Dismisses the sheet by tapping its scrim, the way a user would.
+Future<void> _dismissSheet(WidgetTester tester) async {
+  await tester.tap(find.byType(ModalBarrier).last);
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets('shows the Gradus-style start screen when the setting is on', (
     tester,
@@ -162,7 +190,7 @@ void main() {
   );
 
   testWidgets(
-    '案件が0件の状態で「はじめる」をタップすると、空の一覧ではなく新規作成画面（テーマ入力）に移る',
+    '案件が0件の状態で「はじめる」をタップすると、空の一覧ではなくモード2択が出る',
     (tester) async {
       await pumpScreen(
         tester,
@@ -172,8 +200,50 @@ void main() {
 
       await _tapStart(tester);
 
+      // 0件着地でもウィザード直行はしない — ＋ と同じシートに揃える。
+      _expectModeSheet(tester);
+      expect(find.text('まずテーマを決めよう'), findsNothing);
+
+      await _tapMode(tester, 'フルモード');
+
       expect(find.text('まずテーマを決めよう'), findsOneWidget);
       expect(find.byType(TextField), findsOneWidget);
+    },
+  );
+
+  testWidgets('案件が0件の「はじめる」でも「簡易モード」を選べる', (tester) async {
+    await pumpScreen(
+      tester,
+      fileIO: FakeAnalysisFileIO(),
+      alwaysShowStartScreen: true,
+    );
+
+    await _tapStart(tester);
+    await _tapMode(tester, '簡易モード');
+
+    expect(find.byType(SimpleModeScreen), findsOneWidget);
+    expect(find.text('まずテーマを決めよう'), findsNothing);
+  });
+
+  testWidgets(
+    '案件が0件でシートを閉じただけなら空の一覧に残り、＋から選び直せる',
+    (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        alwaysShowStartScreen: true,
+      );
+
+      await _tapStart(tester);
+      await _dismissSheet(tester);
+
+      // シートは自動で開き直さない。空の一覧のまま。
+      expect(find.text('まずテーマを決めよう'), findsNothing);
+      expect(find.byType(SimpleModeScreen), findsNothing);
+      expect(find.text('モードを選ぶ'), findsNothing);
+
+      await _tapAddNew(tester);
+      _expectModeSheet(tester);
     },
   );
 
@@ -333,7 +403,7 @@ void main() {
       expect(find.text('使い方'), findsNothing);
     });
 
-    testWidgets('使い方経由でも案件0件ならホーム着地でウィザードへ', (tester) async {
+    testWidgets('使い方経由でも案件0件ならホーム着地でモード2択', (tester) async {
       await pumpScreen(
         tester,
         fileIO: FakeAnalysisFileIO(),
@@ -344,6 +414,11 @@ void main() {
       await _tapStart(tester);
       expect(find.text('使い方'), findsOneWidget);
       await _tapGoHome(tester);
+
+      _expectModeSheet(tester);
+      expect(find.text('まずテーマを決めよう'), findsNothing);
+
+      await _tapMode(tester, 'フルモード');
 
       expect(find.text('まずテーマを決めよう'), findsOneWidget);
     });
@@ -451,7 +526,7 @@ void main() {
     );
   });
 
-  testWidgets('"新規追加" in the bottom toolbar also starts the wizard', (
+  testWidgets('"新規追加" in the bottom toolbar asks for a mode first', (
     tester,
   ) async {
     await pumpScreen(
@@ -460,10 +535,133 @@ void main() {
       seed: [_project('既存の案件')],
     );
 
-    await tester.tap(find.byTooltip('新規追加'));
-    await tester.pumpAndSettle();
+    await _tapAddNew(tester);
+
+    _expectModeSheet(tester);
+    expect(find.text('それでは始めましょう'), findsNothing);
+
+    await _tapMode(tester, 'フルモード');
 
     expect(find.text('それでは始めましょう'), findsOneWidget);
+  });
+
+  testWidgets('"新規追加" → 「簡易モード」 opens the simple screen', (tester) async {
+    await pumpScreen(
+      tester,
+      fileIO: FakeAnalysisFileIO(),
+      seed: [_project('既存の案件')],
+    );
+
+    await _tapAddNew(tester);
+    await _tapMode(tester, '簡易モード');
+
+    expect(find.byType(SimpleModeScreen), findsOneWidget);
+    expect(find.text('それでは始めましょう'), findsNothing);
+  });
+
+  testWidgets('dismissing the mode sheet starts nothing', (tester) async {
+    await pumpScreen(
+      tester,
+      fileIO: FakeAnalysisFileIO(),
+      seed: [_project('既存の案件')],
+    );
+
+    await _tapAddNew(tester);
+    await _dismissSheet(tester);
+
+    expect(find.text('それでは始めましょう'), findsNothing);
+    expect(find.byType(SimpleModeScreen), findsNothing);
+    expect(find.text('既存の案件'), findsOneWidget);
+  });
+
+  testWidgets('▶️ on a 簡易 project opens its board, not the wizard', (
+    tester,
+  ) async {
+    final now = DateTime.utc(2026, 1, 1);
+    await pumpScreen(
+      tester,
+      fileIO: FakeAnalysisFileIO(),
+      seed: [
+        Project(
+          createdAt: now,
+          updatedAt: now,
+          theme: '朝の習慣を整える',
+          desiredGoal: '朝の習慣を整える',
+          entryMode: Project.modeSimple,
+          // 作成中 on a 簡易 案件 must not divert into the wizard.
+          status: ProjectStatus.preparing,
+          simpleSituations: [SimpleLine(text: '夜ふかししている')],
+          simpleStrategies: [SimpleLine(text: '寝る前にスマホを置く', done: true)],
+          simpleFirstStep: SimpleLine(text: '今夜23時に充電器へ置く'),
+        ),
+      ],
+    );
+
+    // ゴール is written into `theme`, so the row's heading is the goal.
+    expect(find.text('朝の習慣を整える'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.play_circle_fill_rounded));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SimpleModeScreen), findsOneWidget);
+    expect(find.text('それでは始めましょう'), findsNothing);
+    expect(find.text('まずテーマを決めよう'), findsNothing);
+
+    // Every box comes back, checkbox included.
+    expect(
+      tester
+          .widget<TextField>(find.byKey(SimpleModeScreen.goalFieldKey))
+          .controller
+          ?.text,
+      '朝の習慣を整える',
+    );
+    expect(
+      tester
+          .widget<TextField>(
+            find.byKey(SimpleModeScreen.situationFieldKey(0)),
+          )
+          .controller
+          ?.text,
+      '夜ふかししている',
+    );
+    expect(
+      tester
+          .widget<Checkbox>(find.byKey(SimpleModeScreen.strategyCheckKey(0)))
+          .value,
+      isTrue,
+    );
+    expect(
+      tester
+          .widget<TextField>(find.byKey(SimpleModeScreen.firstStepFieldKey))
+          .controller
+          ?.text,
+      '今夜23時に充電器へ置く',
+    );
+  });
+
+  testWidgets('＋ → 簡易モード, write a ゴール, ホーム lands back on the list', (
+    tester,
+  ) async {
+    await pumpScreen(
+      tester,
+      fileIO: FakeAnalysisFileIO(),
+      seed: [_project('既存の案件')],
+    );
+
+    await _tapAddNew(tester);
+    await _tapMode(tester, '簡易モード');
+
+    await tester.enterText(
+      find.byKey(SimpleModeScreen.goalFieldKey),
+      '朝の習慣を整える',
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('ホーム'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SimpleModeScreen), findsNothing);
+    expect(find.text('既存の案件'), findsOneWidget);
+    expect(find.text('朝の習慣を整える'), findsOneWidget);
   });
 
   testWidgets(

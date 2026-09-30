@@ -5,10 +5,14 @@ import '../../l10n/app_strings.dart';
 import '../../models/project_status.dart';
 import '../../theme/app_theme.dart';
 
-/// 現況 badge — [ProjectStatus.displayName] given a bit of color so status
-/// reads at a glance. Shared between `DashboardScreen` (the project
-/// dashboard) and [HistorySessionCard] (a row in the 登録案件リスト), since
-/// both show the same 現況 for the same [ProjectStatus] values.
+/// 現況 badge — a colored, fixed-size icon rather than [ProjectStatus.
+/// displayName] as text: EN/VI translations of that label ("Đang chuẩn bị"
+/// etc.) were long enough to ellipsize inside the history card's tight row,
+/// and an icon can't truncate. The label itself isn't lost — it's the
+/// [Tooltip] message, so a long-press/hover still says it in words.
+/// Shared between `DashboardScreen` (the project dashboard) and
+/// [HistorySessionCard] (a row in the 登録案件リスト), since both show the
+/// same 現況 for the same [ProjectStatus] values.
 class ProjectStatusChip extends StatelessWidget {
   final ProjectStatus status;
   final AppLanguage lang;
@@ -22,6 +26,15 @@ class ProjectStatusChip extends StatelessWidget {
     ProjectStatus.completed => AppPalette.softBlueDark,
   };
 
+  /// 作成中=まだ編集中, 実施中=進行, 休憩中=一時停止, 完了=済み — each reads
+  /// on its own without the label, which is the point.
+  IconData get _icon => switch (status) {
+    ProjectStatus.preparing => Icons.edit_note_rounded,
+    ProjectStatus.inProgress => Icons.play_arrow_rounded,
+    ProjectStatus.onBreak => Icons.pause_rounded,
+    ProjectStatus.completed => Icons.check_rounded,
+  };
+
   @override
   Widget build(BuildContext context) {
     final accent = _color;
@@ -31,29 +44,27 @@ class ProjectStatusChip extends StatelessWidget {
       ),
       AppPalette.scene,
     );
-    final textColor = AppPalette.ensureReadableOn(
+    final iconColor = AppPalette.ensureReadableOn(
       background: background,
       preferred: AppPalette.readableAccent(accent, AppPalette.scene),
     );
+    final label = status.displayName.tr(lang);
 
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        decoration: BoxDecoration(
-          color: background,
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(
-            color: textColor.withValues(alpha: 0.35),
-          ),
-        ),
-        child: Text(
-          status.displayName.tr(lang),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: textColor,
-            fontWeight: FontWeight.w600,
+      child: Tooltip(
+        message: label,
+        child: Semantics(
+          label: label,
+          child: Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: background,
+              shape: BoxShape.circle,
+              border: Border.all(color: iconColor.withValues(alpha: 0.35)),
+            ),
+            child: Icon(_icon, size: 18, color: iconColor),
           ),
         ),
       ),

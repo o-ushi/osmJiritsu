@@ -64,7 +64,7 @@ class JiritsuAboutScreen extends ConsumerWidget {
     ],
     [
       '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？',
-      '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？',
+      '方策の粒度が細かく、結果が見える化されていて、視覚的に成果を実感できるか？',
     ],
     [
       'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？',
@@ -366,7 +366,7 @@ class JiritsuAboutScreen extends ConsumerWidget {
             HelpSectionCardShell(
               accentColor: AppPalette.mintDark,
               child: Text(
-                '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。'
+                '自分で考えて行動する原動力を動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。'
                     .tr(lang),
                 style: TextStyle(
                   fontSize: 14,
@@ -381,7 +381,7 @@ class JiritsuAboutScreen extends ConsumerWidget {
             HelpSectionCardShell(
               accentColor: AppPalette.softBlueDark,
               child: Text(
-                '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。'
+                '報酬、評価、昇進、賞賛、承認、ご褒美、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。'
                     .tr(lang),
                 style: TextStyle(
                   fontSize: 14,

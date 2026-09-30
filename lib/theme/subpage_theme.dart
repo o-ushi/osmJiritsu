@@ -86,11 +86,13 @@ Future<T?> showReadableBottomSheet<T>({
   required WidgetBuilder builder,
   bool showDragHandle = false,
   bool isScrollControlled = false,
+  bool useRootNavigator = false,
 }) {
   return showModalBottomSheet<T>(
     context: context,
     showDragHandle: showDragHandle,
     isScrollControlled: isScrollControlled,
+    useRootNavigator: useRootNavigator,
     backgroundColor: AppPalette.subpageBackground,
     builder: (context) => SubpageTheme.wrap(
       context: context,

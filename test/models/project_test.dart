@@ -3,6 +3,7 @@ import 'package:osm_jiritsu/models/jiritsu_check.dart';
 import 'package:osm_jiritsu/models/project.dart';
 import 'package:osm_jiritsu/models/project_status.dart';
 import 'package:osm_jiritsu/models/reflection_entry.dart';
+import 'package:osm_jiritsu/models/simple_line.dart';
 import 'package:osm_jiritsu/models/situation_note.dart';
 import 'package:osm_jiritsu/models/strategy_suggestion.dart';
 import 'package:osm_jiritsu/models/swot_category.dart';
@@ -76,6 +77,13 @@ void main() {
       expect(decoded.status, ProjectStatus.inProgress);
       expect(decoded.reflectionHistory.single.howItWent, '順調だった');
       expect(decoded.isFavorite, isTrue);
+      // 簡易モード fields left at their constructor defaults: a project
+      // built without them is a full-mode one with an empty board.
+      expect(decoded.entryMode, Project.modeFull);
+      expect(decoded.simpleSituations, isEmpty);
+      expect(decoded.simpleStrategies, isEmpty);
+      expect(decoded.simpleFirstStep.text, '');
+      expect(decoded.simpleFirstStep.done, isFalse);
     });
 
     test('defaults every optional field when absent', () {
@@ -104,6 +112,115 @@ void main() {
 
     test('throws FormatException when createdAt/updatedAt are missing', () {
       expect(() => Project.fromJson({'id': 'abc'}), throwsFormatException);
+    });
+  });
+
+  group('Project 簡易モード JSON', () {
+    test('preserves all four boxes and their done flags', () {
+      final project = Project(
+        theme: '朝の習慣',
+        desiredGoal: '朝の習慣',
+        entryMode: Project.modeSimple,
+        simpleGoalDone: true,
+        simpleSituations: [
+          SimpleLine(text: '夜ふかししている'),
+          SimpleLine(text: '起きる時間がばらばら'),
+        ],
+        simpleStrategies: [
+          SimpleLine(text: '寝る前にスマホを置く', done: true),
+          SimpleLine(text: 'カーテンを開けて寝る'),
+        ],
+        simpleFirstStep: SimpleLine(text: '今夜23時に充電器へ置く', done: true),
+      );
+
+      final decoded = Project.fromJson(project.toJson());
+
+      expect(decoded.entryMode, Project.modeSimple);
+      expect(decoded.isSimpleMode, isTrue);
+      expect(decoded.simpleGoalDone, isTrue);
+      expect(
+        decoded.simpleSituations.map((l) => l.text),
+        ['夜ふかししている', '起きる時間がばらばら'],
+      );
+      expect(decoded.simpleStrategies.first.done, isTrue);
+      expect(decoded.simpleStrategies.last.done, isFalse);
+      expect(
+        decoded.simpleStrategies.map((l) => l.id),
+        project.simpleStrategies.map((l) => l.id),
+      );
+      expect(decoded.simpleFirstStep.text, '今夜23時に充電器へ置く');
+      expect(decoded.simpleFirstStep.done, isTrue);
+    });
+
+    test('older JSON without entryMode reads back as full mode', () {
+      final decoded = Project.fromJson({
+        'id': 'abc',
+        'theme': '昔からある案件',
+        'createdAt': '2026-01-01T00:00:00.000Z',
+        'updatedAt': '2026-01-01T00:00:00.000Z',
+      });
+
+      expect(decoded.entryMode, Project.modeFull);
+      expect(decoded.isSimpleMode, isFalse);
+      expect(decoded.simpleGoalDone, isFalse);
+      expect(decoded.simpleSituations, isEmpty);
+      expect(decoded.simpleStrategies, isEmpty);
+      expect(decoded.simpleFirstStep.text, '');
+    });
+
+    test('an unknown entryMode also reads back as full mode', () {
+      final decoded = Project.fromJson({
+        'id': 'abc',
+        'createdAt': '2026-01-01T00:00:00.000Z',
+        'updatedAt': '2026-01-01T00:00:00.000Z',
+        'entryMode': 'someFutureMode',
+      });
+
+      expect(decoded.entryMode, Project.modeFull);
+    });
+
+    test('keeps only the first three 現状 / 方策 lines', () {
+      final decoded = Project.fromJson({
+        'id': 'abc',
+        'createdAt': '2026-01-01T00:00:00.000Z',
+        'updatedAt': '2026-01-01T00:00:00.000Z',
+        'entryMode': 'simple',
+        'simpleSituations': [
+          {'text': '1'},
+          {'text': '2'},
+          {'text': '3'},
+          {'text': '4'},
+        ],
+        'simpleStrategies': [
+          {'text': 'A'},
+          {'text': 'B'},
+          {'text': 'C'},
+          {'text': 'D'},
+        ],
+      });
+
+      expect(decoded.simpleSituations.map((l) => l.text), ['1', '2', '3']);
+      expect(decoded.simpleStrategies.map((l) => l.text), ['A', 'B', 'C']);
+    });
+
+    test('drops malformed list entries instead of throwing', () {
+      final decoded = Project.fromJson({
+        'id': 'abc',
+        'createdAt': '2026-01-01T00:00:00.000Z',
+        'updatedAt': '2026-01-01T00:00:00.000Z',
+        'entryMode': 'simple',
+        'simpleSituations': 'not a list',
+        'simpleStrategies': [
+          'not a map',
+          {'text': '残る', 'done': 'not a bool'},
+        ],
+        'simpleFirstStep': 'not a map',
+      });
+
+      expect(decoded.simpleSituations, isEmpty);
+      expect(decoded.simpleStrategies.single.text, '残る');
+      expect(decoded.simpleStrategies.single.done, isFalse);
+      expect(decoded.simpleFirstStep.text, '');
     });
   });
 
@@ -407,6 +524,183 @@ void main() {
           reflectionCount: 5,
         ).progressRatio,
         0.9,
+      );
+    });
+
+    test('簡易モード climbs its own eight-step ladder', () {
+      Project simple({
+        String desiredGoal = '',
+        bool goalDone = false,
+        List<SimpleLine> situations = const [],
+        List<SimpleLine> strategies = const [],
+        SimpleLine? firstStep,
+      }) => Project(
+        theme: desiredGoal,
+        desiredGoal: desiredGoal,
+        entryMode: Project.modeSimple,
+        simpleGoalDone: goalDone,
+        simpleSituations: situations,
+        simpleStrategies: strategies,
+        simpleFirstStep: firstStep,
+      );
+
+      expect(simple().progressRatio, 0.0);
+      expect(simple(desiredGoal: 'ゴール').progressRatio, 0.1);
+      expect(
+        simple(
+          desiredGoal: 'ゴール',
+          situations: [SimpleLine(text: '現状')],
+        ).progressRatio,
+        0.2,
+      );
+      expect(
+        simple(
+          desiredGoal: 'ゴール',
+          situations: [SimpleLine(text: '現状')],
+          strategies: [SimpleLine(text: '方策')],
+        ).progressRatio,
+        0.4,
+      );
+      expect(
+        simple(
+          desiredGoal: 'ゴール',
+          situations: [SimpleLine(text: '現状')],
+          strategies: [SimpleLine(text: '方策')],
+          firstStep: SimpleLine(text: '一歩'),
+        ).progressRatio,
+        0.5,
+      );
+      expect(
+        simple(
+          desiredGoal: 'ゴール',
+          situations: [SimpleLine(text: '現状')],
+          strategies: [SimpleLine(text: '方策')],
+          firstStep: SimpleLine(text: '一歩', done: true),
+        ).progressRatio,
+        0.6,
+      );
+      expect(
+        simple(
+          desiredGoal: 'ゴール',
+          strategies: [
+            SimpleLine(text: '方策A', done: true),
+            SimpleLine(text: '方策B'),
+          ],
+        ).progressRatio,
+        0.7,
+      );
+      expect(
+        simple(
+          desiredGoal: 'ゴール',
+          strategies: [
+            SimpleLine(text: '方策A', done: true),
+            SimpleLine(text: '方策B', done: true),
+          ],
+        ).progressRatio,
+        0.9,
+      );
+      expect(
+        simple(desiredGoal: 'ゴール', goalDone: true).progressRatio,
+        1.0,
+      );
+      // Blank rows don't count as a filled box, whatever their checkbox says.
+      expect(
+        simple(
+          desiredGoal: 'ゴール',
+          situations: [SimpleLine(text: '  ')],
+        ).progressRatio,
+        0.1,
+      );
+    });
+
+    test('a checked but empty 方策 row doesn\'t count as 実施済み', () {
+      final project = Project(
+        theme: 'ゴール',
+        desiredGoal: 'ゴール',
+        entryMode: Project.modeSimple,
+        simpleStrategies: [SimpleLine(text: '', done: true)],
+      );
+      // No filled 方策 at all, so this reads as ゴールのみ (10%), not 90%.
+      expect(project.progressRatio, 0.1);
+    });
+
+    test('ゴール達成済み wins over every other checked box', () {
+      final project = Project(
+        theme: 'ゴール',
+        desiredGoal: 'ゴール',
+        entryMode: Project.modeSimple,
+        simpleGoalDone: true,
+        simpleStrategies: [SimpleLine(text: '方策')], // unticked
+        simpleFirstStep: SimpleLine(text: '一歩'), // unticked
+      );
+      expect(project.progressRatio, 1.0);
+    });
+
+    test('a completed 簡易 project reads 100% even without simpleGoalDone', () {
+      final project = Project(
+        theme: 'ゴール',
+        entryMode: Project.modeSimple,
+        status: ProjectStatus.completed,
+      );
+      expect(project.progressRatio, 1.0);
+    });
+
+    test('a full-mode project keeps the milestone ladder', () {
+      final full = Project(theme: 'T', desiredGoal: 'G1', undesiredGoal: 'G2');
+      expect(full.entryMode, Project.modeFull);
+      expect(full.progressRatio, 0.2);
+    });
+  });
+
+  group('Project.shareSummary 簡易モード', () {
+    test('prints the four boxes with （済） on ticked lines', () {
+      final project = Project(
+        theme: '朝の習慣を整える',
+        desiredGoal: '朝の習慣を整える',
+        entryMode: Project.modeSimple,
+        simpleSituations: [SimpleLine(text: '夜ふかししている')],
+        simpleStrategies: [
+          SimpleLine(text: '寝る前にスマホを置く', done: true),
+          SimpleLine(text: 'カーテンを開けて寝る'),
+        ],
+        simpleFirstStep: SimpleLine(text: '今夜23時に充電器へ置く', done: true),
+      );
+
+      expect(project.shareSummary, '''
+ゴール: 朝の習慣を整える
+現状: 夜ふかししている
+方策:
+  ・寝る前にスマホを置く（済）
+  ・カーテンを開けて寝る
+最初の一歩: 今夜23時に充電器へ置く（済）''');
+      // The dashboard share of a 簡易 project is the same four boxes — no
+      // SWOT block, no 内発度チェック line.
+      expect(project.dashboardShareSummary, project.shareSummary);
+      expect(project.shareSummary, isNot(contains('SWOT')));
+      expect(project.shareSummary, isNot(contains('内発度チェック')));
+    });
+
+    test('empty boxes print （なし）', () {
+      final project = Project(theme: '', entryMode: Project.modeSimple);
+
+      expect(project.shareSummary, '''
+ゴール: （なし）
+現状: （なし）
+方策: （なし）
+最初の一歩: （なし）''');
+    });
+
+    test('a checked ゴール gets its own （済）', () {
+      final project = Project(
+        theme: '朝の習慣を整える',
+        desiredGoal: '朝の習慣を整える',
+        entryMode: Project.modeSimple,
+        simpleGoalDone: true,
+      );
+
+      expect(
+        project.shareSummary,
+        startsWith('ゴール: 朝の習慣を整える（済）'),
       );
     });
   });

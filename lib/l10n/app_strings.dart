@@ -184,6 +184,16 @@ abstract final class AppStrings {
     '実施中': '実施中',
     '休憩中': '休憩中',
 
+    // ── 簡易モード ─────────────────────────────────────────────────────
+    'モードを選ぶ': 'モードを選ぶ',
+    '簡易モード': '簡易モード',
+    'フルモード': 'フルモード',
+    '簡易モード説明': 'ゴール・現状・方策・最初の一歩だけ',
+    'フルモード説明': 'いまの作成の流れ',
+    'ゴール': 'ゴール',
+    '現状': '現状',
+    'この行を削除しますか？': 'この行を削除しますか？',
+
     // ── Step 6: history ────────────────────────────────────────────────
     '履歴の読み込みに失敗しました\n%@': '履歴の読み込みに失敗しました\n%@',
     'エクスポートできる分析がまだありません': 'エクスポートできる分析がまだありません',
@@ -319,11 +329,11 @@ abstract final class AppStrings {
     '一見クールでカッコよく見えたりする。的を射てるし。周囲を白けさせるパワー大。口癖は「でもさ...」':
         '一見クールでカッコよく見えたりする。的を射てるし。周囲を白けさせるパワー大。口癖は「でもさ...」',
     '動機づけ': '動機づけ',
-    '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。':
-        '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。',
+    '自分で考えて行動する原動力を動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。':
+        '自分で考えて行動する原動力を動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。',
     '外発的動機づけ': '外発的動機づけ',
-    '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。':
-        '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。',
+    '報酬、評価、昇進、賞賛、承認、ご褒美、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。':
+        '報酬、評価、昇進、賞賛、承認、ご褒美、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。',
     '内発的動機づけ': '内発的動機づけ',
     '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。':
         '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。',
@@ -334,8 +344,8 @@ abstract final class AppStrings {
     '他人から言われる前に動いているか？': '他人から言われる前に動いているか？',
     '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？':
         '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？',
-    '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？':
-        '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？',
+    '方策の粒度が細かく、結果が見える化されていて、視覚的に成果を実感できるか？':
+        '方策の粒度が細かく、結果が見える化されていて、視覚的に成果を実感できるか？',
     'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？':
         'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？',
     '周囲からサポートが得られるようになっているか？': '周囲からサポートが得られるようになっているか？',
@@ -606,6 +616,15 @@ abstract final class AppStrings {
     '実施中': 'In progress',
     '休憩中': 'On break',
 
+    'モードを選ぶ': 'Choose a mode',
+    '簡易モード': 'Simple',
+    'フルモード': 'Full',
+    '簡易モード説明': 'Goal, situation, strategies, and a first step',
+    'フルモード説明': 'The current full flow',
+    'ゴール': 'Goal',
+    '現状': 'Situation',
+    'この行を削除しますか？': 'Delete this line?',
+
     '履歴の読み込みに失敗しました\n%@': 'Failed to load history\n%@',
     'エクスポートできる分析がまだありません': "There's nothing to export yet",
     '%lld件の分析を読み込みました': 'Imported %lld analyses',
@@ -743,11 +762,11 @@ abstract final class AppStrings {
     '一見クールでカッコよく見えたりする。的を射てるし。周囲を白けさせるパワー大。口癖は「でもさ...」':
         'At a glance it can look cool and sharp — the point often lands. But it has a real power to drain the energy out of everyone around. The catchphrase: "Yeah, but..."',
     '動機づけ': 'Motivation',
-    '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。':
-        'The spark that makes you think and act on your own is called motivation. There is extrinsic and intrinsic motivation. They are not opposites; they work together. Start with extrinsic motivation, then aim for the enhancing effect — the work itself becoming enjoyable.',
+    '自分で考えて行動する原動力を動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。':
+        'The driving force that makes you think and act on your own is called motivation. There is extrinsic and intrinsic motivation. They are not opposites; they work together. Start with extrinsic motivation, then aim for the enhancing effect — the work itself becoming enjoyable.',
     '外発的動機づけ': 'Extrinsic motivation',
-    '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。':
-        'Motivation from outside stimulation such as rewards, evaluation, promotion, or penalties and scolding.',
+    '報酬、評価、昇進、賞賛、承認、ご褒美、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。':
+        'Motivation from outside stimulation such as rewards, evaluation, promotion, praise, recognition, treats, or penalties and scolding.',
     '内発的動機づけ': 'Intrinsic motivation',
     '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。':
         'Motivation driven by inner interest, curiosity, and enjoyment. It is made of the three elements below.',
@@ -759,7 +778,7 @@ abstract final class AppStrings {
     '他人から言われる前に動いているか？': 'Do you act before someone else tells you to?',
     '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？':
         'Do you feel competent — using your abilities and seeing your own growth?',
-    '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？':
+    '方策の粒度が細かく、結果が見える化されていて、視覚的に成果を実感できるか？':
         'Are the steps small enough, and results visible enough, that you can feel progress?',
     'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？':
         'Are vision, goals, and daily progress shared with the people around you?',
@@ -1040,6 +1059,15 @@ abstract final class AppStrings {
     '実施中': 'Đang thực hiện',
     '休憩中': 'Đang tạm nghỉ',
 
+    'モードを選ぶ': 'Chọn chế độ',
+    '簡易モード': 'Đơn giản',
+    'フルモード': 'Đầy đủ',
+    '簡易モード説明': 'Chỉ mục tiêu, hiện trạng, cách làm và bước đầu',
+    'フルモード説明': 'Luồng tạo đầy đủ hiện tại',
+    'ゴール': 'Mục tiêu',
+    '現状': 'Hiện trạng',
+    'この行を削除しますか？': 'Xóa dòng này?',
+
     '履歴の読み込みに失敗しました\n%@': 'Không tải được lịch sử\n%@',
     'エクスポートできる分析がまだありません': 'Chưa có gì để xuất',
     '%lld件の分析を読み込みました': 'Đã nhập %lld phân tích',
@@ -1177,11 +1205,11 @@ abstract final class AppStrings {
     '一見クールでカッコよく見えたりする。的を射てるし。周囲を白けさせるパワー大。口癖は「でもさ...」':
         'Thoạt nhìn có vẻ ngầu và có lý. Nhưng lại rất dễ làm nguội lạnh không khí xung quanh. Câu cửa miệng là "nhưng mà..."',
     '動機づけ': 'Động lực',
-    '自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。':
-        'Động lực là điều thôi thúc bạn tự suy nghĩ và hành động. Có động lực bên ngoài và động lực nội tại. Hai loại này không đối lập mà kết hợp với nhau. Nên bắt đầu từ động lực bên ngoài, rồi hướng tới hiệu ứng khuếch đại — khi chính công việc trở nên thú vị.',
+    '自分で考えて行動する原動力を動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。':
+        'Động lực là nguồn sức mạnh thôi thúc bạn tự suy nghĩ và hành động. Có động lực bên ngoài và động lực nội tại. Hai loại này không đối lập mà kết hợp với nhau. Nên bắt đầu từ động lực bên ngoài, rồi hướng tới hiệu ứng khuếch đại — khi chính công việc trở nên thú vị.',
     '外発的動機づけ': 'Động lực bên ngoài',
-    '報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。':
-        'Động lực đến từ các kích thích bên ngoài như phần thưởng, đánh giá, thăng chức, hoặc hình phạt và khiển trách.',
+    '報酬、評価、昇進、賞賛、承認、ご褒美、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。':
+        'Động lực đến từ các kích thích bên ngoài như phần thưởng, đánh giá, thăng chức, khen ngợi, sự công nhận, quà thưởng, hoặc hình phạt và khiển trách.',
     '内発的動機づけ': 'Động lực nội tại',
     '自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。':
         'Động lực được thúc đẩy bởi sự quan tâm, tò mò và niềm vui nội tại của bản thân. Được tạo thành từ 3 yếu tố dưới đây.',
@@ -1193,7 +1221,7 @@ abstract final class AppStrings {
     '他人から言われる前に動いているか？': 'Bạn có hành động trước khi người khác nhắc không?',
     '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？':
         'Bạn có cảm giác về năng lực — phát huy khả năng và cảm nhận được sự trưởng thành của mình không?',
-    '方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？':
+    '方策の粒度が細かく、結果が見える化されていて、視覚的に成果を実感できるか？':
         'Các bước có đủ nhỏ, kết quả có được trực quan hóa để bạn cảm nhận được tiến triển không?',
     'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？':
         'Bạn có chia sẻ được tầm nhìn, mục tiêu và tiến độ hằng ngày với mọi người xung quanh không?',

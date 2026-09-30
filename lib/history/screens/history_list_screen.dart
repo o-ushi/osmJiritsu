@@ -10,6 +10,7 @@ import '../../l10n/app_strings.dart';
 import '../../l10n/widgets/language_flag_button.dart';
 import '../../models/project.dart';
 import '../../models/project_status.dart';
+import '../../simple/screens/simple_mode_screen.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/widgets/app_dialog.dart';
 import '../../theme/widgets/edit_field_dialogs.dart';
@@ -216,7 +217,18 @@ class _ProjectList extends ConsumerWidget {
   /// otherwise wherever `WizardState.fromProject` says input left off)
   /// rather than showing a dashboard for a project with nothing to
   /// dashboard yet. Anything past 作成中 opens the dashboard directly.
+  ///
+  /// 簡易モード 案件 short-circuit all of that: they were never written
+  /// through the wizard and have no SWOT to dashboard, so they always
+  /// reopen on their own board — 現況 included.
   void _openProject(BuildContext context, WidgetRef ref, Project project) {
+    if (project.isSimpleMode) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => SimpleModeScreen(project: project)),
+      );
+      return;
+    }
+
     if (project.status != ProjectStatus.preparing) {
       Navigator.of(context).push(
         ProjectNavigation.dashboardRoute(

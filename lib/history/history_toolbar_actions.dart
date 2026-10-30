@@ -28,7 +28,10 @@ class HistoryToolbarActions {
   /// [HistoryListScreen]'s 案件0件 landing — so none of them can reach the
   /// wizard without the choice being made. Dismissing the sheet does
   /// nothing at all (no wizard, no empty 案件).
-  Future<void> startNew(BuildContext context) async {
+  ///
+  /// [theme] pre-fills the テーマ (an `osmjiritsu://new?theme=` link from
+  /// osmNichinichi); empty for every in-app entry point.
+  Future<void> startNew(BuildContext context, {String theme = ''}) async {
     final mode = await showEntryModeSheet(context: context, lang: lang);
     if (mode == null || !context.mounted) return;
 
@@ -39,13 +42,14 @@ class HistoryToolbarActions {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) =>
-              SimpleModeScreen(project: Project(theme: '', entryMode: mode)),
+              SimpleModeScreen(project: Project(theme: theme, entryMode: mode)),
         ),
       );
       return;
     }
 
     ref.read(wizardProvider.notifier).reset();
+    if (theme.isNotEmpty) ref.read(wizardProvider.notifier).setTheme(theme);
     Navigator.of(context).popUntil((route) => route.isFirst);
     Navigator.of(
       context,

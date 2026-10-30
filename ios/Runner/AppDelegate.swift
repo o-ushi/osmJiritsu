@@ -20,5 +20,10 @@ import UIKit
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     RunnerChannels.register(with: engineBridge.applicationRegistrar.messenger())
+    // `osmjiritsu://` links: scene callbacks (cold start and already running)
+    // and the app-delegate fallback, forwarded to IncomingUrlChannel.
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "IncomingUrlReceiver") {
+      IncomingUrlReceiver.register(with: registrar)
+    }
   }
 }

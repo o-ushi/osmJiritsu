@@ -24,6 +24,19 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.osamushikubo.osmjiritsu</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>osmjiritsu</string>
+			</array>
+		</dict>
+	</array>
+	<key>FlutterDeepLinkingEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>

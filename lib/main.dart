@@ -6,6 +6,7 @@ import 'package:hive_ce_flutter/hive_ce_flutter.dart';
 import 'history/data/analysis_history_repository.dart';
 import 'history/data/project_order_repository.dart';
 import 'history/data/start_screen_settings_repository.dart';
+import 'history/incoming_url.dart';
 import 'history/screens/history_list_screen.dart';
 import 'icloud_sync/data/icloud_sync_settings_repository.dart';
 import 'icloud_sync/widgets/icloud_sync_trigger.dart';
@@ -58,7 +59,7 @@ class OsmJiritsuApp extends StatelessWidget {
       theme: AppTheme.light(),
       builder: (context, child) =>
           DismissKeyboard(child: child ?? const SizedBox.shrink()),
-      home: const HistoryListScreen(),
+      home: const IncomingUrlHandler(child: HistoryListScreen()),
     );
   }
 }

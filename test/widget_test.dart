@@ -46,7 +46,8 @@ void main() {
             InMemoryProjectOrderRepository(),
           ),
           startScreenSettingsRepositoryProvider.overrideWithValue(
-            InMemoryStartScreenSettingsRepository(),
+            // 使い方 is its own screen with its own tests; skip it here.
+            InMemoryStartScreenSettingsRepository(true, false),
           ),
         ],
         child: const OsmJiritsuApp(),
@@ -56,9 +57,11 @@ void main() {
         .pumpAndSettle(); // let the history provider's initial load resolve
 
     // Default start-screen setting is on (Gradus-style). With no projects
-    // seeded, tapping「はじめる」skips the (empty) history list and lands
-    // directly in a fresh wizard run — see HistoryListScreen.
+    // seeded, tapping「はじめる」skips the (empty) history list and offers
+    // the two modes; these tests walk the full wizard.
     await tester.tap(find.text('はじめる'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('フルモード'));
     await tester.pumpAndSettle();
   }
 

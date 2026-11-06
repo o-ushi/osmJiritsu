@@ -22,12 +22,14 @@ import '../support/in_memory_project_order_repository.dart';
 import '../support/in_memory_start_screen_settings_repository.dart';
 
 Future<
-    ({
-      InMemoryStartScreenSettingsRepository startScreen,
-      InMemoryAnalysisHistoryRepository history,
-      InMemoryAppLanguageRepository language,
-      FakeAnalysisFileIO fileIO,
-    })> pumpScreen(
+  ({
+    InMemoryStartScreenSettingsRepository startScreen,
+    InMemoryAnalysisHistoryRepository history,
+    InMemoryAppLanguageRepository language,
+    FakeAnalysisFileIO fileIO,
+  })
+>
+pumpScreen(
   WidgetTester tester, {
   bool alwaysShowStartScreen = false,
   bool alwaysShowUsageScreen = true,
@@ -69,7 +71,7 @@ Future<
         ),
         analysisFileIOProvider.overrideWithValue(fileIO),
       ],
-      child: const MaterialApp(home: SettingsScreen()),
+      child: const MaterialApp(home: SettingsScreen(startExpanded: true)),
     ),
   );
   await tester.pumpAndSettle();
@@ -82,10 +84,10 @@ Future<
 }
 
 void main() {
-  testWidgets('lists 言語/削除リンク/プライバシーとデータ in that order', (tester) async {
+  testWidgets('lists 言語/案内/削除リンク in that order', (tester) async {
     await pumpScreen(tester);
 
-    final labels = ['言語', 'すべてのデータを削除', 'プライバシーとデータ'];
+    final labels = ['言語', '案内', 'すべてのデータを削除'];
     for (final label in labels) {
       expect(find.text(label), findsWidgets);
     }
@@ -133,30 +135,24 @@ void main() {
             .selected,
         isTrue,
       );
-      expect(find.text('Privacy & Data'), findsWidgets);
+      expect(find.text('Guides'), findsWidgets);
     },
   );
 
-  testWidgets(
-    '起動時にスタート画面を表示 toggles and persists the setting',
-    (tester) async {
-      final repos = await pumpScreen(tester);
+  testWidgets('起動時にスタート画面を表示 toggles and persists the setting', (tester) async {
+    final repos = await pumpScreen(tester);
 
-      expect(repos.startScreen.load(), isFalse);
-      final toggle = find.widgetWithText(
-        SwitchListTile,
-        '起動時にスタート画面を表示',
-      );
-      expect(toggle, findsOneWidget);
-      expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
+    expect(repos.startScreen.load(), isFalse);
+    final toggle = find.widgetWithText(SwitchListTile, '起動時にスタート画面を表示');
+    expect(toggle, findsOneWidget);
+    expect(tester.widget<SwitchListTile>(toggle).value, isFalse);
 
-      await tester.tap(toggle);
-      await tester.pumpAndSettle();
+    await tester.tap(toggle);
+    await tester.pumpAndSettle();
 
-      expect(tester.widget<SwitchListTile>(toggle).value, isTrue);
-      expect(repos.startScreen.load(), isTrue);
-    },
-  );
+    expect(tester.widget<SwitchListTile>(toggle).value, isTrue);
+    expect(repos.startScreen.load(), isTrue);
+  });
 
   testWidgets('起動時にスタート画面を表示 reflects the persisted value on load', (
     tester,
@@ -189,10 +185,7 @@ void main() {
   testWidgets('使い方画面 is disabled (and off) once スタート is off', (tester) async {
     final repos = await pumpScreen(tester, alwaysShowUsageScreen: false);
 
-    final startToggle = find.widgetWithText(
-      SwitchListTile,
-      '起動時にスタート画面を表示',
-    );
+    final startToggle = find.widgetWithText(SwitchListTile, '起動時にスタート画面を表示');
     final usageToggle = find.widgetWithText(SwitchListTile, '使い方画面');
     expect(tester.widget<SwitchListTile>(usageToggle).onChanged, isNull);
     expect(tester.widget<SwitchListTile>(usageToggle).value, isFalse);
@@ -210,26 +203,25 @@ void main() {
     expect(repos.startScreen.loadUsageAlwaysShow(), isFalse);
   });
 
-  testWidgets(
-    'すべてのデータを削除 links to PrivacyScreen (single wipe entry)',
-    (tester) async {
-      await pumpScreen(
-        tester,
-        alwaysShowStartScreen: true,
-        seed: [
-          Project(
-            createdAt: DateTime.utc(2026, 1, 1),
-            updatedAt: DateTime.utc(2026, 1, 1),
-            theme: '消える案件',
-            matrix: const SwotMatrix(),
-          ),
-        ],
-      );
+  testWidgets('すべてのデータを削除 links to PrivacyScreen (single wipe entry)', (
+    tester,
+  ) async {
+    await pumpScreen(
+      tester,
+      alwaysShowStartScreen: true,
+      seed: [
+        Project(
+          createdAt: DateTime.utc(2026, 1, 1),
+          updatedAt: DateTime.utc(2026, 1, 1),
+          theme: '消える案件',
+          matrix: const SwotMatrix(),
+        ),
+      ],
+    );
 
-      await tester.tap(find.text('すべてのデータを削除').first);
-      await tester.pumpAndSettle();
-      expect(find.byType(PrivacyScreen), findsOneWidget);
-      expect(find.text('本当に初期化しますか？'), findsNothing);
-    },
-  );
+    await tester.tap(find.text('すべてのデータを削除').first);
+    await tester.pumpAndSettle();
+    expect(find.byType(PrivacyScreen), findsOneWidget);
+    expect(find.text('本当に初期化しますか？'), findsNothing);
+  });
 }

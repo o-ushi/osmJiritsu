@@ -20,6 +20,33 @@ abstract final class AppStrings {
   };
 
   static const _ja = <String, String>{
+    'help.start.title': '案件を始める',
+    'help.start.1': '「新規追加」をタップ',
+    'help.start.2': '「簡易モード」か「フルモード」を選ぶ',
+    'help.lines.title': '簡易モードの行を増やす・消す',
+    'help.lines.1': '「追加」で行を増やす',
+    'help.lines.2': '行の右端を長押しで消す',
+    'help.goal.title': 'SWOT の画面でゴールを直す',
+    'help.goal.1': '上のゴールを長押し',
+    'help.reflect.title': '案件を振り返る',
+    'help.reflect.1': '一覧の案件を開く',
+    'help.reflect.2': '「振り返り」をタップ',
+    'help.share.title': '案件を共有する',
+    'help.share.1': '一覧の案件を開く',
+    'help.share.2': '「共有」をタップ',
+    'help.howto.title': '操作を忘れたとき',
+    'help.howto.1': '•••（その他）を長押しで、その画面の使い方',
+    'help.copy.title': 'Chrome の答えを貼り付けられないとき',
+    'help.copy.1': 'Chrome の下のほうのコピーボタン（重なった四角）をタップ',
+    'help.copy.2': 'アプリに戻る',
+    'help.backup.title': '案件を書き出す・取り込む',
+    'help.backup.1': '「データ」をタップ',
+    'help.backup.2': '「JSONバックアップ」か「JSONを取り込む」を選ぶ',
+    'help.icloud.title': 'iPhone どうしで揃える',
+    'help.icloud.1': '設定の「iCloud同期」を開く',
+    'help.progressSimple': '簡易モードの進捗度を見る',
+    'help.progressFull': 'フルモードの進捗度を見る',
+    '案内': '案内',
     // ── Step 1: theme ────────────────────────────────────────────────
     'それでは始めましょう': 'それでは始めましょう',
     'まずテーマを決めよう': 'まずテーマを決めよう',
@@ -29,8 +56,7 @@ abstract final class AppStrings {
 
     // ── Step 2: goal (在りたい姿 / 在りたくない姿) ──────────────────────
     'ゴールを教えてください': 'ゴールを教えてください',
-    '「在りたい姿」と「在りたくない姿」、両方の向きから考えてみましょう。':
-        '「在りたい姿」と「在りたくない姿」、両方の向きから考えてみましょう。',
+    '「在りたい姿」と「在りたくない姿」、両方の向きから考えてみましょう。': '「在りたい姿」と「在りたくない姿」、両方の向きから考えてみましょう。',
     '在りたい姿': '在りたい姿',
     'これが実現すれば十分、と言える理想の姿（充分条件）': 'これが実現すれば十分、と言える理想の姿（充分条件）',
     '例）自分の強みを活かして、納得感のある転職をしたい': '例）自分の強みを活かして、納得感のある転職をしたい',
@@ -173,8 +199,7 @@ abstract final class AppStrings {
     '共有形式を選んでください': '共有形式を選んでください',
     '共有_要報説明': '短い形式（テーマ・ゴール・方策・最初の一歩・宣言文）。完了直後のまとめ共有と同じ内容です。',
     '共有_詳報説明': 'ダッシュボードの全項目（SWOT・振り返り・期限など）。日々の進捗共有向けです。',
-    '短い形式（テーマ・ゴール・方策・最初の一歩・宣言文）':
-        '短い形式（テーマ・ゴール・方策・最初の一歩・宣言文）',
+    '短い形式（テーマ・ゴール・方策・最初の一歩・宣言文）': '短い形式（テーマ・ゴール・方策・最初の一歩・宣言文）',
     'ダッシュボードの全項目': 'ダッシュボードの全項目',
     'リターン': 'リターン',
     '完了': '完了',
@@ -269,8 +294,7 @@ abstract final class AppStrings {
     'ホーム画面へ': 'ホーム画面へ',
     'すべてのデータを初期化': 'すべてのデータを初期化',
     '本当に初期化しますか？': '本当に初期化しますか？',
-    '初期化の説明':
-        '端末内のすべてのデータと設定を削除し、初めてインストールした状態に戻します。この操作は取り消せません。',
+    '初期化の説明': '端末内のすべてのデータと設定を削除し、初めてインストールした状態に戻します。この操作は取り消せません。',
     '初期化': '初期化',
     '初期化しました': '初期化しました',
 
@@ -294,24 +318,18 @@ abstract final class AppStrings {
         'テーマ、ゴール、SWOT分析、方策、最初の一歩、宣言文、振り返り、案件の並び順、表示言語、スタート画面設定、使い方画面設定は端末内のHiveデータベースに保存します。クラウド同期は行いません。',
     'プライバシー_保持削除詳細':
         '保存データは、ユーザーが個別に削除するか、「すべてのデータを削除」を行うまで保持します。すでにGoogleへ送信済みのデータの保持・削除はGoogleのポリシーに従い、本アプリから削除できません。JSONバックアップで共有先に保存したコピーも、本アプリからは削除できません。',
-    'プライバシー_JSONバックアップ案内':
-        '案件のJSONバックアップ／取り込みは、ホームや作成フロー下部の「データ」メニューから行えます。',
+    'プライバシー_JSONバックアップ案内': '案件のJSONバックアップ／取り込みは、ホームや作成フロー下部の「データ」メニューから行えます。',
     'すべてのデータを削除': 'すべてのデータを削除',
-    'プライバシー_削除確認':
-        'Hiveの分析履歴・設定と、一時バックアップファイルを削除します。元に戻せません。',
+    'プライバシー_削除確認': 'Hiveの分析履歴・設定と、一時バックアップファイルを削除します。元に戻せません。',
     '端末内のアプリデータを削除しました': '端末内のアプリデータを削除しました',
 
     // ── Help ───────────────────────────────────────────────────────────
     'HELP': 'HELP',
     'osmJiritsu': 'osmJiritsu',
     'バージョン %@ (%@)': 'バージョン %@ (%@)',
-    '操作マニュアル': '操作マニュアル',
-    '図解で画面ごとの使い方を見る': '図解で画面ごとの使い方を見る',
     '自律とは': '自律とは',
-    'ゴールと今の状況の差を無くすために、自分で考えて行動すること':
-        'ゴールと今の状況の差を無くすために、自分で考えて行動すること',
-    'テーマとゴール（在りたい姿／在りたくない姿）を決める':
-        'テーマとゴール（在りたい姿／在りたくない姿）を決める',
+    'ゴールと今の状況の差を無くすために、自分で考えて行動すること': 'ゴールと今の状況の差を無くすために、自分で考えて行動すること',
+    'テーマとゴール（在りたい姿／在りたくない姿）を決める': 'テーマとゴール（在りたい姿／在りたくない姿）を決める',
     '現状を整理し、SWOTから方策を自分で決める': '現状を整理し、SWOTから方策を自分で決める',
     '最初の一歩を宣言し、振り返りながら進める': '最初の一歩を宣言し、振り返りながら進める',
     '自律の定義': '自律の定義',
@@ -346,11 +364,9 @@ abstract final class AppStrings {
         '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？',
     '方策の粒度が細かく、結果が見える化されていて、視覚的に成果を実感できるか？':
         '方策の粒度が細かく、結果が見える化されていて、視覚的に成果を実感できるか？',
-    'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？':
-        'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？',
+    'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？': 'ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？',
     '周囲からサポートが得られるようになっているか？': '周囲からサポートが得られるようになっているか？',
-    '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？':
-        '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？',
+    '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？': '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？',
     '言語化されることで思いが現実性をもつ': '言語化されることで思いが現実性をもつ',
     '＜特徴＞': '＜特徴＞',
     '行動すること自体が目的となるため、高い集中力が発揮され、質が高く、自発的な行動を長く続けやすい。':
@@ -361,8 +377,7 @@ abstract final class AppStrings {
     '⭕️ モチベーションが長持ちする': '⭕️ モチベーションが長持ちする',
     '❌ 本人の興味に依存するため即効性がない': '❌ 本人の興味に依存するため即効性がない',
     '❌ 誰にでも同じように適用することは困難': '❌ 誰にでも同じように適用することは困難',
-    '実行のステップを細かくして達成感を感じやすくすること。':
-        '実行のステップを細かくして達成感を感じやすくすること。',
+    '実行のステップを細かくして達成感を感じやすくすること。': '実行のステップを細かくして達成感を感じやすくすること。',
     '唱（ショウ）': '唱（ショウ）',
     '昌には、盛んで明るいとか、美しいことばという意味があり、それと口にすることから、唱は、うたう、となえるの意味を表す。また、昌の音は、高く上げるという意味を含むから、唱は、声を高くあげること、あるいは、「人より先に大声を上げてリードする」ことである。':
         '昌には、盛んで明るいとか、美しいことばという意味があり、それと口にすることから、唱は、うたう、となえるの意味を表す。また、昌の音は、高く上げるという意味を含むから、唱は、声を高くあげること、あるいは、「人より先に大声を上げてリードする」ことである。',
@@ -420,8 +435,7 @@ abstract final class AppStrings {
 
     // ── iCloud同期 ────────────────────────────────────────────────────
     'iCloud同期': 'iCloud同期',
-    'iCloud同期_有効化フッター':
-        'オンにすると、同じiCloudアカウントでサインインした端末間で案件データを同期します。',
+    'iCloud同期_有効化フッター': 'オンにすると、同じiCloudアカウントでサインインした端末間で案件データを同期します。',
     'iCloud同期_利用不可': 'iCloudが利用できません。設定でiCloudにサインインしてください。',
     'iCloud同期_最終同期': '最終同期',
     'iCloud同期_未同期': '未同期',
@@ -452,6 +466,34 @@ abstract final class AppStrings {
   };
 
   static const _en = <String, String>{
+    'help.start.title': 'Start a project',
+    'help.start.1': 'Tap "New"',
+    'help.start.2': 'Choose "Simple" or "Full"',
+    'help.lines.title': 'Add or remove lines in Simple',
+    'help.lines.1': 'Tap "Add" to add a line',
+    'help.lines.2': 'Long-press the right end of a line to remove it',
+    'help.goal.title': 'Edit the goal on the SWOT screen',
+    'help.goal.1': 'Long-press the goal at the top',
+    'help.reflect.title': 'Reflect on a project',
+    'help.reflect.1': 'Open a project in the list',
+    'help.reflect.2': 'Tap "Reflection"',
+    'help.share.title': 'Share a project',
+    'help.share.1': 'Open a project in the list',
+    'help.share.2': 'Tap "Share"',
+    'help.howto.title': 'When you forget how',
+    'help.howto.1': 'Long-press ••• (More) for how to use that screen',
+    'help.copy.title': 'When you can\'t paste Chrome\'s answer',
+    'help.copy.1':
+        'Tap the copy button (overlapping squares) near the bottom of Chrome',
+    'help.copy.2': 'Return to the app',
+    'help.backup.title': 'Export or import projects',
+    'help.backup.1': 'Tap "Data"',
+    'help.backup.2': 'Choose "JSON backup" or "Import JSON"',
+    'help.icloud.title': 'Keep iPhones in sync',
+    'help.icloud.1': 'Open "iCloud Sync" in Settings',
+    'help.progressSimple': 'See Simple mode progress',
+    'help.progressFull': 'See Full mode progress',
+    '案内': 'Guides',
     'それでは始めましょう': "Let's get started",
     'まずテーマを決めよう': "First, let's decide on a theme.",
     'テーマ': 'Theme',
@@ -521,8 +563,7 @@ abstract final class AppStrings {
     '方策_Google送信確認_タイトル': 'Send data to Google for strategy suggestions?',
     '方策_Google送信確認_本文':
         'To provide reference strategy suggestions, your theme, desired outcome, the state you want to avoid, and complete SWOT text (strengths, weaknesses, opportunities, and threats) will be sent to Google Search (AI Mode), provided by Google LLC. The content may include personal or sensitive information. The search may remain in your browser or Google Account history.',
-    '最初の一歩_Google送信確認_タイトル':
-        'Send data to Google for first-step suggestions?',
+    '最初の一歩_Google送信確認_タイトル': 'Send data to Google for first-step suggestions?',
     '最初の一歩_Google送信確認_本文':
         'To provide reference first-step suggestions, your theme, desired outcome, and decided strategy will be sent to Google Search (AI Mode), provided by Google LLC. The content may include personal or sensitive information. The search may remain in your browser or Google Account history.',
     '同意してGoogleへ送信': 'Agree and send to Google',
@@ -607,8 +648,10 @@ abstract final class AppStrings {
     '要報': 'Brief summary',
     '詳報': 'Full report',
     '共有形式を選んでください': 'Choose a share format',
-    '共有_要報説明': 'Short form (theme, goals, strategy, first step, declaration). Same as the post-Stage1 share summary.',
-    '共有_詳報説明': 'All dashboard fields (SWOT, reflections, deadline, etc.). Better for day-to-day progress sharing.',
+    '共有_要報説明':
+        'Short form (theme, goals, strategy, first step, declaration). Same as the post-Stage1 share summary.',
+    '共有_詳報説明':
+        'All dashboard fields (SWOT, reflections, deadline, etc.). Better for day-to-day progress sharing.',
     '短い形式（テーマ・ゴール・方策・最初の一歩・宣言文）':
         'Short format (theme, goals, strategy, first step, declaration)',
     'ダッシュボードの全項目': 'All dashboard fields',
@@ -685,7 +728,8 @@ abstract final class AppStrings {
     'プライバシーとデータ': 'Privacy & Data',
     '言語': 'Language',
     'アプリの表示言語を変更できます。': "You can change the app's display language.",
-    '言語_設定が正式': 'This is the canonical place to set the display language. The flag on the start screen switches the same setting.',
+    '言語_設定が正式':
+        'This is the canonical place to set the display language. The flag on the start screen switches the same setting.',
     '言語_スタートショートカット': 'You can also change this in Settings',
     '設定_削除はプライバシーへ': 'Delete from the Privacy & Data screen',
     'スタートアップ画面': 'Startup Screen',
@@ -698,7 +742,8 @@ abstract final class AppStrings {
     '使い方_タイトル': 'How to use',
     '使い方_コピー本文':
         'When Chrome’s AI Mode shows an answer, tap the Copy button near the bottom of the screen — the leftmost icon of two overlapping squares, marked TAP! with a red arrow.\n\nIf you skip this and return to the app, you won’t be able to paste. After copying, come back to osmJiritsu.',
-    '使い方_操作ヒント': 'Long-press the ••• button on each screen to see how to use it.',
+    '使い方_操作ヒント':
+        'Long-press the ••• button on each screen to see how to use it.',
     '使い方_コピー画像_説明': 'Copy button in Chrome AI Mode (red arrow and TAP!)',
     'ホーム画面へ': 'Go to Home',
     'すべてのデータを初期化': 'Reset all data',
@@ -738,8 +783,6 @@ abstract final class AppStrings {
     'HELP': 'HELP',
     'osmJiritsu': 'osmJiritsu',
     'バージョン %@ (%@)': 'Version %@ (%@)',
-    '操作マニュアル': 'User manual',
-    '図解で画面ごとの使い方を見る': 'See illustrated steps for each screen',
     '自律とは': 'What is Jiritsu?',
     'ゴールと今の状況の差を無くすために、自分で考えて行動すること':
         'Acting on your own judgment to close the gap between a goal and the current situation',
@@ -777,8 +820,7 @@ abstract final class AppStrings {
     '成果が分かりやすいか？': 'Can you see your results clearly?',
     '周りと繋がっているか？': 'Are you connected with others?',
     'やり方を自分で決めている感覚があるか？': 'Do you feel you decide how to do it?',
-    '主導権は自分にあるのだと意識できているか？':
-        'Are you aware that you hold the initiative?',
+    '主導権は自分にあるのだと意識できているか？': 'Are you aware that you hold the initiative?',
     '他人から言われる前に動いているか？': 'Do you act before someone else tells you to?',
     '自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？':
         'Do you feel competent — using your abilities and seeing your own growth?',
@@ -790,8 +832,7 @@ abstract final class AppStrings {
         'Can you get support from the people around you?',
     '「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？':
         'Are needs like "I want to be useful" and "I want to be counted on" being met?',
-    '言語化されることで思いが現実性をもつ':
-        'Putting it into words makes it feel real',
+    '言語化されることで思いが現実性をもつ': 'Putting it into words makes it feel real',
     '＜特徴＞': '<Characteristics>',
     '行動すること自体が目的となるため、高い集中力が発揮され、質が高く、自発的な行動を長く続けやすい。':
         'Because the action itself becomes the goal, it brings high concentration and quality, and self-driven behavior is easy to sustain.',
@@ -803,20 +844,17 @@ abstract final class AppStrings {
     '⭕️ モチベーションが長持ちする': '⭕️ Motivation lasts a long time',
     '❌ 本人の興味に依存するため即効性がない':
         '❌ Depends on personal interest, so it has no immediate effect',
-    '❌ 誰にでも同じように適用することは困難':
-        '❌ Difficult to apply the same way to everyone',
+    '❌ 誰にでも同じように適用することは困難': '❌ Difficult to apply the same way to everyone',
     '実行のステップを細かくして達成感を感じやすくすること。':
         'Breaking execution into small steps so a sense of accomplishment is easy to feel.',
     '唱（ショウ）': 'Shō (唱, "sing / proclaim")',
     '昌には、盛んで明るいとか、美しいことばという意味があり、それと口にすることから、唱は、うたう、となえるの意味を表す。また、昌の音は、高く上げるという意味を含むから、唱は、声を高くあげること、あるいは、「人より先に大声を上げてリードする」ことである。':
         '昌 carries the sense of "thriving and bright" or "beautiful words," and combined with 口 ("mouth," to speak), 唱 comes to mean "to sing" or "to proclaim." The sound 昌 also carries the nuance of "raising something high," so 唱 means "to raise one\'s voice" — or "to lead by being the first to speak up loudly."',
-    '唱義：人に先立って正しい道をとなえる':
-        '唱義: to proclaim the right path ahead of others',
+    '唱義：人に先立って正しい道をとなえる': '唱義: to proclaim the right path ahead of others',
     '躍（ヤク）': 'Yaku (躍, "leap")',
     '翟には高く抜き出る意味がある。躍は「すばやくおどりあがる」ことである。':
         '翟 carries the sense of "standing out, rising high." 躍 means "to leap up quickly."',
-    '躍動：おどりうごく、いきいきと活動する':
-        '躍動: to move dynamically, to be vibrantly active',
+    '躍動：おどりうごく、いきいきと活動する': '躍動: to move dynamically, to be vibrantly active',
     'つまり「唱って躍れる」とは「周りを引っ張って、元気に前に進める」「自分の考えを話して、みんなと共有できる」ことである。':
         'In other words, "唱って躍れる" (sing and leap) means "to pull others along and move forward with energy," and "to voice your own thinking and share it with everyone."',
     '誰かに話すことによって自分の中で漠然としていた夢が、どんどんリアリティを持ち、少しずつ形になり、ビジョンになっていく。これを繰り返す内にビジョンはより明確になり、とうとう的確な言葉で表現できるようになったとき、初めて明快な物語として、リアリティのある戦略として、それを人に伝達し、実際に行動に移していく事ができる。':
@@ -855,8 +893,7 @@ abstract final class AppStrings {
     '100%　ゴール達成済み': '100% — Goal achieved',
 
     'どうだった？': 'How did it go?',
-    '感じたこと、気づいたことを自由に書いてみましょう':
-        'Write freely about what you felt or noticed',
+    '感じたこと、気づいたことを自由に書いてみましょう': 'Write freely about what you felt or noticed',
     '次はどうする？': 'What next?',
     '続ける': 'Continue',
     '方策を変更する': 'Change strategy',
@@ -866,7 +903,8 @@ abstract final class AppStrings {
     'iCloud同期': 'iCloud Sync',
     'iCloud同期_有効化フッター':
         'When on, project data syncs between devices signed into the same iCloud account.',
-    'iCloud同期_利用不可': 'iCloud is not available. Please sign in to iCloud in Settings.',
+    'iCloud同期_利用不可':
+        'iCloud is not available. Please sign in to iCloud in Settings.',
     'iCloud同期_最終同期': 'Last synced',
     'iCloud同期_未同期': 'Never synced',
     'iCloud同期_今すぐ同期': 'Sync now',
@@ -899,6 +937,34 @@ abstract final class AppStrings {
   };
 
   static const _vi = <String, String>{
+    'help.start.title': 'Bắt đầu dự án',
+    'help.start.1': 'Chạm "Thêm mới"',
+    'help.start.2': 'Chọn "Đơn giản" hoặc "Đầy đủ"',
+    'help.lines.title': 'Thêm hoặc xóa dòng ở chế độ đơn giản',
+    'help.lines.1': 'Chạm "Thêm" để thêm dòng',
+    'help.lines.2': 'Nhấn giữ đầu bên phải của dòng để xóa',
+    'help.goal.title': 'Sửa mục tiêu ở màn hình SWOT',
+    'help.goal.1': 'Nhấn giữ mục tiêu ở trên cùng',
+    'help.reflect.title': 'Nhìn lại dự án',
+    'help.reflect.1': 'Mở một dự án trong danh sách',
+    'help.reflect.2': 'Chạm "Nhìn lại"',
+    'help.share.title': 'Chia sẻ dự án',
+    'help.share.1': 'Mở một dự án trong danh sách',
+    'help.share.2': 'Chạm "Chia sẻ"',
+    'help.howto.title': 'Khi quên cách dùng',
+    'help.howto.1': 'Nhấn giữ ••• (Khác) để xem cách dùng màn hình đó',
+    'help.copy.title': 'Khi không dán được câu trả lời của Chrome',
+    'help.copy.1':
+        'Chạm nút sao chép (hai ô vuông chồng nhau) ở phía dưới Chrome',
+    'help.copy.2': 'Quay lại ứng dụng',
+    'help.backup.title': 'Xuất hoặc nhập dự án',
+    'help.backup.1': 'Chạm "Dữ liệu"',
+    'help.backup.2': 'Chọn "Sao lưu JSON" hoặc "Nhập JSON"',
+    'help.icloud.title': 'Đồng bộ giữa các iPhone',
+    'help.icloud.1': 'Mở "Đồng bộ iCloud" trong Cài đặt',
+    'help.progressSimple': 'Xem tiến độ chế độ đơn giản',
+    'help.progressFull': 'Xem tiến độ chế độ đầy đủ',
+    '案内': 'Hướng dẫn',
     'それでは始めましょう': 'Vậy thì, hãy bắt đầu',
     'まずテーマを決めよう': 'Trước tiên, hãy chọn chủ đề.',
     'テーマ': 'Chủ đề',
@@ -967,8 +1033,7 @@ abstract final class AppStrings {
     '方策_Google送信確認_タイトル': 'Gửi dữ liệu đến Google để đề xuất phương án?',
     '方策_Google送信確認_本文':
         'Để nhận đề xuất phương án tham khảo, chủ đề, trạng thái mong muốn, trạng thái không mong muốn và toàn bộ SWOT (điểm mạnh, điểm yếu, cơ hội, mối đe dọa) sẽ được gửi đến Google Search (chế độ AI) do Google LLC cung cấp. Nội dung có thể gồm thông tin cá nhân hoặc nhạy cảm. Nội dung tìm kiếm có thể lưu trong lịch sử trình duyệt hoặc Tài khoản Google.',
-    '最初の一歩_Google送信確認_タイトル':
-        'Gửi dữ liệu đến Google để đề xuất bước đầu tiên?',
+    '最初の一歩_Google送信確認_タイトル': 'Gửi dữ liệu đến Google để đề xuất bước đầu tiên?',
     '最初の一歩_Google送信確認_本文':
         'Để nhận đề xuất bước đầu tiên tham khảo, chủ đề, trạng thái mong muốn và phương án đã chọn sẽ được gửi đến Google Search (chế độ AI) do Google LLC cung cấp. Nội dung có thể gồm thông tin cá nhân hoặc nhạy cảm. Nội dung tìm kiếm có thể lưu trong lịch sử trình duyệt hoặc Tài khoản Google.',
     '同意してGoogleへ送信': 'Đồng ý và gửi đến Google',
@@ -1053,8 +1118,10 @@ abstract final class AppStrings {
     '要報': 'Tóm tắt',
     '詳報': 'Báo cáo đầy đủ',
     '共有形式を選んでください': 'Chọn định dạng chia sẻ',
-    '共有_要報説明': 'Dạng ngắn (chủ đề, mục tiêu, phương sách, bước đầu, tuyên bố). Giống bản tóm tắt sau Stage1.',
-    '共有_詳報説明': 'Mọi mục trên bảng điều khiển (SWOT, nhìn lại, hạn, v.v.). Phù hợp chia sẻ tiến độ hàng ngày.',
+    '共有_要報説明':
+        'Dạng ngắn (chủ đề, mục tiêu, phương sách, bước đầu, tuyên bố). Giống bản tóm tắt sau Stage1.',
+    '共有_詳報説明':
+        'Mọi mục trên bảng điều khiển (SWOT, nhìn lại, hạn, v.v.). Phù hợp chia sẻ tiến độ hàng ngày.',
     '短い形式（テーマ・ゴール・方策・最初の一歩・宣言文）':
         'Dạng ngắn (chủ đề, mục tiêu, phương án, bước đầu, tuyên bố)',
     'ダッシュボードの全項目': 'Toàn bộ mục trên bảng điều khiển',
@@ -1131,7 +1198,8 @@ abstract final class AppStrings {
     'プライバシーとデータ': 'Quyền riêng tư & Dữ liệu',
     '言語': 'Ngôn ngữ',
     'アプリの表示言語を変更できます。': 'Bạn có thể thay đổi ngôn ngữ hiển thị của ứng dụng.',
-    '言語_設定が正式': 'Đây là nơi chính thức để đặt ngôn ngữ hiển thị. Nút cờ ở màn hình bắt đầu cũng đổi cùng một cài đặt.',
+    '言語_設定が正式':
+        'Đây là nơi chính thức để đặt ngôn ngữ hiển thị. Nút cờ ở màn hình bắt đầu cũng đổi cùng một cài đặt.',
     '言語_スタートショートカット': 'Bạn cũng có thể đổi trong Cài đặt',
     '設定_削除はプライバシーへ': 'Xóa trong màn hình Quyền riêng tư & dữ liệu',
     'スタートアップ画面': 'Màn hình khởi động',
@@ -1184,8 +1252,6 @@ abstract final class AppStrings {
     'HELP': 'HELP',
     'osmJiritsu': 'osmJiritsu',
     'バージョン %@ (%@)': 'Phiên bản %@ (%@)',
-    '操作マニュアル': 'Hướng dẫn sử dụng',
-    '図解で画面ごとの使い方を見る': 'Xem cách dùng từng màn hình bằng hình',
     '自律とは': 'Jiritsu là gì?',
     'ゴールと今の状況の差を無くすために、自分で考えて行動すること':
         'Tự suy nghĩ và hành động để thu hẹp khoảng cách giữa mục tiêu và tình trạng hiện tại',
@@ -1193,8 +1259,7 @@ abstract final class AppStrings {
         'Đặt chủ đề và mục tiêu (trạng thái mong muốn / không mong muốn)',
     '現状を整理し、SWOTから方策を自分で決める':
         'Sắp xếp hiện trạng, rồi tự quyết định phương án từ SWOT',
-    '最初の一歩を宣言し、振り返りながら進める':
-        'Tuyên bố bước đầu tiên, rồi tiến lên kèm nhìn lại',
+    '最初の一歩を宣言し、振り返りながら進める': 'Tuyên bố bước đầu tiên, rồi tiến lên kèm nhìn lại',
     '自律の定義': 'Định nghĩa của Jiritsu',
     '（参考）自立とは': '(Tham khảo) Tự lập là gì?',
     '自分以外の何ものにも依存しない状態。':
@@ -1249,8 +1314,7 @@ abstract final class AppStrings {
     '⭕️ モチベーションが長持ちする': '⭕️ Động lực kéo dài lâu',
     '❌ 本人の興味に依存するため即効性がない':
         '❌ Phụ thuộc vào sở thích cá nhân nên không có hiệu quả tức thì',
-    '❌ 誰にでも同じように適用することは困難':
-        '❌ Khó áp dụng giống nhau cho mọi người',
+    '❌ 誰にでも同じように適用することは困難': '❌ Khó áp dụng giống nhau cho mọi người',
     '実行のステップを細かくして達成感を感じやすくすること。':
         'Chia nhỏ các bước thực hiện để dễ cảm nhận thành tựu.',
     '唱（ショウ）': 'Xướng (唱)',
@@ -1261,8 +1325,7 @@ abstract final class AppStrings {
     '躍（ヤク）': 'Dược (躍)',
     '翟には高く抜き出る意味がある。躍は「すばやくおどりあがる」ことである。':
         '翟 mang ý nghĩa "vươn cao, nổi bật". 躍 là "nhảy vọt lên nhanh chóng".',
-    '躍動：おどりうごく、いきいきと活動する':
-        '躍動: chuyển động sôi nổi, hoạt động đầy sức sống',
+    '躍動：おどりうごく、いきいきと活動する': '躍動: chuyển động sôi nổi, hoạt động đầy sức sống',
     'つまり「唱って躍れる」とは「周りを引っ張って、元気に前に進める」「自分の考えを話して、みんなと共有できる」ことである。':
         'Nói cách khác, "唱って躍れる" (xướng lên và nhảy múa) nghĩa là "dẫn dắt mọi người xung quanh, tiến về phía trước một cách đầy nhiệt huyết" và "nói lên suy nghĩ của bản thân, chia sẻ cùng mọi người".',
     '誰かに話すことによって自分の中で漠然としていた夢が、どんどんリアリティを持ち、少しずつ形になり、ビジョンになっていく。これを繰り返す内にビジョンはより明確になり、とうとう的確な言葉で表現できるようになったとき、初めて明快な物語として、リアリティのある戦略として、それを人に伝達し、実際に行動に移していく事ができる。':
@@ -1312,7 +1375,8 @@ abstract final class AppStrings {
     'iCloud同期': 'Đồng bộ iCloud',
     'iCloud同期_有効化フッター':
         'Khi bật, dữ liệu án được đồng bộ giữa các thiết bị đăng nhập cùng tài khoản iCloud.',
-    'iCloud同期_利用不可': 'iCloud hiện không khả dụng. Vui lòng đăng nhập iCloud trong Cài đặt.',
+    'iCloud同期_利用不可':
+        'iCloud hiện không khả dụng. Vui lòng đăng nhập iCloud trong Cài đặt.',
     'iCloud同期_最終同期': 'Đồng bộ lần cuối',
     'iCloud同期_未同期': 'Chưa đồng bộ',
     'iCloud同期_今すぐ同期': 'Đồng bộ ngay',

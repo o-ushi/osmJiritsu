@@ -942,10 +942,11 @@ void main() {
 
       await _tapMoreMenuItem(tester, '設定');
       expect(find.text('言語'), findsOneWidget);
+      await tester.tap(find.text('データ'));
+      await tester.pumpAndSettle();
       expect(find.text('すべてのデータを削除'), findsWidgets);
-      expect(find.text('プライバシーとデータ'), findsOneWidget);
 
-      await tester.tap(find.text('プライバシーとデータ'));
+      await tester.tap(find.text('すべてのデータを削除').first);
       await tester.pumpAndSettle();
       expect(find.text('プライバシーポリシー'), findsOneWidget);
       expect(find.text('Google プライバシーポリシー'), findsOneWidget);

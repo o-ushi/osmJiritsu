@@ -1,42 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import '../../icloud_sync/services/icloud_sync_service.dart';
 import '../../l10n/app_language.dart';
 import '../../l10n/app_language_notifier.dart';
 import '../../l10n/app_strings.dart';
+import '../../privacy/screens/privacy_screen.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/osm_app_bar.dart';
 import '../../theme/widgets/subpage_scaffold.dart';
+import '../widgets/expand_card.dart';
 import '../widgets/help_cards.dart';
 import 'jiritsu_about_screen.dart';
 
-/// osmJiritsu HELP — layout ported from osmGradus (hero icon + lead card +
-/// accent-bar section cards). The「自律とは」row is just a link out to
-/// [JiritsuAboutScreen] — the definition and 自律の3要素 explanation live
-/// there, not duplicated here.
+/// ヘルプ。上から 「自律とは」→ 登録 → 閲覧 → 困った時 → その他 の順。
 class HelpScreen extends ConsumerStatefulWidget {
   const HelpScreen({super.key});
-
-  /// Google スライド操作マニュアル（言語別・閲覧用 preview）。
-  /// 共有は「リンクを知っている全員」。編集 URL ではなく preview を開く。
-  /// 英語・ベトナム語は同じファイルを上書き更新する前提（ID は固定）。
-  static const userManualPresentationIdJa =
-      '1C3BGFdWm6UneFcPQC0d7ftQ46n65hsN4uB8KAdXHObU';
-  static const userManualPresentationIdEn =
-      '14pVMbXOI4YSaV-PpC02N1r6IYFNTYUFiqcdiIA5uLos';
-  static const userManualPresentationIdVi =
-      '1ALuMLxX3wRoySWb6mWdY8i59eLeP7gy-O7Ut5q8elFc';
-
-  static String userManualUrlFor(AppLanguage language) {
-    final id = switch (language) {
-      AppLanguage.english => userManualPresentationIdEn,
-      AppLanguage.japanese => userManualPresentationIdJa,
-      AppLanguage.vietnamese => userManualPresentationIdVi,
-    };
-    return 'https://docs.google.com/presentation/d/$id/preview';
-  }
 
   @override
   ConsumerState<HelpScreen> createState() => _HelpScreenState();
@@ -46,6 +26,28 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
   String? _rawVersion;
   String? _rawBuildNumber;
 
+  /// 開いている節。
+  final Set<String> _open = {};
+
+  /// 色はまとまりごとに揃える。
+  List<_HelpSection> get _sections => [
+    const _HelpSection('start', Icons.add_circle_outline, Colors.orange, 2),
+    const _HelpSection('lines', Icons.format_list_bulleted, Colors.orange, 2),
+    const _HelpSection('goal', Icons.flag_outlined, Colors.orange, 1),
+    _HelpSection(
+      'reflect',
+      Icons.history_edu_outlined,
+      AppPalette.softBlueDark,
+      2,
+    ),
+    _HelpSection('share', Icons.ios_share_rounded, AppPalette.softBlueDark, 2),
+    const _HelpSection('howto', Icons.more_horiz, Colors.purple, 1),
+    const _HelpSection('copy', Icons.copy_rounded, Colors.purple, 2),
+    const _HelpSection('backup', Icons.import_export, Colors.purple, 2),
+    if (IcloudSyncService.isSupported)
+      const _HelpSection('icloud', Icons.cloud_outlined, Colors.teal, 1),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -53,17 +55,53 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
   }
 
   Future<void> _loadVersion() async {
-    try {
-      final info = await PackageInfo.fromPlatform();
-      if (!mounted) return;
-      setState(() {
-        _rawVersion = info.version;
-        _rawBuildNumber = info.buildNumber;
-      });
-    } catch (_) {
-      // Plugin missing (e.g. hot-reload without rebuild) — leave blank
-      // rather than crash; a full restart after `pod install` fixes it.
-    }
+    final info = await PackageInfo.fromPlatform();
+    if (!mounted) return;
+    setState(() {
+      _rawVersion = info.version;
+      _rawBuildNumber = info.buildNumber;
+    });
+  }
+
+  Widget _card({
+    required String id,
+    required String title,
+    required IconData icon,
+    required Color accent,
+    required Widget child,
+  }) {
+    return Padding(
+      key: ValueKey('help-section-$id'),
+      padding: const EdgeInsets.only(bottom: 10),
+      child: JiritsuExpandCard(
+        title: title,
+        icon: icon,
+        accent: accent,
+        open: _open.contains(id),
+        onToggle: () => setState(() {
+          if (!_open.remove(id)) _open.add(id);
+        }),
+        child: child,
+      ),
+    );
+  }
+
+  Widget _progress(
+    String id,
+    String titleKey,
+    AppLanguage lang,
+    List<String> tips,
+  ) {
+    return _card(
+      id: id,
+      title: titleKey.tr(lang),
+      icon: Icons.trending_up_rounded,
+      accent: AppPalette.softBlueDark,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: HelpBulletList(tips: tips, bulletColor: AppPalette.softBlueDark),
+      ),
+    );
   }
 
   @override
@@ -72,26 +110,13 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
     final versionLabel = (_rawVersion != null && _rawBuildNumber != null)
         ? 'バージョン %@ (%@)'.trFmt(lang, [_rawVersion!, _rawBuildNumber!])
         : null;
-
     return SubpageScaffold(
       appBar: OsmAppBar(title: Text('HELP'.tr(lang))),
       body: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
           children: [
-            _HelpHero(
-              title: 'osmJiritsu'.tr(lang),
-              versionLabel: versionLabel,
-            ),
-            const SizedBox(height: 20),
-            _HelpManualLink(
-              lang: lang,
-              accentColor: AppPalette.amber,
-              onTap: () => launchUrl(
-                Uri.parse(HelpScreen.userManualUrlFor(lang)),
-                mode: LaunchMode.externalApplication,
-              ),
-            ),
+            _HelpHero(title: 'osmJiritsu'.tr(lang), versionLabel: versionLabel),
             const SizedBox(height: 20),
             HelpLeadCard(
               title: '自律とは'.tr(lang),
@@ -102,145 +127,97 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
               ),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const JiritsuAboutScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const JiritsuAboutScreen()),
                 );
               },
             ),
-            const SizedBox(height: 20),
-            Text(
-              '進捗度'.tr(lang),
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.6,
-                color: AppPalette.subpageTextMuted,
+            const SizedBox(height: 16),
+            for (final section in _sections.take(3)) _stepCard(section, lang),
+            _progress('progressSimple', 'help.progressSimple', lang, [
+              '20%　ゴール設定済み'.tr(lang),
+              '30%　現状設定済み'.tr(lang),
+              '40%　方策決定済み'.tr(lang),
+              '50%　最初の一歩設定済み'.tr(lang),
+              '70%　最初の一歩実施済み'.tr(lang),
+              '80%　方策1つ実施済み'.tr(lang),
+              '90%　方策全て実施済み'.tr(lang),
+              '100%　ゴール達成済み'.tr(lang),
+            ]),
+            _progress('progressFull', 'help.progressFull', lang, [
+              '10%　テーマ設定済み'.tr(lang),
+              '20%　ゴール設定済み'.tr(lang),
+              '30%　現状設定済み'.tr(lang),
+              '40%　方策決定済み'.tr(lang),
+              '50%　最初の一歩設定済み'.tr(lang),
+              '60%　宣言終了'.tr(lang),
+              '70%　振り返り　1回実施'.tr(lang),
+              '80%　振り返り　2回実施'.tr(lang),
+              '90%　振り返り　3回以上実施'.tr(lang),
+              '100%　完了'.tr(lang),
+            ]),
+            for (final section in _sections.skip(3)) _stepCard(section, lang),
+            Material(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+                side: const BorderSide(color: Color(0xFFE1F0EA)),
               ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              '進捗度は、案件の進み具合を示す指標です。次の段階に達するたびに上がります。'
-                  .tr(lang),
-              style: TextStyle(
-                fontSize: 14,
-                height: 1.4,
-                color: AppPalette.subpageTextMuted,
+              clipBehavior: Clip.antiAlias,
+              child: ListTile(
+                key: const ValueKey('help-privacy'),
+                leading: const Icon(
+                  Icons.privacy_tip_outlined,
+                  color: Colors.teal,
+                ),
+                title: Text(
+                  'プライバシーとデータ'.tr(lang),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppPalette.subpageText,
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppPalette.subpageTextMuted,
+                ),
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const PrivacyScreen()),
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            HelpLeadCard(
-              title: '簡易モード'.tr(lang),
-              tips: [
-                '20%　ゴール設定済み'.tr(lang),
-                '30%　現状設定済み'.tr(lang),
-                '40%　方策決定済み'.tr(lang),
-                '50%　最初の一歩設定済み'.tr(lang),
-                '70%　最初の一歩実施済み'.tr(lang),
-                '80%　方策1つ実施済み'.tr(lang),
-                '90%　方策全て実施済み'.tr(lang),
-                '100%　ゴール達成済み'.tr(lang),
-              ],
-              accentColor: AppPalette.amber,
-            ),
-            const SizedBox(height: 10),
-            HelpLeadCard(
-              title: 'フルモード'.tr(lang),
-              tips: [
-                '10%　テーマ設定済み'.tr(lang),
-                '20%　ゴール設定済み'.tr(lang),
-                '30%　現状設定済み'.tr(lang),
-                '40%　方策決定済み'.tr(lang),
-                '50%　最初の一歩設定済み'.tr(lang),
-                '60%　宣言終了'.tr(lang),
-                '70%　振り返り　1回実施'.tr(lang),
-                '80%　振り返り　2回実施'.tr(lang),
-                '90%　振り返り　3回以上実施'.tr(lang),
-                '100%　完了'.tr(lang),
-              ],
-              accentColor: AppPalette.softBlueDark,
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget _stepCard(_HelpSection section, AppLanguage lang) => _card(
+    id: section.id,
+    title: 'help.${section.id}.title'.tr(lang),
+    icon: section.icon,
+    accent: section.accent,
+    child: JiritsuStepList(
+      color: section.accent,
+      steps: [
+        for (var i = 1; i <= section.stepCount; i++)
+          'help.${section.id}.$i'.tr(lang),
+      ],
+    ),
+  );
 }
 
-/// Opens the Google スライド操作マニュアル for the current app language.
-/// Layout ported from osmGradus's `_HelpManualLink` (icon circle + title +
-/// accent-colored summary + external-link chevron), built on the same
-/// [HelpSectionCardShell] the rest of this screen already uses.
-class _HelpManualLink extends StatelessWidget {
-  const _HelpManualLink({
-    required this.lang,
-    required this.accentColor,
-    required this.onTap,
-  });
+/// ヘルプの 1 節。文言は `help.<id>.title` と `help.<id>.1`〜。
+class _HelpSection {
+  const _HelpSection(this.id, this.icon, this.accent, this.stepCount);
 
-  final AppLanguage lang;
-  final Color accentColor;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return HelpSectionCardShell(
-      key: const Key('help_user_manual'),
-      accentColor: accentColor,
-      onTap: onTap,
-      child: Row(
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(color: accentColor, shape: BoxShape.circle),
-            child: const Icon(
-              Icons.menu_book_outlined,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '操作マニュアル'.tr(lang),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppPalette.subpageText,
-                  ),
-                ),
-                Text(
-                  '図解で画面ごとの使い方を見る'.tr(lang),
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: accentColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Icon(
-            Icons.open_in_new_rounded,
-            size: 18,
-            color: AppPalette.subpageTextMuted,
-          ),
-        ],
-      ),
-    );
-  }
+  final String id;
+  final IconData icon;
+  final Color accent;
+  final int stepCount;
 }
 
 class _HelpHero extends StatelessWidget {
-  const _HelpHero({
-    required this.title,
-    required this.versionLabel,
-  });
+  const _HelpHero({required this.title, required this.versionLabel});
 
   final String title;
   final String? versionLabel;

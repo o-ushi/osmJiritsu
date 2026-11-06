@@ -545,7 +545,7 @@ void main() {
         status: ProjectStatus.inProgress,
       );
       await pumpSimpleScreen(tester, project: existing, seed: [existing]);
-      expect((await _history()).single.progressRatio, 0.1);
+      expect((await _history()).single.progressRatio, 0.2);
 
       await tester.tap(find.byKey(SimpleModeScreen.goalCheckKey));
       await tester.pumpAndSettle();

@@ -4,6 +4,7 @@ import '../../l10n/app_language.dart';
 import '../../l10n/app_strings.dart';
 import '../../l10n/widgets/language_flag_button.dart';
 import '../../theme/app_theme.dart';
+import '../widgets/startup_bottom_bar.dart';
 
 /// 使い方画面 — Chrome AIモードのコピーボタンの押し方と、「•••」長押しで
 /// 各画面の操作ヒントが見られることを教える。
@@ -37,8 +38,8 @@ class _UsageScreenState extends State<UsageScreen> {
   Widget build(BuildContext context) {
     final lang = widget.lang;
 
-    // Structure mirrors `_StartScreen`: language flag top-right, then a
-    // vertically-centered scroll column with the same horizontal padding.
+    // Same frame as `_StartScreen`: the copy scrolls, and the checkbox
+    // plus「ホーム画面へ」stay pinned at the bottom.
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -99,92 +100,20 @@ class _UsageScreenState extends State<UsageScreen> {
                             color: AppPalette.sceneTextMuted,
                           ),
                         ),
-                        const SizedBox(height: 28),
-                        InkWell(
-                          onTap: () => setState(
-                            () => _dontShowAgain = !_dontShowAgain,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 10,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: Checkbox(
-                                    value: _dontShowAgain,
-                                    onChanged: (value) {
-                                      setState(
-                                        () =>
-                                            _dontShowAgain = value ?? false,
-                                      );
-                                    },
-                                    side: const BorderSide(
-                                      color: AppPalette.sceneText,
-                                      width: 1.5,
-                                    ),
-                                    fillColor:
-                                        WidgetStateProperty.resolveWith((
-                                      states,
-                                    ) {
-                                      if (states.contains(
-                                        WidgetState.selected,
-                                      )) {
-                                        return AppPalette.mintDark;
-                                      }
-                                      return Colors.transparent;
-                                    }),
-                                    checkColor: AppPalette.onAccent,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Flexible(
-                                  child: Text(
-                                    '次回から表示しない'.tr(lang),
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      color: AppPalette.sceneText,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        FilledButton(
-                          onPressed: () =>
-                              widget.onContinue(_dontShowAgain),
-                          style: FilledButton.styleFrom(
-                            backgroundColor: AppPalette.mintDark,
-                            foregroundColor: AppPalette.onAccent,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                          child: Text(
-                            'ホーム画面へ'.tr(lang),
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
                       ],
                     ),
                   ),
                 );
               },
             ),
+          ),
+          StartupBottomBar(
+            lang: lang,
+            dontShowAgain: _dontShowAgain,
+            onDontShowAgainChanged: (value) =>
+                setState(() => _dontShowAgain = value),
+            label: 'ホーム画面へ'.tr(lang),
+            onPressed: () => widget.onContinue(_dontShowAgain),
           ),
         ],
       ),

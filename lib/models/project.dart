@@ -209,12 +209,12 @@ class Project {
 
   /// 簡易モード's own ladder — every checkbox now counts (an earlier version
   /// of this getter ignored them entirely). The highest satisfied stage
-  /// wins, checked top-down, so e.g. one ticked 方策 reads 70% even if
+  /// wins, checked top-down, so e.g. one ticked 方策 reads 80% even if
   /// 最初の一歩 was never filled in.
   ///
-  ///   10% ゴールが記入済み       40% 方策が記入済み        70% 方策が1つ実施済み
-  ///   20% 現状が記入済み         50% 最初の一歩が記入済み   90% 方策が全て実施済み
-  ///                              60% 最初の一歩が実施済み  100% ゴール達成済み
+  ///   20% ゴール設定済み         50% 最初の一歩設定済み    80% 方策1つ実施済み
+  ///   30% 現状設定済み           70% 最初の一歩実施済み    90% 方策全て実施済み
+  ///   40% 方策決定済み                                    100% ゴール達成済み
   ///
   /// [status] == [ProjectStatus.completed] also reads 100% — this feature
   /// doesn't set that itself, but a project completed some other way
@@ -233,12 +233,12 @@ class Project {
     final firstStepDone = firstStepFilled && simpleFirstStep.done;
 
     if (allStrategiesDone) return 0.9;
-    if (anyStrategyDone) return 0.7;
-    if (firstStepDone) return 0.6;
+    if (anyStrategyDone) return 0.8;
+    if (firstStepDone) return 0.7;
     if (firstStepFilled) return 0.5;
     if (filledStrategies.isNotEmpty) return 0.4;
-    if (_hasSimpleText(simpleSituations)) return 0.2;
-    if (desiredGoal.trim().isNotEmpty) return 0.1;
+    if (_hasSimpleText(simpleSituations)) return 0.3;
+    if (desiredGoal.trim().isNotEmpty) return 0.2;
     return 0.0;
   }
 

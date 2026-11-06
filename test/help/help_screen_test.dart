@@ -73,7 +73,15 @@ void main() {
     await pumpScreen(tester);
 
     await tester.scrollUntilVisible(
-      find.text('進捗度の見方'),
+      find.text('進捗度'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('20%　ゴール設定済み'), findsOneWidget);
+    expect(find.text('100%　ゴール達成済み'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('100%　完了'),
       200,
       scrollable: find.byType(Scrollable).first,
     );

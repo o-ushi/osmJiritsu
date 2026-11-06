@@ -545,13 +545,13 @@ void main() {
       );
 
       expect(simple().progressRatio, 0.0);
-      expect(simple(desiredGoal: 'ゴール').progressRatio, 0.1);
+      expect(simple(desiredGoal: 'ゴール').progressRatio, 0.2);
       expect(
         simple(
           desiredGoal: 'ゴール',
           situations: [SimpleLine(text: '現状')],
         ).progressRatio,
-        0.2,
+        0.3,
       );
       expect(
         simple(
@@ -577,7 +577,7 @@ void main() {
           strategies: [SimpleLine(text: '方策')],
           firstStep: SimpleLine(text: '一歩', done: true),
         ).progressRatio,
-        0.6,
+        0.7,
       );
       expect(
         simple(
@@ -587,7 +587,7 @@ void main() {
             SimpleLine(text: '方策B'),
           ],
         ).progressRatio,
-        0.7,
+        0.8,
       );
       expect(
         simple(
@@ -609,7 +609,7 @@ void main() {
           desiredGoal: 'ゴール',
           situations: [SimpleLine(text: '  ')],
         ).progressRatio,
-        0.1,
+        0.2,
       );
     });
 
@@ -620,8 +620,8 @@ void main() {
         entryMode: Project.modeSimple,
         simpleStrategies: [SimpleLine(text: '', done: true)],
       );
-      // No filled 方策 at all, so this reads as ゴールのみ (10%), not 90%.
-      expect(project.progressRatio, 0.1);
+      // No filled 方策 at all, so this reads as ゴールのみ (20%), not 90%.
+      expect(project.progressRatio, 0.2);
     });
 
     test('ゴール達成済み wins over every other checked box', () {

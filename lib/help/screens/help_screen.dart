@@ -110,7 +110,7 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
             ),
             const SizedBox(height: 20),
             Text(
-              '進捗度の見方'.tr(lang),
+              '進捗度'.tr(lang),
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.bold,
@@ -118,15 +118,38 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
                 color: AppPalette.subpageTextMuted,
               ),
             ),
+            const SizedBox(height: 6),
+            Text(
+              '進捗度は、案件の進み具合を示す指標です。次の段階に達するたびに上がります。'
+                  .tr(lang),
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.4,
+                color: AppPalette.subpageTextMuted,
+              ),
+            ),
             const SizedBox(height: 10),
             HelpLeadCard(
-              title: '進捗度'.tr(lang),
-              summary: '進捗度は、案件の進み具合を示す指標です。次の段階に達するたびに上がります。'
-                  .tr(lang),
+              title: '簡易モード'.tr(lang),
+              tips: [
+                '20%　ゴール設定済み'.tr(lang),
+                '30%　現状設定済み'.tr(lang),
+                '40%　方策決定済み'.tr(lang),
+                '50%　最初の一歩設定済み'.tr(lang),
+                '70%　最初の一歩実施済み'.tr(lang),
+                '80%　方策1つ実施済み'.tr(lang),
+                '90%　方策全て実施済み'.tr(lang),
+                '100%　ゴール達成済み'.tr(lang),
+              ],
+              accentColor: AppPalette.amber,
+            ),
+            const SizedBox(height: 10),
+            HelpLeadCard(
+              title: 'フルモード'.tr(lang),
               tips: [
                 '10%　テーマ設定済み'.tr(lang),
                 '20%　ゴール設定済み'.tr(lang),
-                '30%　今の状況設定（SWOTマトリクス完成）'.tr(lang),
+                '30%　現状設定済み'.tr(lang),
                 '40%　方策決定済み'.tr(lang),
                 '50%　最初の一歩設定済み'.tr(lang),
                 '60%　宣言終了'.tr(lang),

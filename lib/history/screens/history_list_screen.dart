@@ -22,6 +22,7 @@ import '../state/analysis_history_notifier.dart';
 import '../state/start_screen_settings_notifier.dart';
 import '../widgets/history_bottom_toolbar.dart';
 import '../widgets/history_session_card.dart';
+import '../widgets/startup_bottom_bar.dart';
 import 'usage_screen.dart';
 
 /// osmJiritsu's home screen: 登録案件リスト — every saved 案件 (project),
@@ -453,7 +454,8 @@ class _ReorderableProjectRow extends StatelessWidget {
 /// スタート画面 — layout/metrics ported from osmGradus's `StartupScreen`
 /// (icon 140×140 / radius 28 / same vertical rhythm). Shown at launch when
 /// 「起動時にスタート画面を表示」is on. [onContinue] receives the
-/// 「次回から表示しない」checkbox.
+/// 「次回から表示しない」checkbox. The checkbox and「はじめる」stay pinned
+/// under the scrolling copy, same as osm日日是好日.
 class _StartScreen extends StatefulWidget {
   final AppLanguage lang;
   final ValueChanged<bool> onContinue;
@@ -470,8 +472,8 @@ class _StartScreenState extends State<_StartScreen> {
   Widget build(BuildContext context) {
     final lang = widget.lang;
 
-    // Structure mirrors osmGradus `StartupScreen` exactly: language flag
-    // top-right, then a vertically-centered scroll column.
+    // Language flag stays at the top. Copy scrolls. The checkbox and
+    //「はじめる」stay pinned, so a short window can still reach them.
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -552,94 +554,20 @@ class _StartScreenState extends State<_StartScreen> {
                             color: AppPalette.sceneTextMuted,
                           ),
                         ),
-                        const SizedBox(height: 36),
-                        InkWell(
-                          onTap: () => setState(
-                            () => _dontShowAgain = !_dontShowAgain,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 10,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: Checkbox(
-                                    value: _dontShowAgain,
-                                    onChanged: (value) {
-                                      setState(
-                                        () =>
-                                            _dontShowAgain = value ?? false,
-                                      );
-                                    },
-                                    side: const BorderSide(
-                                      color: AppPalette.sceneText,
-                                      width: 1.5,
-                                    ),
-                                    fillColor:
-                                        WidgetStateProperty.resolveWith((
-                                      states,
-                                    ) {
-                                      if (states.contains(
-                                        WidgetState.selected,
-                                      )) {
-                                        return AppPalette.mintDark;
-                                      }
-                                      return Colors.transparent;
-                                    }),
-                                    checkColor: AppPalette.onAccent,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Flexible(
-                                  child: Text(
-                                    '次回から表示しない'.tr(lang),
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      color: AppPalette.sceneText,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 28),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                            onPressed: () =>
-                                widget.onContinue(_dontShowAgain),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: AppPalette.mintDark,
-                              foregroundColor: AppPalette.onAccent,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                            child: Text(
-                              'はじめる'.tr(lang),
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
                 );
               },
             ),
+          ),
+          StartupBottomBar(
+            lang: lang,
+            dontShowAgain: _dontShowAgain,
+            onDontShowAgainChanged: (value) =>
+                setState(() => _dontShowAgain = value),
+            label: 'はじめる'.tr(lang),
+            onPressed: () => widget.onContinue(_dontShowAgain),
           ),
         ],
       ),

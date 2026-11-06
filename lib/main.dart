@@ -57,8 +57,12 @@ class OsmJiritsuApp extends StatelessWidget {
       title: 'osmJiritsu',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
-      builder: (context, child) =>
-          DismissKeyboard(child: child ?? const SizedBox.shrink()),
+      builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+        // Home has no AppBar, so the scene background sits behind the status
+        // bar. White clock and battery, matching [AppTheme]'s overlay style.
+        value: SystemUiOverlayStyle.light,
+        child: DismissKeyboard(child: child ?? const SizedBox.shrink()),
+      ),
       home: const IncomingUrlHandler(child: HistoryListScreen()),
     );
   }

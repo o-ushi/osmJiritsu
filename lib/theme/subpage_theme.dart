@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'app_theme.dart';
 
@@ -68,6 +69,7 @@ abstract final class SubpageTheme {
         foregroundColor: AppPalette.subpageText,
         backgroundColor: AppPalette.subpageBackground,
         surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
     );
   }

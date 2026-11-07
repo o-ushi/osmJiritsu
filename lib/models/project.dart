@@ -5,6 +5,7 @@ import 'first_step_suggestion.dart';
 import 'jiritsu_check.dart';
 import 'project_status.dart';
 import 'reflection_entry.dart';
+import 'simple_line.dart';
 import 'situation_note.dart';
 import 'strategy_suggestion.dart';
 import 'swot_item.dart';
@@ -34,6 +35,14 @@ class Project {
   /// `AnalysisExportService.projectFormatVersion` is, so the very first
   /// version doesn't have to retrofit one in later.
   static const int schemaVersion = 1;
+
+  /// [entryMode] values. Anything else read from JSON degrades to
+  /// [modeFull], so a record written by a newer build can still be opened.
+  static const String modeFull = 'full';
+  static const String modeSimple = 'simple';
+
+  /// 最大3件 — 現状 / 方策 both cap here, matching 簡易モード's board.
+  static const int simpleLineLimit = 3;
 
   final String id;
 
@@ -107,6 +116,31 @@ class Project {
   /// (見た目の強調のみ).
   final bool isFavorite;
 
+  /// Which entry flow owns this 案件: [modeFull] (the wizard) or
+  /// [modeSimple] (the four-box board). Projects saved before 簡易モード
+  /// existed have no `entryMode` key at all and read back as [modeFull].
+  final String entryMode;
+
+  /// 簡易モード's ゴール checkbox — "ゴール達成済み" in [_simpleProgressRatio].
+  /// The goal text itself still lives in [desiredGoal]/[theme] (shared with
+  /// full mode); this is only the tick, so nothing about how full-mode
+  /// projects read those two fields changes.
+  final bool simpleGoalDone;
+
+  /// 簡易モード's 現状 box — at most [simpleLineLimit] lines, no checkbox.
+  /// Intentionally separate from [situationNotes]: the two are read at
+  /// different places and merging them would make the full wizard's 壁打ち
+  /// wall appear inside 簡易モード.
+  final List<SimpleLine> simpleSituations;
+
+  /// 簡易モード's 方策 box — at most [simpleLineLimit] lines, each tickable.
+  /// Never flows into [decidedStrategy].
+  final List<SimpleLine> simpleStrategies;
+
+  /// 簡易モード's 最初の一歩 — always exactly one line (never null), so the
+  /// model matches the single box the screen draws.
+  final SimpleLine simpleFirstStep;
+
   Project({
     String? id,
     required this.theme,
@@ -127,21 +161,35 @@ class Project {
     this.status = ProjectStatus.preparing,
     this.reflectionHistory = const [],
     this.isFavorite = false,
+    this.entryMode = modeFull,
+    this.simpleGoalDone = false,
+    this.simpleSituations = const [],
+    this.simpleStrategies = const [],
+    SimpleLine? simpleFirstStep,
   }) : id = id ?? _uuid.v4(),
        createdAt = createdAt ?? DateTime.now(),
-       updatedAt = updatedAt ?? DateTime.now();
+       updatedAt = updatedAt ?? DateTime.now(),
+       // Never null: the screen draws exactly one 最初の一歩 box whether or
+       // not anything's been typed into it yet.
+       simpleFirstStep = simpleFirstStep ?? SimpleLine();
 
   /// Milestone-based 進捗率, 0.0–1.0 (a computed getter rather than a
   /// stored field, precisely so it can't drift out of sync with the data
-  /// it's derived from).
+  /// it's derived from). [isSimpleMode] picks which ladder applies: full
+  /// mode's own milestones, below, or [_simpleProgressRatio].
   ///
-  /// Rule (v3 — milestone ladder):
+  /// Full-mode rule (v3 — milestone ladder):
   /// - [ProjectStatus.completed] → 100%
   /// - Otherwise the highest achieved stage wins:
   ///   10% テーマ, 20% ゴール, 30% 今の状況（SWOTマトリクス）, 40% 方策,
   ///   50% 最初の一歩, 60% 宣言文, 70–90% by 振り返り count (1/2/3+).
   ///   See HELP →「進捗度の見方」for the full table.
+  /// True for a 簡易モード 案件 — [entryMode] is authoritative, so an older
+  /// record that simply lacks the key is always read as full.
+  bool get isSimpleMode => entryMode == modeSimple;
+
   double get progressRatio {
+    if (isSimpleMode) return _simpleProgressRatio;
     if (status == ProjectStatus.completed) return 1.0;
 
     final reflectionCount = reflectionHistory.length;
@@ -158,6 +206,44 @@ class Project {
     if (theme.trim().isNotEmpty) return 0.1;
     return 0.0;
   }
+
+  /// 簡易モード's own ladder — every checkbox now counts (an earlier version
+  /// of this getter ignored them entirely). The highest satisfied stage
+  /// wins, checked top-down, so e.g. one ticked 方策 reads 80% even if
+  /// 最初の一歩 was never filled in.
+  ///
+  ///   20% ゴール設定済み         50% 最初の一歩設定済み    80% 方策1つ実施済み
+  ///   30% 現状設定済み           70% 最初の一歩実施済み    90% 方策全て実施済み
+  ///   40% 方策決定済み                                    100% ゴール達成済み
+  ///
+  /// [status] == [ProjectStatus.completed] also reads 100% — this feature
+  /// doesn't set that itself, but a project completed some other way
+  /// should never show less than full.
+  double get _simpleProgressRatio {
+    if (simpleGoalDone || status == ProjectStatus.completed) return 1.0;
+
+    final filledStrategies = simpleStrategies
+        .where((line) => line.text.trim().isNotEmpty)
+        .toList();
+    final allStrategiesDone =
+        filledStrategies.isNotEmpty &&
+        filledStrategies.every((line) => line.done);
+    final anyStrategyDone = filledStrategies.any((line) => line.done);
+    final firstStepFilled = simpleFirstStep.text.trim().isNotEmpty;
+    final firstStepDone = firstStepFilled && simpleFirstStep.done;
+
+    if (allStrategiesDone) return 0.9;
+    if (anyStrategyDone) return 0.8;
+    if (firstStepDone) return 0.7;
+    if (firstStepFilled) return 0.5;
+    if (filledStrategies.isNotEmpty) return 0.4;
+    if (_hasSimpleText(simpleSituations)) return 0.3;
+    if (desiredGoal.trim().isNotEmpty) return 0.2;
+    return 0.0;
+  }
+
+  static bool _hasSimpleText(List<SimpleLine> lines) =>
+      lines.any((line) => line.text.trim().isNotEmpty);
 
   /// True when [deadline] is set and its calendar day (local) is strictly
   /// before today — i.e. the due date has already ended. Same-day deadlines
@@ -190,6 +276,7 @@ class Project {
   /// not prose, so nothing here needs the reader to already know
   /// osmJiritsu's vocabulary beyond the labels themselves.
   String get shareSummary {
+    if (isSimpleMode) return _simpleShareSummary;
     final buffer = StringBuffer()
       ..writeln('テーマ: $theme')
       ..writeln('ゴール1️⃣（在りたい姿）: $desiredGoal')
@@ -208,6 +295,7 @@ class Project {
   /// child screens). [shareSummary] stays the shorter Stage1 Step 11 shape
   /// for the dedicated export screen.
   String get dashboardShareSummary {
+    if (isSimpleMode) return _simpleShareSummary;
     final buffer = StringBuffer()
       ..writeln('テーマ: $theme')
       ..writeln('現況: ${status.displayName}')
@@ -265,6 +353,55 @@ class Project {
     }
 
     return buffer.toString().trim();
+  }
+
+  /// 簡易モード's share text — the same four boxes the board shows, nothing
+  /// else. No SWOT block and no 内発度チェック line: neither is ever filled
+  /// in from this mode, so printing them would only read as「（なし）」noise.
+  String get _simpleShareSummary {
+    final goal = desiredGoal.trim();
+    final goalLine = goal.isEmpty
+        ? '（なし）'
+        : (simpleGoalDone ? '$goal（済）' : goal);
+    final buffer = StringBuffer()..writeln('ゴール: $goalLine');
+    _writeSimpleLines(buffer, '現状', simpleSituations, showDone: false);
+    _writeSimpleLines(buffer, '方策', simpleStrategies, showDone: true);
+    _writeSimpleLines(
+      buffer,
+      '最初の一歩',
+      [simpleFirstStep],
+      showDone: true,
+    );
+    return buffer.toString().trim();
+  }
+
+  /// One line stays `方策: …`; several become a bulleted block, matching
+  /// [_writeShareQuadrant]'s shape. Empty text is skipped entirely so a
+  /// never-filled box prints as「（なし）」rather than a blank bullet.
+  static void _writeSimpleLines(
+    StringBuffer buffer,
+    String label,
+    List<SimpleLine> lines, {
+    required bool showDone,
+  }) {
+    String render(SimpleLine line) =>
+        showDone && line.done ? '${line.text.trim()}（済）' : line.text.trim();
+
+    final filled = lines
+        .where((line) => line.text.trim().isNotEmpty)
+        .toList();
+    if (filled.isEmpty) {
+      buffer.writeln('$label: （なし）');
+      return;
+    }
+    if (filled.length == 1) {
+      buffer.writeln('$label: ${render(filled.single)}');
+      return;
+    }
+    buffer.writeln('$label:');
+    for (final line in filled) {
+      buffer.writeln('  ・${render(line)}');
+    }
   }
 
   static String _shareDateTime(DateTime dt) {
@@ -334,6 +471,11 @@ class Project {
     ProjectStatus? status,
     List<ReflectionEntry>? reflectionHistory,
     bool? isFavorite,
+    String? entryMode,
+    bool? simpleGoalDone,
+    List<SimpleLine>? simpleSituations,
+    List<SimpleLine>? simpleStrategies,
+    SimpleLine? simpleFirstStep,
   }) {
     return Project(
       id: id,
@@ -368,6 +510,11 @@ class Project {
       status: status ?? this.status,
       reflectionHistory: reflectionHistory ?? this.reflectionHistory,
       isFavorite: isFavorite ?? this.isFavorite,
+      entryMode: entryMode ?? this.entryMode,
+      simpleGoalDone: simpleGoalDone ?? this.simpleGoalDone,
+      simpleSituations: simpleSituations ?? this.simpleSituations,
+      simpleStrategies: simpleStrategies ?? this.simpleStrategies,
+      simpleFirstStep: simpleFirstStep ?? this.simpleFirstStep,
     );
   }
 
@@ -396,6 +543,11 @@ class Project {
     'status': status.rawValue,
     'reflectionHistory': reflectionHistory.map((r) => r.toJson()).toList(),
     'isFavorite': isFavorite,
+    'entryMode': entryMode,
+    'simpleGoalDone': simpleGoalDone,
+    'simpleSituations': simpleSituations.map((l) => l.toJson()).toList(),
+    'simpleStrategies': simpleStrategies.map((l) => l.toJson()).toList(),
+    'simpleFirstStep': simpleFirstStep.toJson(),
   };
 
   /// Tolerant decoder: `id`/`createdAt`/`updatedAt` are the only
@@ -419,6 +571,8 @@ class Project {
     final rawAiFirstStepSuggestions = json['aiFirstStepSuggestions'];
     final rawReflectionHistory = json['reflectionHistory'];
     final rawDeadline = json['deadline'];
+    final rawEntryMode = json['entryMode'];
+    final rawSimpleFirstStep = json['simpleFirstStep'];
 
     return Project(
       id: json['id'] as String?,
@@ -481,6 +635,29 @@ class Project {
                 .toList()
           : const [],
       isFavorite: json['isFavorite'] as bool? ?? false,
+      // Only the one known non-default value opts in; anything else —
+      // missing, misspelled, or written by a future build — is full, which
+      // is the mode every pre-簡易モード record was saved in.
+      entryMode: rawEntryMode == modeSimple ? modeSimple : modeFull,
+      simpleGoalDone: json['simpleGoalDone'] as bool? ?? false,
+      simpleSituations: _simpleLinesFromJson(json['simpleSituations']),
+      simpleStrategies: _simpleLinesFromJson(json['simpleStrategies']),
+      simpleFirstStep: rawSimpleFirstStep is Map
+          ? SimpleLine.fromJson(Map<String, dynamic>.from(rawSimpleFirstStep))
+          : null,
     );
+  }
+
+  /// Non-list input, and non-Map entries inside a list, are dropped rather
+  /// than thrown on — same tolerance as every other list field here. The
+  /// [simpleLineLimit] cap is applied on read too, so a hand-edited or
+  /// imported file can't put a fourth row on a three-row board.
+  static List<SimpleLine> _simpleLinesFromJson(Object? raw) {
+    if (raw is! List) return const [];
+    return raw
+        .whereType<Map>()
+        .take(simpleLineLimit)
+        .map((entry) => SimpleLine.fromJson(Map<String, dynamic>.from(entry)))
+        .toList();
   }
 }

@@ -10,6 +10,7 @@ import '../../l10n/app_strings.dart';
 import '../../l10n/widgets/language_flag_button.dart';
 import '../../models/project.dart';
 import '../../models/project_status.dart';
+import '../../simple/screens/simple_mode_screen.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/widgets/app_dialog.dart';
 import '../../theme/widgets/edit_field_dialogs.dart';
@@ -21,6 +22,7 @@ import '../state/analysis_history_notifier.dart';
 import '../state/start_screen_settings_notifier.dart';
 import '../widgets/history_bottom_toolbar.dart';
 import '../widgets/history_session_card.dart';
+import '../widgets/startup_bottom_bar.dart';
 import 'usage_screen.dart';
 
 /// osmJiritsu's home screen: 登録案件リスト — every saved 案件 (project),
@@ -216,7 +218,18 @@ class _ProjectList extends ConsumerWidget {
   /// otherwise wherever `WizardState.fromProject` says input left off)
   /// rather than showing a dashboard for a project with nothing to
   /// dashboard yet. Anything past 作成中 opens the dashboard directly.
+  ///
+  /// 簡易モード 案件 short-circuit all of that: they were never written
+  /// through the wizard and have no SWOT to dashboard, so they always
+  /// reopen on their own board — 現況 included.
   void _openProject(BuildContext context, WidgetRef ref, Project project) {
+    if (project.isSimpleMode) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => SimpleModeScreen(project: project)),
+      );
+      return;
+    }
+
     if (project.status != ProjectStatus.preparing) {
       Navigator.of(context).push(
         ProjectNavigation.dashboardRoute(
@@ -441,7 +454,8 @@ class _ReorderableProjectRow extends StatelessWidget {
 /// スタート画面 — layout/metrics ported from osmGradus's `StartupScreen`
 /// (icon 140×140 / radius 28 / same vertical rhythm). Shown at launch when
 /// 「起動時にスタート画面を表示」is on. [onContinue] receives the
-/// 「次回から表示しない」checkbox.
+/// 「次回から表示しない」checkbox. The checkbox and「はじめる」stay pinned
+/// under the scrolling copy, same as osm日日是好日.
 class _StartScreen extends StatefulWidget {
   final AppLanguage lang;
   final ValueChanged<bool> onContinue;
@@ -458,8 +472,8 @@ class _StartScreenState extends State<_StartScreen> {
   Widget build(BuildContext context) {
     final lang = widget.lang;
 
-    // Structure mirrors osmGradus `StartupScreen` exactly: language flag
-    // top-right, then a vertically-centered scroll column.
+    // Language flag stays at the top. Copy scrolls. The checkbox and
+    //「はじめる」stay pinned, so a short window can still reach them.
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Column(
@@ -540,94 +554,20 @@ class _StartScreenState extends State<_StartScreen> {
                             color: AppPalette.sceneTextMuted,
                           ),
                         ),
-                        const SizedBox(height: 36),
-                        InkWell(
-                          onTap: () => setState(
-                            () => _dontShowAgain = !_dontShowAgain,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 10,
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: Checkbox(
-                                    value: _dontShowAgain,
-                                    onChanged: (value) {
-                                      setState(
-                                        () =>
-                                            _dontShowAgain = value ?? false,
-                                      );
-                                    },
-                                    side: const BorderSide(
-                                      color: AppPalette.sceneText,
-                                      width: 1.5,
-                                    ),
-                                    fillColor:
-                                        WidgetStateProperty.resolveWith((
-                                      states,
-                                    ) {
-                                      if (states.contains(
-                                        WidgetState.selected,
-                                      )) {
-                                        return AppPalette.mintDark;
-                                      }
-                                      return Colors.transparent;
-                                    }),
-                                    checkColor: AppPalette.onAccent,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Flexible(
-                                  child: Text(
-                                    '次回から表示しない'.tr(lang),
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      color: AppPalette.sceneText,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 28),
-                        SizedBox(
-                          width: double.infinity,
-                          child: FilledButton(
-                            onPressed: () =>
-                                widget.onContinue(_dontShowAgain),
-                            style: FilledButton.styleFrom(
-                              backgroundColor: AppPalette.mintDark,
-                              foregroundColor: AppPalette.onAccent,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                            ),
-                            child: Text(
-                              'はじめる'.tr(lang),
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
                 );
               },
             ),
+          ),
+          StartupBottomBar(
+            lang: lang,
+            dontShowAgain: _dontShowAgain,
+            onDontShowAgainChanged: (value) =>
+                setState(() => _dontShowAgain = value),
+            label: 'はじめる'.tr(lang),
+            onPressed: () => widget.onContinue(_dontShowAgain),
           ),
         ],
       ),

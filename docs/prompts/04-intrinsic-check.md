@@ -129,8 +129,7 @@ docs/prompts/04-intrinsic-check.md の Step N をやって
    - `test/models/project_test.dart`
    - その他 `rg '自律度'` のテスト
 2. `JiritsuElement.question` の値を `test/models/jiritsu_test.dart` で固定してもよい
-3. `docs/user-manual-gas/Glossary.gs` の ja/en/vi。旧キーを新キーに置き換える。`結果が分かりやすいか？` / `ゴールを共有できているか？` も
-4. 操作ガイドや HELP 本文に旧称があれば直す。Google スライド本体は対象外
+3. 操作ガイドや HELP 本文に旧称があれば直す。Google スライド本体と `Glossary.gs` は [`05-user-manual.md`](05-user-manual.md) に任せる
 
 ### 受け入れ
 

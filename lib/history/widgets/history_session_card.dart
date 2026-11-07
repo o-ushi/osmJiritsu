@@ -100,21 +100,11 @@ class HistorySessionCard extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    // Flexible so a long translated status label (e.g. the
-                    // Vietnamese '作成中' → "Đang chuẩn bị") can shrink
-                    // (and ellipsize, see ProjectStatusChip) instead of
-                    // overflowing past the ⭐️/✏️ buttons. It's the Row's
-                    // *only* flexible child — paired with a Spacer (also
-                    // flex:1) the two would split the leftover width
-                    // 50/50, ellipsizing the label even when there's
-                    // plenty of room; this way it only shrinks once the
-                    // trailing icons actually need the space.
-                    Flexible(
-                      child: ProjectStatusChip(
-                        status: project.status,
-                        lang: lang,
-                      ),
-                    ),
+                    // A fixed-size icon badge (see ProjectStatusChip) — no
+                    // Flexible/ellipsize handling needed the way the old
+                    // text label required, since it can't grow past its own
+                    // width regardless of language.
+                    ProjectStatusChip(status: project.status, lang: lang),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

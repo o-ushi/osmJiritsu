@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'app_theme.dart';
 
@@ -68,6 +69,7 @@ abstract final class SubpageTheme {
         foregroundColor: AppPalette.subpageText,
         backgroundColor: AppPalette.subpageBackground,
         surfaceTintColor: Colors.transparent,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
     );
   }
@@ -86,11 +88,13 @@ Future<T?> showReadableBottomSheet<T>({
   required WidgetBuilder builder,
   bool showDragHandle = false,
   bool isScrollControlled = false,
+  bool useRootNavigator = false,
 }) {
   return showModalBottomSheet<T>(
     context: context,
     showDragHandle: showDragHandle,
     isScrollControlled: isScrollControlled,
+    useRootNavigator: useRootNavigator,
     backgroundColor: AppPalette.subpageBackground,
     builder: (context) => SubpageTheme.wrap(
       context: context,

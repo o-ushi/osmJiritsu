@@ -18,11 +18,17 @@ class FlowScaffold extends ConsumerWidget {
     this.onToolbarUndo,
     this.canUndo = false,
     this.guideMessageKey,
+    this.onBeforeHome,
   });
 
   final PreferredSizeWidget? appBar;
   final Widget body;
   final bool persistWizardOnHome;
+
+  /// Awaited before ホーム pops back to the list — for screens that keep
+  /// their edits in local state rather than in `wizardProvider`, and so
+  /// can't rely on [persistWizardOnHome] to flush them (簡易モード).
+  final Future<void> Function()? onBeforeHome;
   final HistoryToolbarMode toolbarMode;
   final VoidCallback? onToolbarAdd;
   final VoidCallback? onToolbarUndo;
@@ -47,10 +53,15 @@ class FlowScaffold extends ConsumerWidget {
           : HistoryBottomToolbar(
               lang: lang,
               mode: toolbarMode,
-              onHome: () => actions.goHome(
-                context,
-                persistWizard: persistWizardOnHome,
-              ),
+              onHome: () async {
+                final flush = onBeforeHome;
+                if (flush != null) await flush();
+                if (!context.mounted) return;
+                actions.goHome(
+                  context,
+                  persistWizard: persistWizardOnHome,
+                );
+              },
               onAdd: onToolbarAdd,
               onUndo: onToolbarUndo,
               canUndo: canUndo,

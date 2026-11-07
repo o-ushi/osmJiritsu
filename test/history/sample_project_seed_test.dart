@@ -22,12 +22,14 @@ ProviderContainer _container(InMemoryAnalysisHistoryRepository repository) {
 }
 
 void main() {
-  // `testWidgets` (not `test`) so `rootBundle.loadString` in
-  // `loadSampleProjects` has a real, bindings-backed asset bundle to read
-  // `assets/data/sample_project.json` from — no widget is ever pumped.
-  testWidgets(
+  // No widget is ever pumped, so plain `test` with real async is enough:
+  // the binding gives `rootBundle` its asset bundle, and `testWidgets`'
+  // fake clock would leave the provider's future waiting forever.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  test(
     'loadSampleProjects parses the bundled 例題 into a non-empty project',
-    (tester) async {
+    () async {
       final projects = await loadSampleProjects();
 
       expect(projects, hasLength(1));
@@ -36,22 +38,23 @@ void main() {
     },
   );
 
-  testWidgets('a fresh install seeds the bundled sample project exactly once', (
-    tester,
-  ) async {
-    final repository = InMemoryAnalysisHistoryRepository(false);
-    final container = _container(repository);
-    addTearDown(container.dispose);
+  test(
+    'a fresh install seeds the bundled sample project exactly once',
+    () async {
+      final repository = InMemoryAnalysisHistoryRepository(false);
+      final container = _container(repository);
+      addTearDown(container.dispose);
 
-    final projects = await container.read(analysisHistoryProvider.future);
+      final projects = await container.read(analysisHistoryProvider.future);
 
-    expect(projects, hasLength(1));
-    expect(await repository.hasSeededSampleProject(), isTrue);
-  });
+      expect(projects, hasLength(1));
+      expect(await repository.hasSeededSampleProject(), isTrue);
+    },
+  );
 
-  testWidgets(
+  test(
     'an already-seeded install does not add the sample project again',
-    (tester) async {
+    () async {
       final repository = InMemoryAnalysisHistoryRepository();
       final container = _container(repository);
       addTearDown(container.dispose);
@@ -62,9 +65,9 @@ void main() {
     },
   );
 
-  testWidgets(
+  test(
     'deleting the seeded sample project keeps it gone on a later launch',
-    (tester) async {
+    () async {
       final repository = InMemoryAnalysisHistoryRepository(false);
       final container = _container(repository);
       addTearDown(container.dispose);
@@ -82,9 +85,9 @@ void main() {
     },
   );
 
-  testWidgets(
+  test(
     'a factory reset re-seeds the sample project on the next launch',
-    (tester) async {
+    () async {
       final repository = InMemoryAnalysisHistoryRepository(false);
       final container = _container(repository);
       addTearDown(container.dispose);
@@ -96,10 +99,7 @@ void main() {
       final relaunch = _container(repository);
       addTearDown(relaunch.dispose);
 
-      expect(
-        await relaunch.read(analysisHistoryProvider.future),
-        hasLength(1),
-      );
+      expect(await relaunch.read(analysisHistoryProvider.future), hasLength(1));
     },
   );
 }

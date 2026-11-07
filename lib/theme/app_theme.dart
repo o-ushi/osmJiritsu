@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// osmJiritsu's shared color palette and [ThemeData].
 ///
@@ -33,7 +34,9 @@ class AppPalette {
   static const subpageTextMuted = Color(0xFF61616B);
 
   // ── Chrome: scene ───────────────────────────────────────────────────
-  static const scene = Color(0xFF3D5993);
+  /// Same blue as the flat background of `assets/images/app_icon.png`
+  /// (the most common pixel is RGB 57, 84, 137).
+  static const scene = Color(0xFF395489);
   static const sceneText = Color(0xFFFFFFFF);
   static const sceneTextMuted = Color(0xB3FFFFFF);
 
@@ -219,12 +222,14 @@ class AppTheme {
       iconTheme: IconThemeData(color: AppPalette.ink),
       // AppBar is transparent, so it's the [scene] background showing
       // through behind it — its foreground needs the scene-contrast color.
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: Colors.transparent,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         foregroundColor: AppPalette.sceneText,
         centerTitle: true,
+        // Scene is dark blue. Light icons keep the clock and battery visible.
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
       // Pinned to AppPalette.cardFill rather than Material3's own
       // auto-derived tonal surface color, so title/content text and action

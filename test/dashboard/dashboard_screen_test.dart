@@ -118,15 +118,17 @@ void main() {
       project: _project(status: ProjectStatus.inProgress),
     );
 
-    expect(find.text('実施中'), findsOneWidget);
+    // The 現況 badge is an icon now (see ProjectStatusChip), not a text
+    // label — the label survives as its Tooltip message.
+    expect(find.byTooltip('実施中'), findsOneWidget);
 
-    await tester.tap(find.text('実施中'));
+    await tester.tap(find.byTooltip('実施中'));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('完了'));
     await tester.pumpAndSettle();
 
-    expect(find.text('完了'), findsOneWidget);
+    expect(find.byTooltip('完了'), findsOneWidget);
     final saved = (await repository.loadAll()).single;
     expect(saved.status, ProjectStatus.completed);
   });

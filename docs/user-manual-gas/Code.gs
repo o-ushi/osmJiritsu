@@ -132,7 +132,24 @@ function isHeadTableCell_(cell) {
 }
 
 function translateTextRange_(textRange, lang, stats, inTable) {
-  var original = textRange.asString();
+  var runs = null;
+  try {
+    runs = textRange.getRuns();
+  } catch (e) {
+    runs = null;
+  }
+  if (!runs || runs.length === 0) {
+    translateRun_(textRange, lang, stats, inTable);
+    return;
+  }
+  // 先頭の run を書き換えると後続 run の TextRange がずれるので、末尾から処理する。
+  for (var i = runs.length - 1; i >= 0; i--) {
+    translateRun_(runs[i], lang, stats, inTable);
+  }
+}
+
+function translateRun_(run, lang, stats, inTable) {
+  var original = run.asString();
   if (!original || !original.replace(/\s/g, '')) {
     return;
   }
@@ -142,7 +159,7 @@ function translateTextRange_(textRange, lang, stats, inTable) {
     translated = flattenSpuriousBreaks_(original, translated);
   }
   if (translated !== original) {
-    textRange.setText(translated);
+    run.setText(translated);
   }
 }
 

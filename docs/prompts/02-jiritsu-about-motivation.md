@@ -67,11 +67,11 @@ docs/prompts/02-jiritsu-about-motivation.md の Step N をやって
 
 ### セクション: 動機づけ
 
-自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。
+自分で考えて行動する原動力を動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。
 
 ### セクション: 外発的動機づけ
 
-報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。
+報酬、評価、昇進、賞賛、承認、ご褒美、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。
 
 ### セクション: 内発的動機づけ
 
@@ -88,7 +88,7 @@ docs/prompts/02-jiritsu-about-motivation.md の Step N をやって
 **Ⅱ 成果が分かりやすいか？**
 
 - 自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？
-- 方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？
+- 方策の粒度が細かく、結果が見える化されていて、視覚的に成果を実感できるか？
 - キーワード：小さなくるくる
 
 **Ⅲ 周りと繋がっているか？**
@@ -129,8 +129,8 @@ docs/prompts/02-jiritsu-about-motivation.md の Step N をやって
 | ja | en |
 |----|----|
 | 動機づけ | Motivation |
-| 自分で考えて行動するきっかけを動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。 | The spark that makes you think and act on your own is called motivation. There is extrinsic and intrinsic motivation. They are not opposites; they work together. Start with extrinsic motivation, then aim for the enhancing effect — the work itself becoming enjoyable. |
-| 報酬、評価、昇進、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。 | Motivation from outside stimulation such as rewards, evaluation, promotion, or penalties and scolding. |
+| 自分で考えて行動する原動力を動機づけという。動機づけには外発的動機づけと内発的動機づけがある。両者は対立するものではなく組み合わせるもの。外発的動機づけをきっかけに始めて、その内、それ自体が楽しくなる（エンハンシング効果）を狙うと良い。 | The driving force that makes you think and act on your own is called motivation. There is extrinsic and intrinsic motivation. They are not opposites; they work together. Start with extrinsic motivation, then aim for the enhancing effect — the work itself becoming enjoyable. |
+| 報酬、評価、昇進、賞賛、承認、ご褒美、あるいは罰則や叱責といった「外部からの刺激」による動機づけ。 | Motivation from outside stimulation such as rewards, evaluation, promotion, praise, recognition, treats, or penalties and scolding. |
 | 自分の内面的な興味・関心、探究心、楽しさなどが原動力となる動機づけ。下記の３要素で構成される。 | Motivation driven by inner interest, curiosity, and enjoyment. It is made of the three elements below. |
 | 成果が分かりやすいか？ | Can you see your results clearly? |
 | 周りと繋がっているか？ | Are you connected with others? |
@@ -138,7 +138,7 @@ docs/prompts/02-jiritsu-about-motivation.md の Step N をやって
 | 主導権は自分にあるのだと意識できているか？ | Are you aware that you hold the initiative? |
 | 他人から言われる前に動いているか？ | Do you act before someone else tells you to? |
 | 自分の能力を発揮できている、自分の成長を実感できているという有能感があるか？ | Do you feel competent — using your abilities and seeing your own growth? |
-| 方策の粒度が細かく、結果を見える化されていて、視覚的に成果を実感できるか？ | Are the steps small enough, and results visible enough, that you can feel progress? |
+| 方策の粒度が細かく、結果が見える化されていて、視覚的に成果を実感できるか？ | Are the steps small enough, and results visible enough, that you can feel progress? |
 | ビジョン、ゴール、日々の進捗状況を周囲と共有できているか？ | Are vision, goals, and daily progress shared with the people around you? |
 | 周囲からサポートが得られるようになっているか？ | Can you get support from the people around you? |
 | 「お役に立ちたい」「当てにされたい」などの承認欲求を満たしているか？ | Are needs like “I want to be useful” and “I want to be counted on” being met? |
@@ -155,7 +155,7 @@ docs/prompts/02-jiritsu-about-motivation.md の Step N をやって
 
 旧キー（`動機づけマトリクス`、`方策を考える際、動機づけマトリクスを意識すると良い。`、`内発か？外発か？`、`＜メリット・デメリット＞`、旧チップ「他人から言われる前に動く」など）は画面から消したら l10n からも消す。他ファイルで使っていれば残す。
 
-`docs/user-manual-gas/Glossary.gs` に旧見出しがある。この Step で画面キーを変えたら Glossary も同じキーを更新または削除する（マニュアル本文の書き換えまではしない）。
+`docs/user-manual-gas/Glossary.gs` の更新は [`05-user-manual.md`](05-user-manual.md) に任せる。このファイルでは画面と `app_strings.dart` だけ直す。
 
 ---
 

@@ -8,7 +8,7 @@
 まとめて全部:
 
 ```
-docs/prompts/README.md の順で、01 → 02 → 03 → 04 の各ファイルのステップに沿って進めて
+docs/prompts/README.md の順で、01 → 02 → 03 → 04 → 05 の各ファイルのステップに沿って進めて
 ```
 
 ファイル単位:
@@ -29,6 +29,16 @@ docs/prompts/03-ai-prompts-three-elements.md のステップに沿って進め�
 docs/prompts/04-intrinsic-check.md のステップに沿って進めて
 ```
 
+```
+docs/prompts/05-user-manual.md のステップに沿って進めて
+```
+
+簡易モード（01〜05 とは別依頼）:
+
+```
+docs/prompts/06-simple-mode.md のステップに沿って進めて
+```
+
 1 Step だけ:
 
 ```
@@ -47,8 +57,11 @@ docs/prompts/01-usage-screen.md の Step 2 をやって
 | 2 | [`02-jiritsu-about-motivation.md`](02-jiritsu-about-motivation.md) | 「自律とは」の動機づけ／3要素の再構成 | なし（01 と並行可） |
 | 3 | [`03-ai-prompts-three-elements.md`](03-ai-prompts-three-elements.md) | 方策・最初の一歩の AI プロンプトに内発3要素を入れる | 02 の要素名に合わせる |
 | 4 | [`04-intrinsic-check.md`](04-intrinsic-check.md) | 「自律度チェック」→「内発度チェック」。要素名も更新 | 02 の要素名に合わせる |
+| 5 | [`05-user-manual.md`](05-user-manual.md) | 操作マニュアル GAS を osmGradus 最新（`getRuns()`）に揃え、Glossary を画面文言に同期 | Step 1–2 は独立。Step 3 は 01〜04 のあと |
+| — | [`06-simple-mode.md`](06-simple-mode.md) | ＋でも0件のホーム着地でも簡易／フルを選び、簡易はゴール・現状3・方策3・最初の一歩だけの画面 | なし（01〜05 と独立） |
 
-推奨は **01 → 02 → 03 → 04**。01 と 02 は独立なので並行してもよい。03 と 04 は 02 の文言が正本。
+推奨は **01 → 02 → 03 → 04 → 05**。01 と 02 は独立なので並行してもよい。03 と 04 は 02 の文言が正本。05 の辞書更新は画面キーが固まってから。  
+06 は別機能なので、上の並びに含めない。単体で `06-simple-mode.md` を渡す。
 
 ## 変更の狙い（全体）
 

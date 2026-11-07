@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../app_theme.dart';
 import '../subpage_theme.dart';
@@ -28,11 +29,14 @@ class SubpageScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return SubpageTheme.wrap(
       context: context,
-      child: Scaffold(
-        backgroundColor: AppPalette.subpageBackground,
-        appBar: appBar,
-        body: body,
-        bottomNavigationBar: bottomNavigationBar,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Scaffold(
+          backgroundColor: AppPalette.subpageBackground,
+          appBar: appBar,
+          body: body,
+          bottomNavigationBar: bottomNavigationBar,
+        ),
       ),
     );
   }

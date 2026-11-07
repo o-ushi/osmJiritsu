@@ -25,6 +25,7 @@ import '../state/strategy_flow_notifier.dart';
 import '../state/strategy_flow_state.dart';
 import '../widgets/jiritsu_check_panel.dart';
 import '../widgets/strategy_suggestion_card.dart';
+import '../../navigation/osm_page_route.dart';
 
 /// Stage1 Steps 5-8 — the heart of "自律": diverge 5 方策 candidates via
 /// Chrome AI Mode (Step 5), then loop the user through deciding one in
@@ -54,8 +55,7 @@ class StrategyFlowScreen extends ConsumerStatefulWidget {
   final bool fromProjectDashboard;
 
   @override
-  ConsumerState<StrategyFlowScreen> createState() =>
-      _StrategyFlowScreenState();
+  ConsumerState<StrategyFlowScreen> createState() => _StrategyFlowScreenState();
 }
 
 class _StrategyFlowScreenState extends ConsumerState<StrategyFlowScreen>
@@ -100,11 +100,13 @@ class _StrategyFlowScreenState extends ConsumerState<StrategyFlowScreen>
       _requestConsentAndOpen(leaveOnDecline: widget.popOnConfirm);
       return;
     }
-    ref.read(strategyFlowProvider.notifier).resumeFromCached(
-      suggestions: wizard.aiStrategySuggestions,
-      decidedStrategy: wizard.decidedStrategy,
-      jiritsuCheck: wizard.jiritsuCheck,
-    );
+    ref
+        .read(strategyFlowProvider.notifier)
+        .resumeFromCached(
+          suggestions: wizard.aiStrategySuggestions,
+          decidedStrategy: wizard.decidedStrategy,
+          jiritsuCheck: wizard.jiritsuCheck,
+        );
   }
 
   Future<void> _requestConsentAndOpen({bool leaveOnDecline = false}) {
@@ -213,10 +215,10 @@ class _StrategyFlowScreenState extends ConsumerState<StrategyFlowScreen>
           lang: lang,
           onGoHome: widget.fromProjectDashboard
               ? () => ProjectNavigation.popToDashboard(context)
-              : () => HistoryToolbarActions(ref, lang).goHome(
-                    context,
-                    persistWizard: true,
-                  ),
+              : () => HistoryToolbarActions(
+                  ref,
+                  lang,
+                ).goHome(context, persistWizard: true),
           fromProjectDashboard: widget.fromProjectDashboard,
         ),
       },
@@ -239,7 +241,6 @@ class _StrategyFlowScreenState extends ConsumerState<StrategyFlowScreen>
     );
   }
 }
-
 
 class _StrategyEditorView extends StatefulWidget {
   final StrategyFlowDeciding state;
@@ -294,12 +295,11 @@ class _StrategyEditorViewState extends State<_StrategyEditorView> {
   Future<void> _editSuggestion(StrategySuggestion suggestion) async {
     final newText = await showAppAlertDialog<String>(
       context: context,
-      builder: (context) =>
-          EditTextFieldDialog(
-            lang: widget.lang,
-            title: '方策を編集'.tr(widget.lang),
-            initialText: suggestion.text,
-          ),
+      builder: (context) => EditTextFieldDialog(
+        lang: widget.lang,
+        title: '方策を編集'.tr(widget.lang),
+        initialText: suggestion.text,
+      ),
     );
     if (newText == null) return;
     widget.notifier.editSuggestionText(suggestion, newText);
@@ -348,8 +348,7 @@ class _StrategyEditorViewState extends State<_StrategyEditorView> {
           ),
           const SizedBox(height: 4),
           Text(
-            '「採用済／未採用」はタップで切り替えられます。文言を直したいときは案を長押しで編集できます。'
-                .tr(lang),
+            '「採用済／未採用」はタップで切り替えられます。文言を直したいときは案を長押しで編集できます。'.tr(lang),
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: AppPalette.sceneTextMuted),
@@ -396,7 +395,6 @@ class _StrategyEditorViewState extends State<_StrategyEditorView> {
     );
   }
 }
-
 
 /// Step 7: the 内発度チェック screen for whatever's currently in
 /// `decidedStrategy`. "方策を編集する" loops back to Step 6/8's editor
@@ -460,9 +458,7 @@ class _JiritsuCheckView extends StatelessWidget {
             '%lld / 3 満たしている'.trFmt(lang, [
               '${state.jiritsuCheck.satisfiedCount}',
             ]),
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: AppPalette.ensureReadableOnScene(AppPalette.sceneText),
             ),
@@ -560,9 +556,7 @@ class _ConfirmedView extends StatelessWidget {
             '内発度チェック: %lld / 3'.trFmt(lang, [
               '${state.jiritsuCheck.satisfiedCount}',
             ]),
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppPalette.ensureReadableOnScene(
                 AppPalette.sceneTextMuted,
                 minContrast: 3,
@@ -580,7 +574,7 @@ class _ConfirmedView extends StatelessWidget {
               Navigator.of(context).push(
                 fromProjectDashboard
                     ? ProjectNavigation.childRoute(firstStepScreen)
-                    : MaterialPageRoute(builder: (_) => firstStepScreen),
+                    : osmPageRoute(builder: (_) => firstStepScreen),
               );
             },
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../navigation/osm_page_route.dart';
 
 /// Route names for the project dashboard navigation stack.
 ///
@@ -9,19 +10,19 @@ abstract final class ProjectNavigation {
   static const dashboardRouteName = 'project-dashboard';
   static const childRouteName = 'project-child';
 
-  static Route<T> dashboardRoute<T>(Widget child) => MaterialPageRoute<T>(
-        settings: const RouteSettings(name: dashboardRouteName),
-        builder: (_) => child,
-      );
+  static Route<T> dashboardRoute<T>(Widget child) => osmPageRoute<T>(
+    settings: const RouteSettings(name: dashboardRouteName),
+    builder: (_) => child,
+  );
 
-  static Route<T> childRoute<T>(Widget child) => MaterialPageRoute<T>(
-        settings: const RouteSettings(name: childRouteName),
-        builder: (_) => child,
-      );
+  static Route<T> childRoute<T>(Widget child) => osmPageRoute<T>(
+    settings: const RouteSettings(name: childRouteName),
+    builder: (_) => child,
+  );
 
   static void popToDashboard(BuildContext context) {
-    Navigator.of(context).popUntil(
-      (route) => route.settings.name == dashboardRouteName,
-    );
+    Navigator.of(
+      context,
+    ).popUntil((route) => route.settings.name == dashboardRouteName);
   }
 }

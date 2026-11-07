@@ -12,6 +12,7 @@ import '../../privacy/screens/privacy_screen.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/osm_app_bar.dart';
 import '../../theme/widgets/subpage_scaffold.dart';
+import '../../navigation/osm_page_route.dart';
 
 /// osmJiritsu's settings entry point: the language list, then collapsible
 /// groups — 案内 / データ. プライバシー is opened from Help.
@@ -130,7 +131,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 title: Text('iCloud同期'.tr(lang)),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
+                  osmPageRoute(
                     builder: (_) => const IcloudSyncSettingsScreen(),
                   ),
                 ),
@@ -144,7 +145,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               trailing: const Icon(Icons.chevron_right_rounded),
               onTap: () => Navigator.of(
                 context,
-              ).push(MaterialPageRoute(builder: (_) => const PrivacyScreen())),
+              ).push(osmPageRoute(builder: (_) => const PrivacyScreen())),
             ),
           ]),
         ],

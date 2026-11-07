@@ -36,7 +36,7 @@ class AppPalette {
   // ── Chrome: scene ───────────────────────────────────────────────────
   /// Same blue as the flat background of `assets/images/app_icon.png`
   /// (the most common pixel is RGB 57, 84, 137).
-  static const scene = Color(0xFF395489);
+  static const scene = Color(0xFF3D5993);
   static const sceneText = Color(0xFFFFFFFF);
   static const sceneTextMuted = Color(0xB3FFFFFF);
 
@@ -133,19 +133,31 @@ class AppTheme {
   AppTheme._();
 
   static ThemeData light() {
-    final colorScheme = ColorScheme.fromSeed(
-      seedColor: AppPalette.mintDark,
-      brightness: Brightness.light,
-      primary: AppPalette.mintDark,
-      secondary: AppPalette.cardAccent,
-      surface: AppPalette.cardFill,
-    ).copyWith(
-      onSurface: AppPalette.ink,
-      onSurfaceVariant: AppPalette.inkMuted,
-      onPrimary: AppPalette.onAccent,
-    );
+    final colorScheme =
+        ColorScheme.fromSeed(
+          seedColor: AppPalette.mintDark,
+          brightness: Brightness.light,
+          primary: AppPalette.mintDark,
+          secondary: AppPalette.cardAccent,
+          surface: AppPalette.cardFill,
+        ).copyWith(
+          onSurface: AppPalette.ink,
+          onSurfaceVariant: AppPalette.inkMuted,
+          onPrimary: AppPalette.onAccent,
+        );
 
     return ThemeData(
+      pageTransitionsTheme: const PageTransitionsTheme(
+        // 閉じるのは自前のスワイプに任せる（iOS 標準の端スワイプと同時に動かさない）。
+        builders: {
+          TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+          TargetPlatform.fuchsia: FadeUpwardsPageTransitionsBuilder(),
+        },
+      ),
       useMaterial3: true,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: AppPalette.canvas,
@@ -159,7 +171,10 @@ class AppTheme {
           color: AppPalette.ink,
           height: 1.3,
         ),
-        titleLarge: TextStyle(fontWeight: FontWeight.w700, color: AppPalette.ink),
+        titleLarge: TextStyle(
+          fontWeight: FontWeight.w700,
+          color: AppPalette.ink,
+        ),
         titleMedium: TextStyle(
           fontWeight: FontWeight.w600,
           color: AppPalette.ink,
@@ -173,7 +188,9 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppPalette.linkOnScene,
-          side: BorderSide(color: AppPalette.linkOnScene.withValues(alpha: 0.65)),
+          side: BorderSide(
+            color: AppPalette.linkOnScene.withValues(alpha: 0.65),
+          ),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(

@@ -12,6 +12,7 @@ import '../state/wizard_state.dart';
 import '../widgets/choice_card_button.dart';
 import '../widgets/primary_cta_button.dart';
 import 'swot_matrix_screen.dart';
+import '../../navigation/swipe_to_close_wrapper.dart';
 
 /// Step 4: classify each idea by answering two small yes/no questions in
 /// sequence — never a single combined 4-way SWOT choice. A tap answers
@@ -71,9 +72,9 @@ class _QuickClassificationScreenState
                             '$total',
                           ]),
                     textAlign: TextAlign.center,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: AppPalette.sceneTextMuted),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: AppPalette.sceneTextMuted,
+                    ),
                   ),
                 ),
                 TextButton(
@@ -354,56 +355,59 @@ class _CompletionState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-            const Text('🎉', style: TextStyle(fontSize: 48)),
-            const SizedBox(height: 16),
-            Text(
-              '全部答えられました！'.tr(lang),
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(color: AppPalette.sceneText),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '実はこれ、SWOT分析になっています。\n出来上がったマトリクスを見てみましょう。'.tr(lang),
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: AppPalette.sceneTextMuted),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-            PrimaryCtaButton(
-              label: 'マトリクスを確認する'.tr(lang),
-              icon: Icons.grid_view_rounded,
-              onPressed: () {
-                Navigator.of(context).push(
-                  PageRouteBuilder(
-                    transitionDuration: const Duration(milliseconds: 380),
-                    pageBuilder: (context, animation, secondaryAnimation) =>
-                        const SwotMatrixScreen(),
-                    transitionsBuilder:
-                        (context, animation, secondaryAnimation, child) {
-                          final curved = CurvedAnimation(
-                            parent: animation,
-                            curve: Curves.easeOutCubic,
-                          );
-                          return FadeTransition(
-                            opacity: curved,
-                            child: SlideTransition(
-                              position: Tween(
-                                begin: const Offset(0, 0.06),
-                                end: Offset.zero,
-                              ).animate(curved),
-                              child: child,
-                            ),
-                          );
-                        },
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+          const Text('🎉', style: TextStyle(fontSize: 48)),
+          const SizedBox(height: 16),
+          Text(
+            '全部答えられました！'.tr(lang),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(color: AppPalette.sceneText),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '実はこれ、SWOT分析になっています。\n出来上がったマトリクスを見てみましょう。'.tr(lang),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppPalette.sceneTextMuted),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+          PrimaryCtaButton(
+            label: 'マトリクスを確認する'.tr(lang),
+            icon: Icons.grid_view_rounded,
+            onPressed: () {
+              Navigator.of(context).push(
+                PageRouteBuilder(
+                  transitionDuration: const Duration(milliseconds: 380),
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      const SwipeToCloseWrapper(
+                        closeOnSwipeDown: false,
+                        child: SwotMatrixScreen(),
+                      ),
+                  transitionsBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                        final curved = CurvedAnimation(
+                          parent: animation,
+                          curve: Curves.easeOutCubic,
+                        );
+                        return FadeTransition(
+                          opacity: curved,
+                          child: SlideTransition(
+                            position: Tween(
+                              begin: const Offset(0, 0.06),
+                              end: Offset.zero,
+                            ).animate(curved),
+                            child: child,
+                          ),
+                        );
+                      },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

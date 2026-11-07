@@ -13,6 +13,7 @@ import 'data/analysis_file_io.dart';
 import 'services/analysis_export_service.dart';
 import 'state/analysis_history_notifier.dart';
 import 'widgets/entry_mode_sheet.dart';
+import '../navigation/osm_page_route.dart';
 
 /// Shared callbacks for [HistoryBottomToolbar] — used on the home screen
 /// and every Stage-1 flow screen so export/import/settings/help behave the
@@ -40,9 +41,10 @@ class HistoryToolbarActions {
       // reads or writes the wizard draft.
       Navigator.of(context).popUntil((route) => route.isFirst);
       Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) =>
-              SimpleModeScreen(project: Project(theme: theme, entryMode: mode)),
+        osmPageRoute(
+          builder: (_) => SimpleModeScreen(
+            project: Project(theme: theme, entryMode: mode),
+          ),
         ),
       );
       return;
@@ -53,15 +55,15 @@ class HistoryToolbarActions {
     Navigator.of(context).popUntil((route) => route.isFirst);
     Navigator.of(
       context,
-    ).push(MaterialPageRoute(builder: (_) => const WizardFlowScreen()));
+    ).push(osmPageRoute(builder: (_) => const WizardFlowScreen()));
   }
 
   Future<void> export(BuildContext context) async {
     final projects = ref.read(analysisHistoryProvider).value ?? const [];
     if (projects.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('エクスポートできる分析がまだありません'.tr(lang))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('エクスポートできる分析がまだありません'.tr(lang))));
       return;
     }
     final projectOrder = projects.map((p) => p.id).toList();

@@ -21,6 +21,7 @@ import '../../theme/widgets/edit_field_dialogs.dart';
 import '../models/wizard_idea.dart';
 import '../state/wizard_notifier.dart';
 import '../widgets/primary_cta_button.dart';
+import '../../navigation/osm_page_route.dart';
 
 /// Step 3: the finished SWOT matrix, editable by dragging a card from one
 /// quadrant into another.
@@ -176,10 +177,8 @@ class _SwotMatrixScreenState extends ConsumerState<SwotMatrixScreen> {
       ),
     );
     if (updated == null) return;
-    if (
-      updated.desiredGoal == desiredGoal &&
-      updated.undesiredGoal == undesiredGoal
-    ) {
+    if (updated.desiredGoal == desiredGoal &&
+        updated.undesiredGoal == undesiredGoal) {
       return;
     }
     _mutate(() {
@@ -315,7 +314,7 @@ class _SwotMatrixScreenState extends ConsumerState<SwotMatrixScreen> {
                 Navigator.of(context).push(
                   widget.fromProjectDashboard
                       ? ProjectNavigation.childRoute(strategyScreen)
-                      : MaterialPageRoute(builder: (_) => strategyScreen),
+                      : osmPageRoute(builder: (_) => strategyScreen),
                 );
               },
             ),
@@ -505,9 +504,7 @@ class _GoalAppBarTitle extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.left,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w700,
               color: AppPalette.sceneText,
             ),
@@ -743,9 +740,7 @@ class _AddIdeaDialogState extends State<_AddIdeaDialog> {
         autofocus: true,
         maxLines: 4,
         textInputAction: TextInputAction.done,
-        decoration: InputDecoration(
-          hintText: '思いついたことを入力…'.tr(widget.lang),
-        ),
+        decoration: InputDecoration(hintText: '思いついたことを入力…'.tr(widget.lang)),
         onSubmitted: (value) {
           final trimmed = value.trim();
           if (trimmed.isNotEmpty) Navigator.of(context).pop(trimmed);
@@ -783,12 +778,7 @@ class _PickQuadrantSheet extends StatelessWidget {
       AppPalette.opportunity,
     ),
     (SwotCategory.weakness, '弱み', Icons.shield_outlined, AppPalette.weakness),
-    (
-      SwotCategory.threat,
-      '脅威',
-      Icons.warning_amber_rounded,
-      AppPalette.threat,
-    ),
+    (SwotCategory.threat, '脅威', Icons.warning_amber_rounded, AppPalette.threat),
   ];
 
   @override

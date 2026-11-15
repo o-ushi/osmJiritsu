@@ -1,8 +1,9 @@
-# osmJiritsu App Store Connect 申請用文案（日本語・v1.3.3）
+# osmJiritsu App Store Connect 申請用文案（ベトナム語・v1.3.3）
 
 最終更新：2026年11月15日
 
 App Store Connect の各フィールドにそのまま貼り付けて使えます。文字数は提出前に再確認してください。
+ストアの各欄（サブタイトル・プロモーション・概要・キーワード・最新情報）はベトナム語、審査員へのメモは日本語です。
 
 ---
 
@@ -11,10 +12,10 @@ App Store Connect の各フィールドにそのまま貼り付けて使えま�
 アプリ名の下に表示され、検索の対象にもなります。
 
 ```
-SWOTで考え、自分の言葉で決める
+Phân tích SWOT, tự quyết định
 ```
 
-（17文字）
+（29文字）
 
 ---
 
@@ -23,78 +24,78 @@ SWOTで考え、自分の言葉で決める
 審査通過後も、新バージョンを出さずに更新できます。
 
 ```
-やりたいことを、自分で決めて動き出す。テーマとゴールを置き、SWOTで今を整理。AIが出す方策と最初の一歩の案を手がかりに、最後は自分の言葉で決めます。振り返りまで、一つの案件として残せます。
+Tự quyết điều mình muốn làm. Sắp xếp hiện trạng bằng SWOT, dựa vào gợi ý phương án và bước đầu tiên từ AI, rồi tự quyết bằng lời của mình. Lưu cả phần nhìn lại.
 ```
 
-（96文字）
+（160文字）
 
 ---
 
 ## 概要（説明・4,000文字以内）
 
 ```
-osmJiritsuは、SWOT分析で考えを整理し、自分の言葉で方策と最初の一歩を決めるアプリです。答えをAIに任せるのではなく、AIの案を手がかりに、決めるのは自分。その過程を「自律」と呼んでいます。
+osmJiritsu là ứng dụng giúp bạn sắp xếp suy nghĩ bằng phân tích SWOT, rồi tự quyết định phương án và bước đầu tiên bằng lời của mình. Không giao câu trả lời cho AI — gợi ý của AI chỉ là manh mối, người quyết định là bạn. Chúng tôi gọi quá trình đó là “tự chủ”.
 
-■ 一つの案件として進める
-・テーマを決め、望むゴールと、避けたい姿を書きます
-・今の状況を、強み・弱み・機会・脅威の4つに分けて整理します（思いつくまま書き出して、あとから振り分けることもできます）
-・方策：AIが出す5つの案を見ながら、採用する案を選び、自分の言葉で書き直します
-・自律の3要素で、その方策を見直します。納得するまで何度でも
-・最初の一歩：AIが出す10の案を手がかりに、今日できる一歩と宣言文を決めます
-・振り返り：実施したことを残し、次の一歩につなげます
-・進み具合は、テーマ設定から完了までの％で、一覧からひと目で分かります
+■ Tiến hành như một dự án
+・Chọn chủ đề, viết mục tiêu mong muốn và điều muốn tránh
+・Sắp xếp tình hình hiện tại thành 4 nhóm: điểm mạnh, điểm yếu, cơ hội, thách thức (cũng có thể viết ra tùy ý rồi phân loại sau)
+・Phương án: xem 5 gợi ý từ AI, chọn gợi ý muốn áp dụng và viết lại bằng lời của mình
+・Kiểm tra phương án theo 3 yếu tố của sự tự chủ, bao nhiêu lần cũng được cho đến khi thấy hài lòng
+・Bước đầu tiên: dựa trên 10 gợi ý từ AI, quyết định một bước có thể làm ngay hôm nay và câu tuyên bố
+・Nhìn lại: ghi lại những gì đã làm và nối tiếp sang bước tiếp theo
+・Tiến độ hiển thị theo %, từ đặt chủ đề đến hoàn thành, nhìn danh sách là biết ngay
 
-■ 簡易モードとフルモード
-・行を足すだけで手早く整理する簡易モードと、順を追ってじっくり考えるフルモードを選べます
+■ Chế độ đơn giản và chế độ đầy đủ
+・Chọn chế độ đơn giản để sắp xếp nhanh chỉ bằng cách thêm dòng, hoặc chế độ đầy đủ để suy nghĩ kỹ theo từng bước
 
-■ 見直す・共有する
-・決めた方策や最初の一歩は、あとから文言だけ直すことも、AIに相談し直すこともできます
-・案件を共有シートから送れます
+■ Xem lại và chia sẻ
+・Phương án và bước đầu tiên đã quyết định có thể chỉ sửa câu chữ, hoặc hỏi lại AI
+・Chia sẻ dự án qua bảng chia sẻ
 
-■ 書き出し・取り込み・同期
-・JSON のバックアップと取り込みに対応
-・iCloud で同じ Apple ID の iPhone 間を同期できます（任意）
+■ Xuất, nhập, đồng bộ
+・Hỗ trợ sao lưu và nhập JSON
+・Đồng bộ giữa các iPhone cùng Apple ID qua iCloud (tùy chọn)
 
-■ 3言語対応
+■ Hỗ trợ 3 ngôn ngữ
 日本語・English・Tiếng Việt
 
-■ プライバシー
-・ユーザー登録不要。広告・アクセス解析・トラッキングなし
-・案件は端末内に保存し、開発者のサーバーへは送りません
-・AIに案を出してもらうときだけ、毎回内容を確かめてから、外部ブラウザ経由で Google 検索（AI モード）へ文字を送ります
+■ Quyền riêng tư
+・Không cần đăng ký tài khoản. Không quảng cáo, không phân tích truy cập, không theo dõi
+・Dự án được lưu trên máy, không gửi về máy chủ của nhà phát triển
+・Chỉ khi nhờ AI đưa ra gợi ý, sau khi xác nhận nội dung mỗi lần, văn bản mới được gửi qua trình duyệt bên ngoài đến Google Tìm kiếm (chế độ AI)
 
-■ 対応端末
-・iPhone（縦画面のみ）
+■ Thiết bị hỗ trợ
+・iPhone (chỉ màn hình dọc)
 
-決めたことを、自分で始める。その小さな一歩を、ていねいに積み重ねましょう。
+Tự mình bắt đầu điều mình đã quyết định. Hãy cẩn thận tích lũy từng bước nhỏ ấy.
 ```
 
-（784文字）
+（1761文字）
 
 ---
 
 ## キーワード（100文字以内）
 
-カンマ区切り。スペースは入れない（文字数節約のため）。アプリ名に含まれる語は入れない。
+カンマ区切り。カンマの後ろにスペースは入れない（文字数節約のため）。アプリ名に含まれる語は入れない。
 
 ```
-SWOT,SWOT分析,目標,目標設定,自己分析,意思決定,計画,行動計画,習慣化,振り返り,自律,キャリア,思考整理,フレームワーク
+SWOT,mục tiêu,tự phân tích,ra quyết định,kế hoạch,hành động,thói quen,nhìn lại,tự chủ,sự nghiệp
 ```
 
-（67文字）
+（95文字）
 
 ---
 
 ## このバージョンの最新情報（v1.3.3）
 
 ```
-・画面を閉じる操作を見直しました。下へのスワイプや、左端からのスワイプで閉じられます
-・画面の色合いと上部のボタンの大きさを、ほかの osm アプリと揃えました
-・方策と最初の一歩を見直すときの選択画面や、Chrome でつまずいたときの画面を整理しました
-・内部を整理し、動作を安定させました
+・Cải thiện cách đóng màn hình: vuốt xuống hoặc vuốt từ mép trái để đóng
+・Màu sắc màn hình và kích thước các nút phía trên được thống nhất với các ứng dụng osm khác
+・Sắp xếp lại màn hình chọn cách xem lại phương án, bước đầu tiên và màn hình khi gặp sự cố với Chrome
+・Sắp xếp lại bên trong ứng dụng để hoạt động ổn định hơn
 ```
 
-（144文字）
+（319文字）
 
 ---
 

@@ -28,6 +28,9 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
   use_frameworks!
+  # プラグインのソースは pub-cache にあり、ここでは直せない。
+  # そちらの警告は隠して、Runner 自身の警告だけ残す。
+  inhibit_all_warnings!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
   target 'RunnerTests' do
@@ -42,6 +45,8 @@ post_install do |installer|
     # raise any that fall below the app's floor so Xcode doesn't warn about
     # per-pod deployment targets outside its supported range.
     target.build_configurations.each do |config|
+      # inhibit_all_warnings! は Objective-C だけ。Swift の非推奨も隠す。
+      config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
       pod_target = Gem::Version.new(config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
       if pod_target < Gem::Version.new('15.0')
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'

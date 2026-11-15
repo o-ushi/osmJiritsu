@@ -1,4 +1,4 @@
-# osmJiritsu App Store Connect 申請用文案（ベトナム語・v1.3.3）
+# osmJiritsu App Store Connect 申請用文案（ベトナム語・v1.3.4）
 
 最終更新：2026年11月15日
 
@@ -86,16 +86,13 @@ SWOT,mục tiêu,tự phân tích,ra quyết định,kế hoạch,hành động,
 
 ---
 
-## このバージョンの最新情報（v1.3.3）
+## このバージョンの最新情報（v1.3.4）
 
 ```
-・Cải thiện cách đóng màn hình: vuốt xuống hoặc vuốt từ mép trái để đóng
-・Màu sắc màn hình và kích thước các nút phía trên được thống nhất với các ứng dụng osm khác
-・Sắp xếp lại màn hình chọn cách xem lại phương án, bước đầu tiên và màn hình khi gặp sự cố với Chrome
-・Sắp xếp lại bên trong ứng dụng để hoạt động ổn định hơn
+・Sắp xếp lại bên trong ứng dụng (màn hình chọn cách xem lại phương án, bước đầu tiên và màn hình khi gặp sự cố với Chrome) để hoạt động ổn định hơn
 ```
 
-（319文字）
+（147文字）
 
 ---
 
@@ -104,11 +101,8 @@ SWOT,mục tiêu,tự phân tích,ra quyết định,kế hoạch,hành động,
 ```
 2026/11/15
 いつもアプリを審査頂きましてありがとうございます。
-先にご審査いただいたVersion 1.3.2に対して、下記修正を行なっています。
-・画面を閉じる操作を、同じ開発者の他アプリと揃えました（下スワイプ・左端からのスワイプで閉じる）
-・画面の配色と上部ツールバーのアイコンの大きさを調整しました
-・Android の画面向きを縦に固定しました（iOS は従来どおり縦向き）
-・内部の共通化（動作の変更はありません）
+先に公開したVersion 1.3.3に対して、下記修正を行なっています。
+・方策・最初の一歩の見直し方を選ぶシートと、Chrome でつまずいたときの画面の内部処理を共通化（表示・動作の変更はありません）
 新たな権限の要求、データの収集・送信先の変更はございません。
 先に一度承認をいただいた内容から、上記修正以外の機能変更やビジネスモデルの変更はございません。
 お手数をおかけして恐縮ですが、ご確認のほどよろしくお願いいたします。
@@ -118,6 +112,6 @@ SWOT,mục tiêu,tự phân tích,ra quyết định,kế hoạch,hành động,
 
 ## 提出前チェックリスト
 
-- [ ] App Store Connect で新しいバージョンを 1.3.3 で作成し、`pubspec.yaml` のバージョン（1.3.3+1）と一致している（審査済みの 1.3.2 より大きいこと）
+- [ ] App Store Connect のバージョン 1.3.4 と、`pubspec.yaml` のバージョン（1.3.4+1）が一致している（公開済みの 1.3.3 より大きいこと）
 - [ ] App Privacy の回答は前バージョンから変更なし
-- [ ] 実機で試した（下スワイプ・左端スワイプで閉じる／ダッシュボードで方策・最初の一歩を長押し→見直し方の選択／Chrome を開けない・読み取れないときの画面とやり直し）
+- [ ] 実機で試した（ダッシュボードで方策・最初の一歩を長押し→見直し方の選択／Chrome を開けない・読み取れないときの画面とやり直し）

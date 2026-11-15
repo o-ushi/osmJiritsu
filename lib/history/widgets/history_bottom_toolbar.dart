@@ -143,8 +143,8 @@ class _HistoryBottomToolbarState extends State<HistoryBottomToolbar> {
   Widget build(BuildContext context) {
     final compact = widget.mode == HistoryToolbarMode.matrix;
     final hPad = compact ? 10.0 : 24.0;
-    final iconSize = compact ? 30.0 : 34.0;
-    final emphasizedSize = compact ? 38.0 : 44.0;
+    final iconSize = compact ? 24.0 : 26.0;
+    final emphasizedSize = compact ? 30.0 : 32.0;
 
     return SafeArea(
       top: false,
@@ -281,8 +281,8 @@ class _ToolbarButton extends StatelessWidget {
     this.emphasized = false,
     this.enabled = true,
     this.horizontalPadding = 24,
-    this.iconSize = 34,
-    this.emphasizedSize = 44,
+    this.iconSize = 26,
+    this.emphasizedSize = 32,
   });
 
   final IconData icon;

@@ -86,7 +86,7 @@ class _ProjectBottomToolbarState extends State<ProjectBottomToolbar> {
   @override
   Widget build(BuildContext context) {
     const hPad = 24.0;
-    const iconSize = 34.0;
+    const iconSize = 26.0;
 
     return SafeArea(
       top: false,
@@ -170,7 +170,7 @@ class _ProjectToolbarButton extends StatelessWidget {
     required this.onTap,
     this.onLongPress,
     this.horizontalPadding = 24,
-    this.iconSize = 34,
+    this.iconSize = 26,
   });
 
   final IconData icon;

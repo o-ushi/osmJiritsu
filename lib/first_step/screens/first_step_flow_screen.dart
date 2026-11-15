@@ -23,6 +23,7 @@ import '../../wizard/widgets/primary_cta_button.dart';
 import '../state/first_step_flow_notifier.dart';
 import '../state/first_step_flow_state.dart';
 import '../widgets/first_step_suggestion_card.dart';
+import '../../navigation/osm_page_route.dart';
 
 /// Stage1 Steps 9-10: diverge 10 最初の一歩 candidates via Chrome AI Mode
 /// once 方策 is fixed (Step 9), then let the user decide one (adopt/merge/
@@ -91,11 +92,13 @@ class _FirstStepFlowScreenState extends ConsumerState<FirstStepFlowScreen>
       _requestConsentAndOpen(leaveOnDecline: widget.popOnConfirm);
       return;
     }
-    ref.read(firstStepFlowProvider.notifier).resumeFromCached(
-      suggestions: wizard.aiFirstStepSuggestions,
-      decidedFirstStep: wizard.decidedFirstStep,
-      declaration: wizard.declaration,
-    );
+    ref
+        .read(firstStepFlowProvider.notifier)
+        .resumeFromCached(
+          suggestions: wizard.aiFirstStepSuggestions,
+          decidedFirstStep: wizard.decidedFirstStep,
+          declaration: wizard.declaration,
+        );
   }
 
   Future<void> _requestConsentAndOpen({bool leaveOnDecline = false}) {
@@ -196,8 +199,11 @@ class _FirstStepFlowScreenState extends ConsumerState<FirstStepFlowScreen>
           onRetryPaste: notifier.pasteAndParse,
           onReopenChrome: () => _requestConsentAndOpen(),
         ),
-        FirstStepFlowDeciding(showingDeclaration: true) =>
-          _DeclarationView(state: flowState, lang: lang, notifier: notifier),
+        FirstStepFlowDeciding(showingDeclaration: true) => _DeclarationView(
+          state: flowState,
+          lang: lang,
+          notifier: notifier,
+        ),
         FirstStepFlowDeciding() => _FirstStepEditorView(
           state: flowState,
           lang: lang,
@@ -229,7 +235,6 @@ class _FirstStepFlowScreenState extends ConsumerState<FirstStepFlowScreen>
     );
   }
 }
-
 
 class _FirstStepEditorView extends StatefulWidget {
   final FirstStepFlowDeciding state;
@@ -329,8 +334,7 @@ class _FirstStepEditorViewState extends State<_FirstStepEditorView> {
           ),
           const SizedBox(height: 4),
           Text(
-            '「採用済／未採用」はタップで切り替えられます。文言を直したいときは案を長押しで編集できます。'
-                .tr(lang),
+            '「採用済／未採用」はタップで切り替えられます。文言を直したいときは案を長押しで編集できます。'.tr(lang),
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: AppPalette.sceneTextMuted),
@@ -453,9 +457,9 @@ class _DeclarationViewState extends State<_DeclarationView> {
               children: [
                 Text(
                   '最初の一歩'.tr(lang),
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 6),
                 DecidedItemsText(
@@ -570,7 +574,7 @@ class _ConfirmedView extends StatelessWidget {
               Navigator.of(context).push(
                 fromProjectDashboard
                     ? ProjectNavigation.childRoute(exportScreen)
-                    : MaterialPageRoute(builder: (_) => exportScreen),
+                    : osmPageRoute(builder: (_) => exportScreen),
               );
             },
           ),

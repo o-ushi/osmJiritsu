@@ -13,6 +13,7 @@ import '../../theme/widgets/subpage_scaffold.dart';
 import '../widgets/expand_card.dart';
 import '../widgets/help_cards.dart';
 import 'jiritsu_about_screen.dart';
+import '../../navigation/osm_page_route.dart';
 
 /// ヘルプ。上から 「自律とは」→ 登録 → 閲覧 → 困った時 → その他 の順。
 class HelpScreen extends ConsumerStatefulWidget {
@@ -127,7 +128,7 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
               ),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const JiritsuAboutScreen()),
+                  osmPageRoute(builder: (_) => const JiritsuAboutScreen()),
                 );
               },
             ),
@@ -180,9 +181,9 @@ class _HelpScreenState extends ConsumerState<HelpScreen> {
                   Icons.chevron_right_rounded,
                   color: AppPalette.subpageTextMuted,
                 ),
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const PrivacyScreen()),
-                ),
+                onTap: () => Navigator.of(
+                  context,
+                ).push(osmPageRoute(builder: (_) => const PrivacyScreen())),
               ),
             ),
           ],

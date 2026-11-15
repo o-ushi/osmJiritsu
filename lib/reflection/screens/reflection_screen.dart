@@ -17,6 +17,7 @@ import '../../theme/osm_app_bar.dart';
 import '../../wizard/screens/wizard_flow_screen.dart';
 import '../../wizard/state/wizard_notifier.dart';
 import '../../wizard/widgets/primary_cta_button.dart';
+import '../../navigation/osm_page_route.dart';
 
 /// Stage3: 振り返り — Stage2（ダッシュボード実施）から「振り返り」で到達。
 ///
@@ -86,13 +87,12 @@ class _ReflectionScreenState extends ConsumerState<ReflectionScreen> {
         if (!mounted) return;
         final firstStepScreen = FirstStepFlowScreen(
           fromProjectDashboard: widget.fromProjectDashboard,
-          startFromCachedSuggestions:
-              updated.aiFirstStepSuggestions.isNotEmpty,
+          startFromCachedSuggestions: updated.aiFirstStepSuggestions.isNotEmpty,
         );
         Navigator.of(context).push(
           widget.fromProjectDashboard
               ? ProjectNavigation.childRoute(firstStepScreen)
-              : MaterialPageRoute(builder: (_) => firstStepScreen),
+              : osmPageRoute(builder: (_) => firstStepScreen),
         );
 
       case '方策を変更する':
@@ -106,13 +106,12 @@ class _ReflectionScreenState extends ConsumerState<ReflectionScreen> {
         if (!mounted) return;
         final strategyScreen = StrategyFlowScreen(
           fromProjectDashboard: widget.fromProjectDashboard,
-          startFromCachedSuggestions:
-              updated.aiStrategySuggestions.isNotEmpty,
+          startFromCachedSuggestions: updated.aiStrategySuggestions.isNotEmpty,
         );
         Navigator.of(context).push(
           widget.fromProjectDashboard
               ? ProjectNavigation.childRoute(strategyScreen)
-              : MaterialPageRoute(builder: (_) => strategyScreen),
+              : osmPageRoute(builder: (_) => strategyScreen),
         );
 
       case '新しいテーマに取り組む':
@@ -130,7 +129,7 @@ class _ReflectionScreenState extends ConsumerState<ReflectionScreen> {
         if (!mounted) return;
         Navigator.of(
           context,
-        ).push(MaterialPageRoute(builder: (_) => const WizardFlowScreen()));
+        ).push(osmPageRoute(builder: (_) => const WizardFlowScreen()));
 
       case '一旦休む':
         final updated = project.copyWith(
@@ -179,11 +178,7 @@ class _ReflectionScreenState extends ConsumerState<ReflectionScreen> {
       );
     }
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: appBar,
-      body: body,
-    );
+    return Scaffold(resizeToAvoidBottomInset: true, appBar: appBar, body: body);
   }
 }
 

@@ -24,6 +24,7 @@ import '../widgets/history_bottom_toolbar.dart';
 import '../widgets/history_session_card.dart';
 import '../widgets/startup_bottom_bar.dart';
 import 'usage_screen.dart';
+import '../../navigation/osm_page_route.dart';
 
 /// osmJiritsu's home screen: 登録案件リスト — every saved 案件 (project),
 /// in the user's own manually-reordered order, plus a fixed bottom toolbar
@@ -48,8 +49,7 @@ class HistoryListScreen extends ConsumerWidget {
     // 使い方 never shows on top of a still-showing スタート — see
     // `usageScreenSessionShowProvider`'s doc for why 使い方 is its own
     // session flag rather than derived from the persisted setting here.
-    final showingStartScreen =
-        alwaysShowStartScreen && !startScreenDismissed;
+    final showingStartScreen = alwaysShowStartScreen && !startScreenDismissed;
     final showingUsage = !showingStartScreen && showingUsageScreen;
 
     return Scaffold(
@@ -91,13 +91,9 @@ class HistoryListScreen extends ConsumerWidget {
                   // スタートを false にする setter は使い方も一緒に false
                   // へ揃える（不変条件）ので、この一手の行き先は保存前の
                   // 値で決める。
-                  final showUsageNow = ref.read(
-                    usageScreenAlwaysShowProvider,
-                  );
+                  final showUsageNow = ref.read(usageScreenAlwaysShowProvider);
                   if (dontShowAgain) {
-                    ref
-                        .read(startScreenAlwaysShowProvider.notifier)
-                        .set(false);
+                    ref.read(startScreenAlwaysShowProvider.notifier).set(false);
                   }
                   ref.read(startScreenDismissedProvider.notifier).dismiss();
                   ref
@@ -150,9 +146,7 @@ class HistoryListScreen extends ConsumerWidget {
               onHorizontalDragEnd: (details) {
                 if ((details.primaryVelocity ?? 0) > 200) {
                   if (alwaysShowUsageScreen) {
-                    ref
-                        .read(usageScreenSessionShowProvider.notifier)
-                        .set(true);
+                    ref.read(usageScreenSessionShowProvider.notifier).set(true);
                   } else {
                     ref.read(startScreenDismissedProvider.notifier).show();
                   }
@@ -224,17 +218,15 @@ class _ProjectList extends ConsumerWidget {
   /// reopen on their own board — 現況 included.
   void _openProject(BuildContext context, WidgetRef ref, Project project) {
     if (project.isSimpleMode) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => SimpleModeScreen(project: project)),
-      );
+      Navigator.of(
+        context,
+      ).push(osmPageRoute(builder: (_) => SimpleModeScreen(project: project)));
       return;
     }
 
     if (project.status != ProjectStatus.preparing) {
       Navigator.of(context).push(
-        ProjectNavigation.dashboardRoute(
-          DashboardScreen(project: project),
-        ),
+        ProjectNavigation.dashboardRoute(DashboardScreen(project: project)),
       );
       return;
     }
@@ -244,19 +236,22 @@ class _ProjectList extends ConsumerWidget {
     // Always push the wizard first so a back swipe from the matrix lands on
     // the classification screen — not the start screen. Home on the flow
     // toolbar jumps straight to the project list.
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const WizardFlowScreen()),
-    );
+    Navigator.of(
+      context,
+    ).push(osmPageRoute(builder: (_) => const WizardFlowScreen()));
     if (resumed.isClassificationComplete) {
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const SwotMatrixScreen()),
+        osmPageRoute(
+          closeOnSwipeDown: false,
+          builder: (_) => const SwotMatrixScreen(),
+        ),
       );
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
         final lang = ref.read(appLanguageProvider);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('作成中_ホームで一覧'.tr(lang))),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('作成中_ホームで一覧'.tr(lang))));
       });
     }
   }
@@ -497,7 +492,7 @@ class _StartScreenState extends State<_StartScreen> {
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
                             Navigator.of(context).push(
-                              MaterialPageRoute(
+                              osmPageRoute(
                                 builder: (_) => const JiritsuAboutScreen(),
                               ),
                             );
@@ -545,8 +540,7 @@ class _StartScreenState extends State<_StartScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          '自律とは、ゴールと今の状況の差を無くすために、自分で考えて行動することです。'
-                              .tr(lang),
+                          '自律とは、ゴールと今の状況の差を無くすために、自分で考えて行動することです。'.tr(lang),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,

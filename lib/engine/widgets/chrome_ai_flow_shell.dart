@@ -76,42 +76,16 @@ class ChromeAiLaunchFailedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.error_outline_rounded,
-              size: 40,
-              color: AppPalette.coral,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Chromeを開けませんでした'.tr(lang),
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: AppPalette.sceneText),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(color: AppPalette.sceneTextMuted),
-            ),
-            const SizedBox(height: 24),
-            PrimaryCtaButton(
-              label: 'もう一度試す'.tr(lang),
-              icon: Icons.open_in_new_rounded,
-              onPressed: onRetry,
-            ),
-          ],
-        ),
+    return _ChromeAiErrorView(
+      title: 'Chromeを開けませんでした'.tr(lang),
+      message: message,
+      actions: [
+      PrimaryCtaButton(
+        label: 'もう一度試す'.tr(lang),
+        icon: Icons.open_in_new_rounded,
+        onPressed: onRetry,
       ),
+      ],
     );
   }
 }
@@ -192,6 +166,44 @@ class ChromeAiPasteFailedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _ChromeAiErrorView(
+      title: '読み取れませんでした'.tr(lang),
+      message: message,
+      actions: [
+      PrimaryCtaButton(
+        label: 'もう一度貼り付ける'.tr(lang),
+        icon: Icons.content_paste_go_rounded,
+        onPressed: onRetryPaste,
+      ),
+      const SizedBox(height: 12),
+      TextButton(
+        onPressed: onReopenChrome,
+        style: TextButton.styleFrom(
+          foregroundColor: AppPalette.ensureReadableOnScene(
+            AppPalette.sceneText,
+          ),
+        ),
+        child: Text('Chromeを開き直す'.tr(lang)),
+      ),
+      ],
+    );
+  }
+}
+
+/// Chrome AI の往復でつまずいたときの画面（赤い印・見出し・説明・やり直しのボタン）。
+class _ChromeAiErrorView extends StatelessWidget {
+  const _ChromeAiErrorView({
+    required this.title,
+    required this.message,
+    required this.actions,
+  });
+
+  final String title;
+  final String message;
+  final List<Widget> actions;
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -205,7 +217,7 @@ class ChromeAiPasteFailedView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              '読み取れませんでした'.tr(lang),
+              title,
               style: Theme.of(
                 context,
               ).textTheme.titleMedium?.copyWith(color: AppPalette.sceneText),
@@ -220,21 +232,7 @@ class ChromeAiPasteFailedView extends StatelessWidget {
               ).textTheme.bodyMedium?.copyWith(color: AppPalette.sceneTextMuted),
             ),
             const SizedBox(height: 24),
-            PrimaryCtaButton(
-              label: 'もう一度貼り付ける'.tr(lang),
-              icon: Icons.content_paste_go_rounded,
-              onPressed: onRetryPaste,
-            ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: onReopenChrome,
-              style: TextButton.styleFrom(
-                foregroundColor: AppPalette.ensureReadableOnScene(
-                  AppPalette.sceneText,
-                ),
-              ),
-              child: Text('Chromeを開き直す'.tr(lang)),
-            ),
+            ...actions,
           ],
         ),
       ),

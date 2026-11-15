@@ -797,14 +797,12 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  /// Chooser: light wording edit vs AI reconsult.
-  static Future<void> _reviseStrategy(
+  /// 見直し方の選択（文言だけ直す／AI に相談し直す）。方策と最初の一歩で同じ。
+  static Future<_ReviseChoice?> _pickReviseChoice(
     BuildContext context,
-    WidgetRef ref,
-    Project project,
     AppLanguage lang,
-  ) async {
-    final choice = await showReadableBottomSheet<_ReviseChoice>(
+  ) {
+    return showReadableBottomSheet<_ReviseChoice>(
       context: context,
       showDragHandle: true,
       builder: (context) => SafeArea(
@@ -834,6 +832,16 @@ class DashboardScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// Chooser: light wording edit vs AI reconsult.
+  static Future<void> _reviseStrategy(
+    BuildContext context,
+    WidgetRef ref,
+    Project project,
+    AppLanguage lang,
+  ) async {
+    final choice = await _pickReviseChoice(context, lang);
     if (!context.mounted || choice == null) return;
     switch (choice) {
       case _ReviseChoice.editWording:
@@ -849,36 +857,7 @@ class DashboardScreen extends ConsumerWidget {
     Project project,
     AppLanguage lang,
   ) async {
-    final choice = await showReadableBottomSheet<_ReviseChoice>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-              child: Text(
-                '見直す方法を選んでください'.tr(lang),
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.edit_outlined),
-              title: Text('文言を編集'.tr(lang)),
-              subtitle: Text('見直す_文言編集説明'.tr(lang)),
-              onTap: () => Navigator.of(context).pop(_ReviseChoice.editWording),
-            ),
-            ListTile(
-              leading: const Icon(Icons.auto_awesome_rounded),
-              title: Text('AIに再度相談する'.tr(lang)),
-              subtitle: Text('見直す_AI再相談説明'.tr(lang)),
-              onTap: () => Navigator.of(context).pop(_ReviseChoice.aiReview),
-            ),
-          ],
-        ),
-      ),
-    );
+    final choice = await _pickReviseChoice(context, lang);
     if (!context.mounted || choice == null) return;
     switch (choice) {
       case _ReviseChoice.editWording:

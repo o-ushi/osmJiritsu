@@ -27,6 +27,9 @@ class HistorySessionCard extends StatelessWidget {
   /// order.
   final VoidCallback onToggleFavorite;
 
+  /// The row shown in home's split right pane. Only ever true while split.
+  final bool isSelected;
+
   const HistorySessionCard({
     super.key,
     required this.project,
@@ -35,6 +38,7 @@ class HistorySessionCard extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onToggleFavorite,
+    this.isSelected = false,
   });
 
   @override
@@ -79,6 +83,13 @@ class HistorySessionCard extends StatelessWidget {
           ),
         ],
       ),
+      // Foreground so the 2px selection ring doesn't shift the content.
+      foregroundDecoration: isSelected
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppPalette.mintDark, width: 2),
+            )
+          : null,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

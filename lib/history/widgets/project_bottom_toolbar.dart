@@ -26,6 +26,7 @@ class ProjectBottomToolbar extends StatefulWidget {
     this.onReflection,
     this.onReturn,
     this.guideMessageKey,
+    this.minRowHeight = 0,
   });
 
   final AppLanguage lang;
@@ -39,6 +40,10 @@ class ProjectBottomToolbar extends StatefulWidget {
   /// Translation key for this screen's 操作方法 sheet content — see
   /// [OperationGuideSheet.bodyKey]. Null falls back to the generic guide.
   final String? guideMessageKey;
+
+  /// Minimum height of the button row. Home's split right pane passes the
+  /// home toolbar's row height so the two bars sit level.
+  final double minRowHeight;
 
   @override
   State<ProjectBottomToolbar> createState() => _ProjectBottomToolbarState();
@@ -58,7 +63,7 @@ class _ProjectBottomToolbarState extends State<ProjectBottomToolbar> {
             icon: Icons.settings_outlined,
             label: '設定'.tr(widget.lang),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).pop();
               widget.onSettings();
             },
           ),
@@ -66,7 +71,7 @@ class _ProjectBottomToolbarState extends State<ProjectBottomToolbar> {
             icon: Icons.help_outline_rounded,
             label: 'ヘルプ'.tr(widget.lang),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).pop();
               widget.onHelp();
             },
           ),
@@ -102,60 +107,63 @@ class _ProjectBottomToolbarState extends State<ProjectBottomToolbar> {
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: switch (widget.mode) {
-            ProjectToolbarMode.dashboard => [
-              _ProjectToolbarButton(
-                icon: Icons.ios_share_rounded,
-                label: '共有'.tr(widget.lang),
-                onTap: widget.onShare,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-              _ProjectToolbarButton(
-                icon: Icons.edit_note_rounded,
-                label: '振り返り'.tr(widget.lang),
-                onTap: widget.onReflection ?? () {},
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-              _ProjectToolbarButton(
-                key: _moreButtonKey,
-                icon: Icons.more_horiz_rounded,
-                label: 'その他'.tr(widget.lang),
-                onTap: _showMoreMenu,
-                onLongPress: _showOperationGuide,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-            ],
-            ProjectToolbarMode.child => [
-              _ProjectToolbarButton(
-                icon: Icons.ios_share_rounded,
-                label: '共有'.tr(widget.lang),
-                onTap: widget.onShare,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-              _ProjectToolbarButton(
-                icon: Icons.dashboard_rounded,
-                label: 'リターン'.tr(widget.lang),
-                onTap: widget.onReturn ?? () {},
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-              _ProjectToolbarButton(
-                key: _moreButtonKey,
-                icon: Icons.more_horiz_rounded,
-                label: 'その他'.tr(widget.lang),
-                onTap: _showMoreMenu,
-                onLongPress: _showOperationGuide,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-            ],
-          },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: widget.minRowHeight),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: switch (widget.mode) {
+              ProjectToolbarMode.dashboard => [
+                _ProjectToolbarButton(
+                  icon: Icons.ios_share_rounded,
+                  label: '共有'.tr(widget.lang),
+                  onTap: widget.onShare,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+                _ProjectToolbarButton(
+                  icon: Icons.edit_note_rounded,
+                  label: '振り返り'.tr(widget.lang),
+                  onTap: widget.onReflection ?? () {},
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+                _ProjectToolbarButton(
+                  key: _moreButtonKey,
+                  icon: Icons.more_horiz_rounded,
+                  label: 'その他'.tr(widget.lang),
+                  onTap: _showMoreMenu,
+                  onLongPress: _showOperationGuide,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+              ],
+              ProjectToolbarMode.child => [
+                _ProjectToolbarButton(
+                  icon: Icons.ios_share_rounded,
+                  label: '共有'.tr(widget.lang),
+                  onTap: widget.onShare,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+                _ProjectToolbarButton(
+                  icon: Icons.dashboard_rounded,
+                  label: 'リターン'.tr(widget.lang),
+                  onTap: widget.onReturn ?? () {},
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+                _ProjectToolbarButton(
+                  key: _moreButtonKey,
+                  icon: Icons.more_horiz_rounded,
+                  label: 'その他'.tr(widget.lang),
+                  onTap: _showMoreMenu,
+                  onLongPress: _showOperationGuide,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+              ],
+            },
+          ),
         ),
       ),
     );

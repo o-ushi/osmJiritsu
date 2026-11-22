@@ -5,6 +5,8 @@ import '../../l10n/app_language_notifier.dart';
 import '../project_navigation.dart';
 import '../project_toolbar_actions.dart';
 export 'project_bottom_toolbar.dart';
+import 'history_bottom_toolbar.dart';
+import 'home_split_pane.dart';
 import 'project_bottom_toolbar.dart';
 
 /// Scaffold wrapper for the project dashboard and screens opened from it.
@@ -50,6 +52,10 @@ class ProjectScaffold extends ConsumerWidget {
               onSettings: () => actions.openSettings(context),
               onHelp: () => actions.openHelp(context),
               guideMessageKey: guideMessageKey,
+              // Level with home's toolbar beside the split's right pane.
+              minRowHeight: HomeSplitScope.isActive(context)
+                  ? HistoryBottomToolbar.homeRowHeight
+                  : 0,
             ),
     );
   }

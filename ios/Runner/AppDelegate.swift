@@ -31,7 +31,8 @@ import UIKit
     _ application: UIApplication,
     supportedInterfaceOrientationsFor window: UIWindow?
   ) -> UIInterfaceOrientationMask {
-    return .portrait
+    // iPhone stays portrait. iPad rotates freely (home splits in landscape).
+    return UIDevice.current.userInterfaceIdiom == .pad ? .all : .portrait
   }
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {

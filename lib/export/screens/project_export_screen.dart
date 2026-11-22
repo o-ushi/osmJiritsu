@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../history/project_navigation.dart';
+import '../../history/state/home_split_selection_notifier.dart';
+import '../../history/widgets/home_split_pane.dart';
 import '../../history/widgets/flow_scaffold.dart';
 import '../../history/widgets/project_scaffold.dart';
 import '../../dashboard/screens/dashboard_screen.dart';
@@ -132,6 +134,13 @@ class ProjectExportScreen extends ConsumerWidget {
   void _finish(BuildContext context, WidgetRef ref, Project project) {
     if (fromProjectDashboard) {
       ProjectNavigation.popToDashboard(context);
+      return;
+    }
+
+    // Started inside home's split right pane: show the new 案件 there.
+    if (HomeSplitScope.isActive(context)) {
+      ref.read(homeSplitSelectedProjectIdProvider.notifier).select(project.id);
+      HomeSplitScope.closePane(context);
       return;
     }
 

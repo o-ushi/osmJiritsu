@@ -11,6 +11,7 @@ import '../wizard/state/wizard_state.dart';
 import 'app_navigation.dart';
 import 'data/analysis_file_io.dart';
 import 'services/analysis_export_service.dart';
+import 'widgets/home_split_pane.dart';
 import 'state/analysis_history_notifier.dart';
 import 'widgets/entry_mode_sheet.dart';
 import '../navigation/osm_page_route.dart';
@@ -39,8 +40,9 @@ class HistoryToolbarActions {
     if (mode == Project.modeSimple) {
       // Deliberately leaves `wizardProvider` untouched: 簡易モード never
       // reads or writes the wizard draft.
-      Navigator.of(context).popUntil((route) => route.isFirst);
-      Navigator.of(context).push(
+      final navigator = _startNavigator(context);
+      navigator.popUntil((route) => route.isFirst);
+      navigator.push(
         osmPageRoute(
           builder: (_) => SimpleModeScreen(
             project: Project(theme: theme, entryMode: mode),
@@ -52,11 +54,15 @@ class HistoryToolbarActions {
 
     ref.read(wizardProvider.notifier).reset();
     if (theme.isNotEmpty) ref.read(wizardProvider.notifier).setTheme(theme);
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    Navigator.of(
-      context,
-    ).push(osmPageRoute(builder: (_) => const WizardFlowScreen()));
+    final navigator = _startNavigator(context);
+    navigator.popUntil((route) => route.isFirst);
+    navigator.push(osmPageRoute(builder: (_) => const WizardFlowScreen()));
   }
+
+  /// Home's split (iPad landscape) starts a new 案件 in its right pane;
+  /// otherwise full screen as before.
+  NavigatorState _startNavigator(BuildContext context) =>
+      HomeSplitScope.paneFor(context) ?? Navigator.of(context);
 
   Future<void> export(BuildContext context) async {
     final projects = ref.read(analysisHistoryProvider).value ?? const [];

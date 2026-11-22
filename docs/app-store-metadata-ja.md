@@ -1,6 +1,6 @@
-# osmJiritsu App Store Connect 申請用文案（ベトナム語・v1.3.4）
+# osmJiritsu App Store Connect 申請用文案（ベトナム語・v1.3.5）
 
-最終更新：2026年11月15日
+最終更新：2026年11月22日
 
 App Store Connect の各フィールドにそのまま貼り付けて使えます。文字数は提出前に再確認してください。
 ストアの各欄（サブタイトル・プロモーション・概要・キーワード・最新情報）はベトナム語、審査員へのメモは日本語です。
@@ -54,7 +54,7 @@ osmJiritsu là ứng dụng giúp bạn sắp xếp suy nghĩ bằng phân tích
 
 ■ Xuất, nhập, đồng bộ
 ・Hỗ trợ sao lưu và nhập JSON
-・Đồng bộ giữa các iPhone cùng Apple ID qua iCloud (tùy chọn)
+・Đồng bộ giữa iPhone và iPad cùng Apple ID qua iCloud (tùy chọn)
 
 ■ Hỗ trợ 3 ngôn ngữ
 日本語・English・Tiếng Việt
@@ -66,11 +66,12 @@ osmJiritsu là ứng dụng giúp bạn sắp xếp suy nghĩ bằng phân tích
 
 ■ Thiết bị hỗ trợ
 ・iPhone (chỉ màn hình dọc)
+・iPad (dọc và ngang). Khi xoay ngang, danh sách dự án ở bên trái, màn hình đang mở ở bên phải
 
 Tự mình bắt đầu điều mình đã quyết định. Hãy cẩn thận tích lũy từng bước nhỏ ấy.
 ```
 
-（1761文字）
+（1892文字）
 
 ---
 
@@ -86,23 +87,25 @@ SWOT,mục tiêu,tự phân tích,ra quyết định,kế hoạch,hành động,
 
 ---
 
-## このバージョンの最新情報（v1.3.4）
+## このバージョンの最新情報（v1.3.5）
 
 ```
-・Sắp xếp lại bên trong ứng dụng (màn hình chọn cách xem lại phương án, bước đầu tiên và màn hình khi gặp sự cố với Chrome) để hoạt động ổn định hơn
+・Hỗ trợ iPad. Khi xoay ngang, danh sách dự án hiển thị ở bên trái, bảng điều khiển và các màn hình mở từ đó (nhìn lại, SWOT, phương án, cài đặt…) hiển thị ở bên phải
 ```
 
-（147文字）
+（165文字）
 
 ---
 
 ## 審査員へのメモ（App Review Information > Notes）
 
 ```
-2026/11/15
+2026/11/22
 いつもアプリを審査頂きましてありがとうございます。
-先に公開したVersion 1.3.3に対して、下記修正を行なっています。
-・方策・最初の一歩の見直し方を選ぶシートと、Chrome でつまずいたときの画面の内部処理を共通化（表示・動作の変更はありません）
+先に公開したVersion 1.3.4に対して、下記修正を行なっています。
+・iPad に対応しました（これまでは iPhone 専用）
+・iPad では縦・横の両方に対応しました。横向きで幅が十分なときは、左に案件一覧、右にダッシュボードや、そこから開く画面（振り返り・SWOT・方策・設定・ヘルプなど）を表示します
+・iPhone は従来どおり縦向きのみです
 新たな権限の要求、データの収集・送信先の変更はございません。
 先に一度承認をいただいた内容から、上記修正以外の機能変更やビジネスモデルの変更はございません。
 お手数をおかけして恐縮ですが、ご確認のほどよろしくお願いいたします。
@@ -112,6 +115,7 @@ SWOT,mục tiêu,tự phân tích,ra quyết định,kế hoạch,hành động,
 
 ## 提出前チェックリスト
 
-- [ ] App Store Connect のバージョン 1.3.4 と、`pubspec.yaml` のバージョン（1.3.4+1）が一致している（公開済みの 1.3.3 より大きいこと）
+- [ ] App Store Connect のバージョン 1.3.5 と、`pubspec.yaml` のバージョン（1.3.5+1）が一致している（公開済みの 1.3.4 より大きいこと）
+- [ ] iPad 用のスクリーンショット（13インチ iPad）を登録した。iPad 対応にしたので必須
 - [ ] App Privacy の回答は前バージョンから変更なし
-- [ ] 実機で試した（ダッシュボードで方策・最初の一歩を長押し→見直し方の選択／Chrome を開けない・読み取れないときの画面とやり直し）
+- [ ] 実機で試した（iPad：横で一覧とダッシュボードが左右に出る／右側に振り返り・SWOT・ウィザード・設定が出る／縦で開いた画面が横にすると分割に移る。iPhone：横にしても縦のまま）

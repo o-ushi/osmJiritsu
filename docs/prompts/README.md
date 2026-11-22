@@ -39,6 +39,12 @@ docs/prompts/05-user-manual.md のステップに沿って進めて
 docs/prompts/06-simple-mode.md のステップに沿って進めて
 ```
 
+iPad 横の2画面（01〜06 とは別依頼）:
+
+```
+docs/prompts/07-ipad-landscape-split.md のステップに沿って進めて
+```
+
 1 Step だけ:
 
 ```
@@ -59,9 +65,10 @@ docs/prompts/01-usage-screen.md の Step 2 をやって
 | 4 | [`04-intrinsic-check.md`](04-intrinsic-check.md) | 「自律度チェック」→「内発度チェック」。要素名も更新 | 02 の要素名に合わせる |
 | 5 | [`05-user-manual.md`](05-user-manual.md) | 操作マニュアル GAS を osmGradus 最新（`getRuns()`）に揃え、Glossary を画面文言に同期 | Step 1–2 は独立。Step 3 は 01〜04 のあと |
 | — | [`06-simple-mode.md`](06-simple-mode.md) | ＋でも0件のホーム着地でも簡易／フルを選び、簡易はゴール・現状3・方策3・最初の一歩だけの画面 | なし（01〜05 と独立） |
+| — | [`07-ipad-landscape-split.md`](07-ipad-landscape-split.md) | iPad 横で一覧とダッシュボードを左右に並べる。回転許可は Info.plist と起動時ロックの両方 | なし（01〜06 と独立） |
 
 推奨は **01 → 02 → 03 → 04 → 05**。01 と 02 は独立なので並行してもよい。03 と 04 は 02 の文言が正本。05 の辞書更新は画面キーが固まってから。  
-06 は別機能なので、上の並びに含めない。単体で `06-simple-mode.md` を渡す。
+06 と 07 は別機能なので、上の並びに含めない。単体でそのファイルを渡す。
 
 ## 変更の狙い（全体）
 

@@ -41,7 +41,14 @@ class HistoryBottomToolbar extends StatefulWidget {
     this.onUndo,
     this.canUndo = false,
     this.guideMessageKey,
+    this.showMore = true,
+    this.minRowHeight = 0,
   });
+
+  /// Height of the button row in [HistoryToolbarMode.home] (the emphasized
+  /// ＋ is the tallest button). Home's split right pane matches it so the two
+  /// toolbars line up.
+  static const homeRowHeight = 48.0;
 
   final AppLanguage lang;
   final VoidCallback onExport;
@@ -58,6 +65,14 @@ class HistoryBottomToolbar extends StatefulWidget {
   /// Translation key for this screen's 操作方法 sheet content — see
   /// [OperationGuideSheet.bodyKey]. Null falls back to the generic guide.
   final String? guideMessageKey;
+
+  /// Hides …(設定/ヘルプ) in [HistoryToolbarMode.home]. Home's split hides it
+  /// while the right pane's dashboard toolbar already has its own ….
+  final bool showMore;
+
+  /// Minimum height of the button row. In home's split right pane it is
+  /// [homeRowHeight], so every toolbar there sits level with home's.
+  final double minRowHeight;
 
   @override
   State<HistoryBottomToolbar> createState() => _HistoryBottomToolbarState();
@@ -77,7 +92,7 @@ class _HistoryBottomToolbarState extends State<HistoryBottomToolbar> {
             icon: Icons.file_upload_outlined,
             label: 'JSONバックアップ'.tr(widget.lang),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).pop();
               widget.onExport();
             },
           ),
@@ -85,7 +100,7 @@ class _HistoryBottomToolbarState extends State<HistoryBottomToolbar> {
             icon: Icons.file_download_outlined,
             label: 'JSONを取り込む'.tr(widget.lang),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.of(context, rootNavigator: true).pop();
               widget.onImport();
             },
           ),
@@ -101,7 +116,7 @@ class _HistoryBottomToolbarState extends State<HistoryBottomToolbar> {
           icon: Icons.add_circle_outline,
           label: '新規追加'.tr(widget.lang),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.of(context, rootNavigator: true).pop();
             widget.onAddNew();
           },
         ),
@@ -109,7 +124,7 @@ class _HistoryBottomToolbarState extends State<HistoryBottomToolbar> {
         icon: Icons.settings_outlined,
         label: '設定'.tr(widget.lang),
         onTap: () {
-          Navigator.pop(context);
+          Navigator.of(context, rootNavigator: true).pop();
           widget.onSettings();
         },
       ),
@@ -117,7 +132,7 @@ class _HistoryBottomToolbarState extends State<HistoryBottomToolbar> {
         icon: Icons.help_outline_rounded,
         label: 'ヘルプ'.tr(widget.lang),
         onTap: () {
-          Navigator.pop(context);
+          Navigator.of(context, rootNavigator: true).pop();
           widget.onHelp();
         },
       ),
@@ -160,111 +175,115 @@ class _HistoryBottomToolbarState extends State<HistoryBottomToolbar> {
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: switch (widget.mode) {
-            HistoryToolbarMode.home => [
-              _ToolbarButton(
-                key: _dataButtonKey,
-                icon: Icons.storage_outlined,
-                label: 'データ'.tr(widget.lang),
-                onTap: _showDataMenu,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-              _ToolbarButton(
-                icon: Icons.add_circle_rounded,
-                label: '新規追加'.tr(widget.lang),
-                onTap: widget.onAddNew,
-                emphasized: true,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-                emphasizedSize: emphasizedSize,
-              ),
-              _ToolbarButton(
-                key: _moreButtonKey,
-                icon: Icons.more_horiz_rounded,
-                label: 'その他'.tr(widget.lang),
-                onTap: _showMoreMenu,
-                onLongPress: _showOperationGuide,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-            ],
-            HistoryToolbarMode.flow => [
-              _ToolbarButton(
-                key: _dataButtonKey,
-                icon: Icons.storage_outlined,
-                label: 'データ'.tr(widget.lang),
-                onTap: _showDataMenu,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-              _ToolbarButton(
-                icon: Icons.home_rounded,
-                label: 'ホーム'.tr(widget.lang),
-                onTap: widget.onHome ?? () {},
-                emphasized: true,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-                emphasizedSize: emphasizedSize,
-              ),
-              _ToolbarButton(
-                key: _moreButtonKey,
-                icon: Icons.more_horiz_rounded,
-                label: 'その他'.tr(widget.lang),
-                onTap: _showMoreMenu,
-                onLongPress: _showOperationGuide,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-            ],
-            HistoryToolbarMode.matrix => [
-              _ToolbarButton(
-                key: _dataButtonKey,
-                icon: Icons.storage_outlined,
-                label: 'データ'.tr(widget.lang),
-                onTap: _showDataMenu,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-              _ToolbarButton(
-                icon: Icons.add_circle_rounded,
-                label: '項目を追加'.tr(widget.lang),
-                onTap: widget.onAdd ?? () {},
-                emphasized: true,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-                emphasizedSize: emphasizedSize,
-              ),
-              _ToolbarButton(
-                icon: Icons.home_rounded,
-                label: 'ホーム'.tr(widget.lang),
-                onTap: widget.onHome ?? () {},
-                emphasized: true,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-                emphasizedSize: emphasizedSize,
-              ),
-              _ToolbarButton(
-                icon: Icons.undo_rounded,
-                label: '戻る'.tr(widget.lang),
-                onTap: widget.onUndo ?? () {},
-                enabled: widget.canUndo,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-              _ToolbarButton(
-                key: _moreButtonKey,
-                icon: Icons.more_horiz_rounded,
-                label: 'その他'.tr(widget.lang),
-                onTap: _showMoreMenu,
-                onLongPress: _showOperationGuide,
-                horizontalPadding: hPad,
-                iconSize: iconSize,
-              ),
-            ],
-          },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: widget.minRowHeight),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: switch (widget.mode) {
+              HistoryToolbarMode.home => [
+                _ToolbarButton(
+                  key: _dataButtonKey,
+                  icon: Icons.storage_outlined,
+                  label: 'データ'.tr(widget.lang),
+                  onTap: _showDataMenu,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+                _ToolbarButton(
+                  icon: Icons.add_circle_rounded,
+                  label: '新規追加'.tr(widget.lang),
+                  onTap: widget.onAddNew,
+                  emphasized: true,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                  emphasizedSize: emphasizedSize,
+                ),
+                if (widget.showMore)
+                  _ToolbarButton(
+                    key: _moreButtonKey,
+                    icon: Icons.more_horiz_rounded,
+                    label: 'その他'.tr(widget.lang),
+                    onTap: _showMoreMenu,
+                    onLongPress: _showOperationGuide,
+                    horizontalPadding: hPad,
+                    iconSize: iconSize,
+                  ),
+              ],
+              HistoryToolbarMode.flow => [
+                _ToolbarButton(
+                  key: _dataButtonKey,
+                  icon: Icons.storage_outlined,
+                  label: 'データ'.tr(widget.lang),
+                  onTap: _showDataMenu,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+                _ToolbarButton(
+                  icon: Icons.home_rounded,
+                  label: 'ホーム'.tr(widget.lang),
+                  onTap: widget.onHome ?? () {},
+                  emphasized: true,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                  emphasizedSize: emphasizedSize,
+                ),
+                _ToolbarButton(
+                  key: _moreButtonKey,
+                  icon: Icons.more_horiz_rounded,
+                  label: 'その他'.tr(widget.lang),
+                  onTap: _showMoreMenu,
+                  onLongPress: _showOperationGuide,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+              ],
+              HistoryToolbarMode.matrix => [
+                _ToolbarButton(
+                  key: _dataButtonKey,
+                  icon: Icons.storage_outlined,
+                  label: 'データ'.tr(widget.lang),
+                  onTap: _showDataMenu,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+                _ToolbarButton(
+                  icon: Icons.add_circle_rounded,
+                  label: '項目を追加'.tr(widget.lang),
+                  onTap: widget.onAdd ?? () {},
+                  emphasized: true,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                  emphasizedSize: emphasizedSize,
+                ),
+                _ToolbarButton(
+                  icon: Icons.home_rounded,
+                  label: 'ホーム'.tr(widget.lang),
+                  onTap: widget.onHome ?? () {},
+                  emphasized: true,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                  emphasizedSize: emphasizedSize,
+                ),
+                _ToolbarButton(
+                  icon: Icons.undo_rounded,
+                  label: '戻る'.tr(widget.lang),
+                  onTap: widget.onUndo ?? () {},
+                  enabled: widget.canUndo,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+                _ToolbarButton(
+                  key: _moreButtonKey,
+                  icon: Icons.more_horiz_rounded,
+                  label: 'その他'.tr(widget.lang),
+                  onTap: _showMoreMenu,
+                  onLongPress: _showOperationGuide,
+                  horizontalPadding: hPad,
+                  iconSize: iconSize,
+                ),
+              ],
+            },
+          ),
         ),
       ),
     );

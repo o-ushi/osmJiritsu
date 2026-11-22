@@ -21,8 +21,10 @@ abstract final class ProjectNavigation {
   );
 
   static void popToDashboard(BuildContext context) {
-    Navigator.of(
-      context,
-    ).popUntil((route) => route.settings.name == dashboardRouteName);
+    Navigator.of(context).popUntil(
+      // No named dashboard route (opened from home's split right pane):
+      // stop at home instead of popping it too.
+      (route) => route.settings.name == dashboardRouteName || route.isFirst,
+    );
   }
 }

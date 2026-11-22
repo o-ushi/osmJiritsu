@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'declaration_edit_screen.dart';
+import '../../history/home_split.dart';
 import '../../history/project_navigation.dart';
 import '../../history/state/analysis_history_notifier.dart';
+import '../../history/state/home_split_selection_notifier.dart';
 import '../../history/widgets/project_scaffold.dart';
 import '../../history/widgets/project_status_chip.dart';
 import '../../l10n/app_language.dart';
@@ -33,7 +35,15 @@ import '../../theme/widgets/edit_field_dialogs.dart';
 class DashboardScreen extends ConsumerWidget {
   final Project project;
 
-  const DashboardScreen({super.key, required this.project});
+  /// True only in home's split right pane (iPad landscape). There the
+  /// screen isn't its own route, so deleting must not pop.
+  final bool embedded;
+
+  const DashboardScreen({
+    super.key,
+    required this.project,
+    this.embedded = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,6 +57,8 @@ class DashboardScreen extends ConsumerWidget {
       orElse: () => project,
     );
     final matrix = current.matrix;
+
+    _collapseIntoHomeSplit(context, ref, current.id);
 
     return ProjectScaffold(
       projectId: current.id,
@@ -698,6 +710,31 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
+  /// A full-screen dashboard (opened in portrait) that ends up on top while
+  /// the window is wide enough for home's split — rotated to landscape, or
+  /// back from a child screen — hands itself over to the split: select this
+  /// 案件 and pop to home, so it shows in the right pane next to the list.
+  /// Child screens above it are left alone, so nothing being typed is lost.
+  void _collapseIntoHomeSplit(
+    BuildContext context,
+    WidgetRef ref,
+    String projectId,
+  ) {
+    if (embedded) return;
+    final route = ModalRoute.of(context);
+    if (route == null ||
+        !route.isCurrent ||
+        route.settings.name != ProjectNavigation.dashboardRouteName ||
+        !homeSplitActive(MediaQuery.sizeOf(context))) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted || !route.isCurrent) return;
+      ref.read(homeSplitSelectedProjectIdProvider.notifier).select(projectId);
+      Navigator.of(context).popUntil((r) => r.isFirst);
+    });
+  }
+
   Future<void> _confirmDelete(
     BuildContext context,
     WidgetRef ref,
@@ -723,6 +760,7 @@ class DashboardScreen extends ConsumerWidget {
     );
     if (confirmed != true) return;
     await ref.read(analysisHistoryProvider.notifier).delete(project.id);
+    if (embedded) return;
     if (context.mounted) Navigator.of(context).pop();
   }
 

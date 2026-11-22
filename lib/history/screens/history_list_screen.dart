@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../home_split.dart';
 import '../project_navigation.dart';
 import '../../dashboard/screens/dashboard_screen.dart';
 import '../../help/screens/jiritsu_about_screen.dart';
@@ -19,9 +20,11 @@ import '../../wizard/screens/wizard_flow_screen.dart';
 import '../../wizard/state/wizard_notifier.dart';
 import '../history_toolbar_actions.dart';
 import '../state/analysis_history_notifier.dart';
+import '../state/home_split_selection_notifier.dart';
 import '../state/start_screen_settings_notifier.dart';
 import '../widgets/history_bottom_toolbar.dart';
 import '../widgets/history_session_card.dart';
+import '../widgets/home_split_pane.dart';
 import '../widgets/startup_bottom_bar.dart';
 import 'usage_screen.dart';
 import '../../navigation/osm_page_route.dart';
@@ -51,6 +54,37 @@ class HistoryListScreen extends ConsumerWidget {
     // session flag rather than derived from the persisted setting here.
     final showingStartScreen = alwaysShowStartScreen && !startScreenDismissed;
     final showingUsage = !showingStartScreen && showingUsageScreen;
+
+    Widget toolbar({bool showMore = true}) => HistoryBottomToolbar(
+      lang: lang,
+      onExport: () => actions.export(context),
+      onImport: () => actions.import(context),
+      onAddNew: () => actions.startNew(context),
+      onSettings: () => actions.openSettings(context),
+      onHelp: () => actions.openHelp(context),
+      guideMessageKey: '操作方法_ダッシュボード',
+      showMore: showMore,
+    );
+
+    // iPad landscape: list (with its toolbar) on the left, the selected
+    // 案件's dashboard on the right. Never while スタート / 使い方 is up.
+    final projectsForSplit = historyState.value;
+    if (!showingStartScreen &&
+        !showingUsage &&
+        projectsForSplit != null &&
+        homeSplitActive(MediaQuery.sizeOf(context))) {
+      return _SplitHome(
+        projects: projectsForSplit,
+        lang: lang,
+        list: _swipeBackToStart(
+          ref,
+          alwaysShowStartScreen: alwaysShowStartScreen,
+          alwaysShowUsageScreen: alwaysShowUsageScreen,
+          child: _ProjectList(projects: projectsForSplit, lang: lang),
+        ),
+        toolbar: toolbar,
+      );
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -133,26 +167,11 @@ class HistoryListScreen extends ConsumerWidget {
                 ),
               );
             }
-            final list = _ProjectList(projects: projects, lang: lang);
-            if (!alwaysShowStartScreen) return list;
-            // 設定ON: 右スワイプでスタート画面（使い方もONなら使い方）に
-            // 戻れるようにする。各行は削除用に endToStart (左) の
-            // Dismissible なので、行の外（左右の余白・並べ替え矢印の列など）
-            // から始まるスワイプで主に反応する — Dismissible が同じ横方向
-            // ジェスチャーを行内で先取りするのは織り込み済みで、行の外
-            // からのエッジスワイプが効けば十分という判断。
-            return GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onHorizontalDragEnd: (details) {
-                if ((details.primaryVelocity ?? 0) > 200) {
-                  if (alwaysShowUsageScreen) {
-                    ref.read(usageScreenSessionShowProvider.notifier).set(true);
-                  } else {
-                    ref.read(startScreenDismissedProvider.notifier).show();
-                  }
-                }
-              },
-              child: list,
+            return _swipeBackToStart(
+              ref,
+              alwaysShowStartScreen: alwaysShowStartScreen,
+              alwaysShowUsageScreen: alwaysShowUsageScreen,
+              child: _ProjectList(projects: projects, lang: lang),
             );
           },
         ),
@@ -162,15 +181,174 @@ class HistoryListScreen extends ConsumerWidget {
       // bottom of the layout.
       bottomNavigationBar: (showingStartScreen || showingUsage)
           ? null
-          : HistoryBottomToolbar(
-              lang: lang,
-              onExport: () => actions.export(context),
-              onImport: () => actions.import(context),
-              onAddNew: () => actions.startNew(context),
-              onSettings: () => actions.openSettings(context),
-              onHelp: () => actions.openHelp(context),
-              guideMessageKey: '操作方法_ダッシュボード',
+          : toolbar(),
+    );
+  }
+
+  /// 設定ON: 右スワイプでスタート画面（使い方もONなら使い方）に
+  /// 戻れるようにする。各行は削除用に endToStart (左) の
+  /// Dismissible なので、行の外（左右の余白・並べ替え矢印の列など）
+  /// から始まるスワイプで主に反応する — Dismissible が同じ横方向
+  /// ジェスチャーを行内で先取りするのは織り込み済みで、行の外
+  /// からのエッジスワイプが効けば十分という判断。
+  Widget _swipeBackToStart(
+    WidgetRef ref, {
+    required bool alwaysShowStartScreen,
+    required bool alwaysShowUsageScreen,
+    required Widget child,
+  }) {
+    if (!alwaysShowStartScreen) return child;
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onHorizontalDragEnd: (details) {
+        if ((details.primaryVelocity ?? 0) > 200) {
+          if (alwaysShowUsageScreen) {
+            ref.read(usageScreenSessionShowProvider.notifier).set(true);
+          } else {
+            ref.read(startScreenDismissedProvider.notifier).show();
+          }
+        }
+      },
+      child: child,
+    );
+  }
+}
+
+/// Home split (see [homeSplitActive]): the list and its toolbar in a fixed
+/// 340-wide left column, the selected full 案件's dashboard in the rest.
+/// Everything opened from the dashboard, plus 設定 / ヘルプ, opens in the
+/// right pane only (see [HomeSplitScope]).
+class _SplitHome extends ConsumerStatefulWidget {
+  final List<Project> projects;
+  final AppLanguage lang;
+  final Widget list;
+
+  /// Home's bottom toolbar; `showMore: false` drops its … while the
+  /// dashboard's own toolbar (with the same 設定/ヘルプ …) is beside it.
+  final Widget Function({bool showMore}) toolbar;
+
+  const _SplitHome({
+    required this.projects,
+    required this.lang,
+    required this.list,
+    required this.toolbar,
+  });
+
+  @override
+  ConsumerState<_SplitHome> createState() => _SplitHomeState();
+}
+
+class _SplitHomeState extends ConsumerState<_SplitHome> {
+  final _paneNavigatorKey = GlobalKey<NavigatorState>();
+  final _paneHasOpenScreens = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+    HomeSplitScope.registerActivePane(_paneNavigatorKey);
+  }
+
+  @override
+  void dispose() {
+    HomeSplitScope.unregisterActivePane(_paneNavigatorKey);
+    _paneHasOpenScreens.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final projects = widget.projects;
+    final list = widget.list;
+    final toolbar = widget.toolbar;
+    final showDashboard =
+        _splitDashboardProject(
+          projects,
+          ref.watch(homeSplitSelectedProjectIdProvider),
+        ) !=
+        null;
+
+    return HomeSplitScope(
+      navigatorKey: _paneNavigatorKey,
+      child: Scaffold(
+        body: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SizedBox(
+              width: 340,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SafeArea(bottom: false, right: false, child: list),
+                  ),
+                  // Hide … whenever the right pane shows a screen with its
+                  // own toolbar (and …), so there's only one.
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _paneHasOpenScreens,
+                    builder: (_, paneOpen, _) =>
+                        toolbar(showMore: !showDashboard && !paneOpen),
+                  ),
+                ],
+              ),
             ),
+            ColoredBox(
+              color: AppPalette.sceneTextMuted.withValues(alpha: 0.25),
+              child: const SizedBox(width: 1),
+            ),
+            Expanded(
+              child: HomeSplitPane(
+                navigatorKey: _paneNavigatorKey,
+                base: const _SplitRightBase(),
+                hasOpenScreens: _paneHasOpenScreens,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The selected 案件 if the split's right pane should show its dashboard:
+/// still in the list (a deleted id reads as unselected, so it never lingers
+/// via DashboardScreen's snapshot fallback), full mode, and past 作成中.
+Project? _splitDashboardProject(List<Project> projects, String? selectedId) {
+  for (final p in projects) {
+    if (p.id != selectedId) continue;
+    if (p.isSimpleMode || p.status == ProjectStatus.preparing) return null;
+    return p;
+  }
+  return null;
+}
+
+/// The bottom of the split's right-pane navigator: the selected 案件's
+/// dashboard, or「案件を選んでください」. Watches the selection itself,
+/// since the route holding it is built once.
+class _SplitRightBase extends ConsumerWidget {
+  const _SplitRightBase();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final lang = ref.watch(appLanguageProvider);
+    final selected = _splitDashboardProject(
+      ref.watch(analysisHistoryProvider).value ?? const [],
+      ref.watch(homeSplitSelectedProjectIdProvider),
+    );
+    if (selected != null) {
+      return DashboardScreen(
+        key: ValueKey('split-dashboard-${selected.id}'),
+        project: selected,
+        embedded: true,
+      );
+    }
+    return Scaffold(
+      body: Center(
+        child: Text(
+          '案件を選んでください'.tr(lang),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.copyWith(color: AppPalette.sceneTextMuted),
+        ),
+      ),
     );
   }
 }
@@ -186,6 +364,10 @@ class _ProjectList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final split = homeSplitActive(MediaQuery.sizeOf(context));
+    final selectedId = split
+        ? ref.watch(homeSplitSelectedProjectIdProvider)
+        : null;
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       itemCount: projects.length,
@@ -196,6 +378,7 @@ class _ProjectList extends ConsumerWidget {
           index: index,
           project: project,
           lang: lang,
+          isSelected: split && project.id == selectedId,
           onReorder: (fromIndex) => _move(ref, projects, fromIndex, index),
           onPlay: () => _openProject(context, ref, project),
           onEdit: () => _editTheme(context, ref, project, lang),
@@ -217,14 +400,25 @@ class _ProjectList extends ConsumerWidget {
   /// through the wizard and have no SWOT to dashboard, so they always
   /// reopen on their own board — 現況 included.
   void _openProject(BuildContext context, WidgetRef ref, Project project) {
+    // Home's split (iPad landscape): everything opens in the right pane,
+    // with this row marked as the selected one.
+    final pane = HomeSplitScope.paneFor(context);
+    if (pane != null) {
+      pane.popUntil((route) => route.isFirst);
+      ref.read(homeSplitSelectedProjectIdProvider.notifier).select(project.id);
+    }
+    final navigator = pane ?? Navigator.of(context);
+
     if (project.isSimpleMode) {
-      Navigator.of(
-        context,
-      ).push(osmPageRoute(builder: (_) => SimpleModeScreen(project: project)));
+      navigator.push(
+        osmPageRoute(builder: (_) => SimpleModeScreen(project: project)),
+      );
       return;
     }
 
     if (project.status != ProjectStatus.preparing) {
+      // Split home: the right pane's own dashboard shows it.
+      if (pane != null) return;
       Navigator.of(context).push(
         ProjectNavigation.dashboardRoute(DashboardScreen(project: project)),
       );
@@ -236,11 +430,9 @@ class _ProjectList extends ConsumerWidget {
     // Always push the wizard first so a back swipe from the matrix lands on
     // the classification screen — not the start screen. Home on the flow
     // toolbar jumps straight to the project list.
-    Navigator.of(
-      context,
-    ).push(osmPageRoute(builder: (_) => const WizardFlowScreen()));
+    navigator.push(osmPageRoute(builder: (_) => const WizardFlowScreen()));
     if (resumed.isClassificationComplete) {
-      Navigator.of(context).push(
+      navigator.push(
         osmPageRoute(
           closeOnSwipeDown: false,
           builder: (_) => const SwotMatrixScreen(),
@@ -357,12 +549,14 @@ class _ReorderableProjectRow extends StatelessWidget {
   /// back instead of leaving it swiped away).
   final Future<bool> Function() onConfirmDelete;
   final VoidCallback onToggleFavorite;
+  final bool isSelected;
 
   const _ReorderableProjectRow({
     super.key,
     required this.index,
     required this.project,
     required this.lang,
+    this.isSelected = false,
     required this.onReorder,
     required this.onPlay,
     required this.onEdit,
@@ -392,6 +586,7 @@ class _ReorderableProjectRow extends StatelessWidget {
         onEdit: onEdit,
         onDelete: () => onConfirmDelete(),
         onToggleFavorite: onToggleFavorite,
+        isSelected: isSelected,
       ),
     );
 

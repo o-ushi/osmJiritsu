@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/app_language_notifier.dart';
 import '../history_toolbar_actions.dart';
 import 'history_bottom_toolbar.dart';
+import 'home_split_pane.dart';
 
 /// Scaffold wrapper for Stage-1 pipeline screens: same bottom toolbar as home,
 /// but the centre button returns home (saving the wizard draft first).
@@ -71,6 +72,10 @@ class FlowScaffold extends ConsumerWidget {
               onSettings: () => actions.openSettings(context),
               onHelp: () => actions.openHelp(context),
               guideMessageKey: guideMessageKey,
+              // Level with home's toolbar beside the split's right pane.
+              minRowHeight: HomeSplitScope.isActive(context)
+                  ? HistoryBottomToolbar.homeRowHeight
+                  : 0,
             ),
     );
   }

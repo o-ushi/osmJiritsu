@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:osm_jiritsu/dashboard/screens/dashboard_screen.dart';
+import 'package:osm_jiritsu/dashboard/screens/declaration_edit_screen.dart';
 import 'package:osm_jiritsu/history/data/analysis_file_io.dart';
 import 'package:osm_jiritsu/history/data/analysis_history_repository.dart';
 import 'package:osm_jiritsu/history/data/project_order_repository.dart';
 import 'package:osm_jiritsu/history/data/start_screen_settings_repository.dart';
 import 'package:osm_jiritsu/history/screens/history_list_screen.dart';
+import 'package:osm_jiritsu/history/widgets/history_bottom_toolbar.dart';
+import 'package:osm_jiritsu/history/widgets/history_session_card.dart';
+import 'package:osm_jiritsu/history/widgets/project_bottom_toolbar.dart';
 import 'package:osm_jiritsu/icloud_sync/data/icloud_sync_settings_repository.dart';
 import 'package:osm_jiritsu/history/services/analysis_export_service.dart';
 import 'package:osm_jiritsu/history/state/analysis_history_notifier.dart';
@@ -18,6 +23,9 @@ import 'package:osm_jiritsu/models/simple_line.dart';
 import 'package:osm_jiritsu/models/swot_category.dart';
 import 'package:osm_jiritsu/models/swot_item.dart';
 import 'package:osm_jiritsu/models/swot_matrix.dart';
+import 'package:osm_jiritsu/reflection/screens/reflection_screen.dart';
+import 'package:osm_jiritsu/settings/screens/settings_screen.dart';
+import 'package:osm_jiritsu/wizard/screens/swot_matrix_screen.dart';
 import 'package:osm_jiritsu/simple/screens/simple_mode_screen.dart';
 import 'package:osm_jiritsu/theme/app_theme.dart';
 
@@ -1042,4 +1050,350 @@ void main() {
       );
     },
   );
+
+  group('iPad 横の2画面', () {
+    /// iPad landscape in logical pixels — wide enough for `homeSplitActive`.
+    /// Only the tests in this group switch to it; `pumpScreen` stays portrait.
+    Future<void> useWideSurface(WidgetTester tester) async {
+      tester.view.physicalSize = const Size(1194, 834);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpAndSettle();
+    }
+
+    bool rootCanPop(WidgetTester tester) =>
+        tester.state<NavigatorState>(find.byType(Navigator).first).canPop();
+
+    testWidgets('実施中の ▶️ は route を増やさず右にダッシュボードを出す', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('実施中の案件', status: ProjectStatus.inProgress)],
+      );
+      await useWideSurface(tester);
+
+      await tester.tap(find.byTooltip('ダッシュボードへ'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DashboardScreen), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(DashboardScreen),
+          matching: find.text('実施中の案件'),
+        ),
+        findsOneWidget,
+      );
+      expect(rootCanPop(tester), isFalse);
+      expect(find.byType(HistoryBottomToolbar), findsOneWidget);
+      expect(find.text('案件を選んでください'), findsNothing);
+      // One … (the dashboard's), and both bars sit level.
+      expect(find.byTooltip('その他'), findsOneWidget);
+      expect(
+        tester.getRect(find.byType(ProjectBottomToolbar)).top,
+        tester.getRect(find.byType(HistoryBottomToolbar)).top,
+      );
+    });
+
+    testWidgets('設定と振り返りは右ペインだけに出て、一覧は残る', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('実施中の案件', status: ProjectStatus.inProgress)],
+      );
+      await useWideSurface(tester);
+      await tester.tap(find.byTooltip('ダッシュボードへ'));
+      await tester.pumpAndSettle();
+
+      Rect listRow() => tester.getRect(find.byType(HistorySessionCard));
+      final listRight = listRow().right;
+
+      // 設定 from the dashboard's …: right pane only, list still there.
+      await _tapMoreMenuItem(tester, '設定');
+      expect(find.byType(SettingsScreen), findsOneWidget);
+      expect(rootCanPop(tester), isFalse);
+      expect(listRow().right, listRight);
+      expect(
+        tester.getRect(find.byType(SettingsScreen)).left,
+        greaterThan(listRight),
+      );
+
+      // Back out of the pane: the dashboard is there again.
+      tester
+          .state<NavigatorState>(
+            find.ancestor(
+              of: find.byType(SettingsScreen),
+              matching: find.byType(Navigator),
+            ).first,
+          )
+          .pop();
+      await tester.pumpAndSettle();
+      expect(find.byType(SettingsScreen), findsNothing);
+      expect(find.byType(DashboardScreen), findsOneWidget);
+
+      // 振り返り: right pane only too.
+      await tester.tap(find.byTooltip('振り返り'));
+      await tester.pumpAndSettle();
+      expect(find.byType(ReflectionScreen), findsOneWidget);
+      expect(rootCanPop(tester), isFalse);
+      expect(
+        tester.getRect(find.byType(ReflectionScreen)).left,
+        greaterThan(listRight),
+      );
+      expect(find.byType(HistorySessionCard), findsOneWidget);
+    });
+
+    testWidgets('SWOT もダッシュボードから右ペインだけに出る', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('実施中の案件', status: ProjectStatus.inProgress)],
+      );
+      await useWideSurface(tester);
+      await tester.tap(find.byTooltip('ダッシュボードへ'));
+      await tester.pumpAndSettle();
+      final listRight = tester.getRect(find.byType(HistorySessionCard)).right;
+
+      await tester.tap(find.byTooltip('タップで今の状況を編集').first);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SwotMatrixScreen), findsOneWidget);
+      expect(rootCanPop(tester), isFalse);
+      expect(
+        tester.getRect(find.byType(SwotMatrixScreen)).left,
+        greaterThan(listRight),
+      );
+      expect(find.byType(HistorySessionCard), findsOneWidget);
+    });
+
+    testWidgets('宣言文の編集も右ペインだけに出る', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [
+          _project(
+            '実施中の案件',
+            status: ProjectStatus.inProgress,
+          ).copyWith(declaration: '毎朝走る'),
+        ],
+      );
+      await useWideSurface(tester);
+      await tester.tap(find.byTooltip('ダッシュボードへ'));
+      await tester.pumpAndSettle();
+      final listRight = tester.getRect(find.byType(HistorySessionCard)).right;
+      // Jump the dashboard's own list down (a drag would land on the SWOT
+      // cards' inner scrollables) until 宣言文 is built.
+      final dashboardList = tester
+          .state<ScrollableState>(
+            find
+                .descendant(
+                  of: find.byType(DashboardScreen),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+          )
+          .position;
+      while (find.byTooltip('宣言文を編集').evaluate().isEmpty &&
+          dashboardList.pixels < dashboardList.maxScrollExtent) {
+        dashboardList.jumpTo(dashboardList.pixels + 300);
+        await tester.pump();
+      }
+      await tester.ensureVisible(find.byTooltip('宣言文を編集'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('宣言文を編集'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DeclarationEditScreen), findsOneWidget);
+      expect(rootCanPop(tester), isFalse);
+      expect(
+        tester.getRect(find.byType(DeclarationEditScreen)).left,
+        greaterThan(listRight),
+      );
+      expect(find.byType(HistorySessionCard), findsOneWidget);
+    });
+
+    testWidgets('縦で開いたダッシュボードは、横にすると分割の右に移る', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('実施中の案件', status: ProjectStatus.inProgress)],
+      );
+      await tester.tap(find.byTooltip('ダッシュボードへ'));
+      await tester.pumpAndSettle();
+      expect(rootCanPop(tester), isTrue);
+
+      await useWideSurface(tester);
+
+      expect(rootCanPop(tester), isFalse);
+      expect(find.byType(DashboardScreen), findsOneWidget);
+      expect(find.byType(HistorySessionCard), findsOneWidget);
+      expect(find.text('案件を選んでください'), findsNothing);
+    });
+
+    testWidgets('縦で開いた設定は、横にすると分割の右に移る', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('実施中の案件', status: ProjectStatus.inProgress)],
+      );
+      await _tapMoreMenuItem(tester, '設定');
+      expect(find.byType(SettingsScreen), findsOneWidget);
+      expect(rootCanPop(tester), isTrue);
+
+      await useWideSurface(tester);
+
+      expect(rootCanPop(tester), isFalse);
+      expect(find.byType(SettingsScreen), findsOneWidget);
+      expect(
+        tester.getRect(find.byType(SettingsScreen)).left,
+        greaterThan(tester.getRect(find.byType(HistorySessionCard)).right),
+      );
+    });
+
+    testWidgets('縦のダッシュボードから開いた設定は、横にすると両方とも分割に移る', (
+      tester,
+    ) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('実施中の案件', status: ProjectStatus.inProgress)],
+      );
+      await tester.tap(find.byTooltip('ダッシュボードへ'));
+      await tester.pumpAndSettle();
+      await _tapMoreMenuItem(tester, '設定');
+      expect(find.byType(SettingsScreen), findsOneWidget);
+
+      await useWideSurface(tester);
+
+      expect(rootCanPop(tester), isFalse);
+      expect(find.byType(SettingsScreen), findsOneWidget);
+      expect(find.byType(HistorySessionCard), findsOneWidget);
+      // Back out of 設定: the same 案件's dashboard is on the right.
+      tester
+          .state<NavigatorState>(
+            find
+                .ancestor(
+                  of: find.byType(SettingsScreen),
+                  matching: find.byType(Navigator),
+                )
+                .first,
+          )
+          .pop();
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byType(DashboardScreen),
+          matching: find.text('実施中の案件'),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('作成中の ▶️ はウィザードを右ペインだけに出す', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('準備中の案件', status: ProjectStatus.preparing)],
+      );
+      await useWideSurface(tester);
+
+      await tester.tap(find.byTooltip('ダッシュボードへ'));
+      await tester.pumpAndSettle();
+
+      // Same landing as the portrait test: the matrix screen, on the right.
+      expect(find.byType(SwotMatrixScreen), findsOneWidget);
+      expect(find.text('強み1'), findsOneWidget);
+      expect(rootCanPop(tester), isFalse);
+      expect(
+        tester.getRect(find.byType(SwotMatrixScreen)).left,
+        greaterThan(tester.getRect(find.byType(HistorySessionCard)).right),
+      );
+      // The matrix toolbar has its own …; home's is hidden.
+      expect(find.byTooltip('その他'), findsOneWidget);
+    });
+
+    testWidgets('簡易案件の ▶️ は SimpleModeScreen を右ペインだけに出す', (tester) async {
+      final now = DateTime.utc(2026, 1, 1);
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [
+          Project(
+            createdAt: now,
+            updatedAt: now,
+            theme: '朝の習慣を整える',
+            desiredGoal: '朝の習慣を整える',
+            entryMode: Project.modeSimple,
+            status: ProjectStatus.inProgress,
+          ),
+        ],
+      );
+      await useWideSurface(tester);
+
+      await tester.tap(find.byTooltip('ダッシュボードへ'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SimpleModeScreen), findsOneWidget);
+      expect(rootCanPop(tester), isFalse);
+      expect(
+        tester.getRect(find.byType(SimpleModeScreen)).left,
+        greaterThan(tester.getRect(find.byType(HistorySessionCard)).right),
+      );
+      expect(find.byType(DashboardScreen), findsNothing);
+    });
+
+    testWidgets('＋ の新規作成も右ペインだけに出る', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('実施中の案件', status: ProjectStatus.inProgress)],
+      );
+      await useWideSurface(tester);
+
+      await _tapAddNew(tester);
+      await tester.tap(find.text('フルモード'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('まずテーマを決めよう'), findsOneWidget);
+      expect(rootCanPop(tester), isFalse);
+      expect(
+        tester.getRect(find.text('まずテーマを決めよう')).left,
+        greaterThan(tester.getRect(find.byType(HistorySessionCard)).right),
+      );
+      expect(find.byType(HistorySessionCard), findsOneWidget);
+    });
+
+    testWidgets('未選択の右ペインは「案件を選んでください」', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('実施中の案件', status: ProjectStatus.inProgress)],
+      );
+      await useWideSurface(tester);
+
+      expect(find.text('案件を選んでください'), findsOneWidget);
+      expect(find.text('実施中の案件'), findsOneWidget);
+      expect(find.byType(DashboardScreen), findsNothing);
+      // No dashboard toolbar on the right, so home keeps its … (設定/ヘルプ).
+      expect(find.byTooltip('その他'), findsOneWidget);
+    });
+
+    testWidgets('縦の表面では実施中の ▶️ がダッシュボードを別 route に出す', (tester) async {
+      await pumpScreen(
+        tester,
+        fileIO: FakeAnalysisFileIO(),
+        seed: [_project('実施中の案件', status: ProjectStatus.inProgress)],
+      );
+
+      expect(find.text('案件を選んでください'), findsNothing);
+
+      await tester.tap(find.byTooltip('ダッシュボードへ'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DashboardScreen), findsOneWidget);
+      expect(rootCanPop(tester), isTrue);
+      // The home list's toolbar is offstage under the pushed dashboard.
+      expect(find.byType(HistoryBottomToolbar), findsNothing);
+    });
+  });
 }

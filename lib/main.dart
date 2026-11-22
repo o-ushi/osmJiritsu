@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +17,10 @@ import 'theme/widgets/dismiss_keyboard.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // iOS leaves rotation to Info.plist (iPhone portrait only, iPad all four).
+  if (defaultTargetPlatform != TargetPlatform.iOS) {
+    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
   await Hive.initFlutter();
 
   final historyRepository = HiveAnalysisHistoryRepository();
